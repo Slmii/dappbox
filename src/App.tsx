@@ -1,9 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import { Authenticate } from 'components/authenticate';
 import { Layout } from 'components/layout';
 import { RequireAuthentication } from 'components/require-authentication';
-import { HomePage } from 'pages';
+import { AuthenticatePage, HomePage } from 'pages';
 
 function App() {
 	return (
@@ -18,7 +17,7 @@ function App() {
 							</RequireAuthentication>
 						}
 					/>
-					<Route path='/authenticate' element={<Authenticate />} />
+					<Route path='/authenticate' element={<AuthenticatePage />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>
