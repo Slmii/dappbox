@@ -20,13 +20,12 @@ export const Home = () => {
 				if ('ok' in profile) {
 					setProfile(profile.ok);
 				} else {
-					console.log(profile.err);
-					// const profile = await actor.createUser();
-					// if ('ok' in profile) {
-					// 	setProfile(profile.ok);
-					// } else {
-					// 	console.error(profile.err);
-					// }
+					const profile = await actor.createUser();
+					if ('ok' in profile) {
+						setProfile(profile.ok);
+					} else {
+						console.error(profile.err);
+					}
 				}
 			}
 
@@ -46,13 +45,12 @@ export const Home = () => {
 				<Typography variant='h5' component='h2' gutterBottom>
 					You are authenticated
 				</Typography>
-				<Typography variant='subtitle1' gutterBottom>
-					{principal ? principal.toText() : ''}
-				</Typography>
 				{isProfileLoading ? (
 					<>Setting up your account</>
 				) : profile ? (
-					<Box>{JSON.stringify(profile)}</Box>
+					<Box>
+						<>{profile.userId.toText()}</>
+					</Box>
 				) : (
 					<>
 						<Typography variant='body1'>
