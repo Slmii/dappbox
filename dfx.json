@@ -1,0 +1,34 @@
+{
+	"canisters": {
+		"dappbox": {
+			"main": "src/dappbox/main.mo",
+			"type": "motoko"
+		},
+		"frontend": {
+			"dependencies": [
+				"dappbox"
+			],
+			"frontend": {
+				"entrypoint": "build/index.html"
+			},
+			"source": [
+				"build"
+			],
+			"type": "assets"
+		}
+	},
+	"defaults": {
+		"build": {
+			"output": "canisters",
+			"packtool": ""
+		}
+	},
+	"dfx": "0.8.4",
+	"networks": {
+		"local": {
+			"bind": "127.0.0.1:8000",
+			"type": "ephemeral"
+		}
+	},
+	"version": 1
+}
