@@ -12,7 +12,7 @@ export const Container: React.FC = ({ children }) => {
 				marginLeft: `${constants.DRAWER_WIDTH}px`,
 				height: 'calc(100vh - 65px)',
 				'& > *:not(:last-child)': {
-					marginBottom: 2
+					marginBottom: 1
 				}
 			}}
 		>

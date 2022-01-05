@@ -11,7 +11,7 @@ export const RowBox: React.FC = ({ children }) => {
 				display: 'flex',
 				flexDirection: 'column',
 				'& > *:not(:last-child)': {
-					marginBottom: 2
+					marginBottom: 1
 				}
 			}}
 		>

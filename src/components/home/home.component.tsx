@@ -1,12 +1,12 @@
-import Typography from '@mui/material/Typography';
 import { useContext, useEffect, useState } from 'react';
 
+import { ViewList } from 'components/view-list';
 import { AuthContext } from 'lib/context';
 import { Profile } from 'lib/generated/dappbox_types';
-import { Box, RowBox } from 'ui-components/box';
+import { Box } from 'ui-components/box';
 
 export const Home = () => {
-	const { principal, actor } = useContext(AuthContext);
+	const { actor } = useContext(AuthContext);
 	const [profile, setProfile] = useState<Profile | null>(null);
 	const [isProfileLoading, setIsProfileLoading] = useState(false);
 
@@ -38,28 +38,11 @@ export const Home = () => {
 	return (
 		<Box
 			sx={{
-				position: 'relative'
+				position: 'relative',
+				height: 'calc(100% - 65px)'
 			}}
 		>
-			<RowBox>
-				<Typography variant='h5' component='h2' gutterBottom>
-					You are authenticated
-				</Typography>
-				{isProfileLoading ? (
-					<>Setting up your account</>
-				) : profile ? (
-					<Box>
-						<>{profile.userId.toText()}</>
-					</Box>
-				) : (
-					<>
-						<Typography variant='body1'>
-							It seems that you do not have a profile on DappBox. Press the button below to create one
-							with your PrincipalID.
-						</Typography>
-					</>
-				)}
-			</RowBox>
+			{isProfileLoading ? <>Setting up your account</> : profile ? <ViewList /> : null}
 		</Box>
 	);
 };

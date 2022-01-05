@@ -31,6 +31,7 @@ export const Authenticate = () => {
 					loading={isLoading}
 					onClick={loginPlug}
 					startImage='/assets/plug-wallet.png'
+					size='large'
 				/>
 				<Button
 					label='Authenticate with II'
@@ -38,6 +39,7 @@ export const Authenticate = () => {
 					variant='contained'
 					onClick={() => alert('TODO')}
 					startImage='/assets/dfn.svg'
+					size='large'
 				/>
 			</RowBox>
 		</Box>

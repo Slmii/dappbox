@@ -8,9 +8,9 @@ function App() {
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path='/' element={<Layout />}>
+				<Route element={<Layout />}>
 					<Route
-						index
+						path='/*'
 						element={
 							<RequireAuthentication>
 								<HomePage />

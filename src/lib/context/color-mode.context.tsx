@@ -1,6 +1,8 @@
 import { createTheme, responsiveFontSizes, Theme } from '@mui/material/styles';
 import React from 'react';
 
+import { useLocalStorage } from 'lib/hooks';
+
 interface ColorModeContextInterface {
 	theme: Theme;
 	toggleColorMode: () => void;
@@ -14,23 +16,17 @@ export const ColorModeContext = React.createContext<ColorModeContextInterface>({
 type ColorMode = 'light' | 'dark';
 
 export const ColorModeProvider: React.FC = ({ children }) => {
-	const [mode, setMode] = React.useState<'light' | 'dark'>(
-		(window.localStorage.getItem('colorMode') as ColorMode) ?? 'light'
-	);
+	const [mode, setMode] = useLocalStorage<ColorMode>('colorMode', 'light');
 
 	const { toggleColorMode } = React.useMemo(
 		() => ({
 			toggleColorMode: () => {
-				setMode(prevMode => {
-					const mode = prevMode === 'light' ? 'dark' : 'light';
-					window.localStorage.setItem('colorMode', mode);
-					return mode;
-				});
+				setMode(mode === 'light' ? 'dark' : 'light');
 			}
 		}),
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[]
+		[mode]
 	);
 
 	const colorModeTheme = React.useMemo(() => {

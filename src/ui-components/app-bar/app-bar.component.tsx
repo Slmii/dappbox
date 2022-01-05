@@ -19,7 +19,15 @@ export const Appbar: React.FC = ({ children }) => {
 					borderColor: 'divider'
 				}}
 			>
-				<Toolbar>{children}</Toolbar>
+				<Toolbar
+					disableGutters
+					sx={{
+						paddingLeft: 2,
+						paddingRight: 2
+					}}
+				>
+					{children}
+				</Toolbar>
 			</AppBar>
 			<Offset />
 		</>

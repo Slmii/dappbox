@@ -43,7 +43,7 @@ export const Drawer = () => {
 			<Toolbar />
 			<Box sx={{ padding: 1 }}>
 				<Fab variant='extended' color='primary' sx={{ width: '100%' }}>
-					<Icon icon='add' spacingRight />
+					<Icon icon='addOutlined' spacingRight />
 					Upload
 				</Fab>
 			</Box>

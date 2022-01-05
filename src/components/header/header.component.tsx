@@ -1,4 +1,3 @@
-import { Tooltip } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useContext, useState } from 'react';
 
@@ -12,7 +11,7 @@ import { Snackbar } from 'ui-components/snackbar';
 export const Header = () => {
 	const theme = useTheme();
 	const { toggleColorMode } = useContext(ColorModeContext);
-	const { isConnected, principal } = useContext(AuthContext);
+	const { isAuthenticated, principal } = useContext(AuthContext);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 
 	const renderPrincipalId = () => {
@@ -52,10 +51,8 @@ export const Header = () => {
 					onClick={toggleColorMode}
 				/>
 				<>
-					{isConnected ? (
-						<Tooltip arrow title='Copy address'>
-							<Button label={renderPrincipalId()} onClick={handleOnAddressCopy} />
-						</Tooltip>
+					{isAuthenticated ? (
+						<Button label={renderPrincipalId()} onClick={handleOnAddressCopy} tooltip='Copy address' />
 					) : null}
 				</>
 			</Box>

@@ -1,3 +1,4 @@
+import Slide, { SlideProps } from '@mui/material/Slide';
 import MuiSnackbar from '@mui/material/Snackbar';
 import React from 'react';
 
@@ -7,9 +8,16 @@ import { SnackbarProps } from './snackbar.types';
 
 const autoHideDuration = 5000;
 
+type TransitionProps = Omit<SlideProps, 'direction'>;
+
+function Transition(props: TransitionProps) {
+	return <Slide {...props} direction='right' />;
+}
+
 export const Snackbar = ({ open, message, persist = false, onClose, onUndo }: SnackbarProps) => {
 	return (
 		<MuiSnackbar
+			TransitionComponent={Transition}
 			anchorOrigin={{
 				vertical: 'bottom',
 				horizontal: 'left'

@@ -1,6 +1,6 @@
 import { Principal } from '@dfinity/principal';
-import { createContext, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { createContext, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { idlFactory } from 'lib/generated/dappbox_idl';
 import { _SERVICE } from 'lib/generated/dappbox_types';
@@ -44,23 +44,22 @@ export const AuthContext = createContext<IAuthClient>({
 	isAuthenticated: false
 });
 
+const { canisterId, currentWindow, host, isPlugWalletInstalled, whitelist } = {
+	currentWindow: window as any,
+	canisterId: process.env.REACT_APP_CANISTER_ID,
+	whitelist: [process.env.REACT_APP_CANISTER_ID],
+	host: isDevelopment ? 'http://localhost:8000' : 'https://mainnet.dfinity.network',
+	isPlugWalletInstalled: (window as any).ic?.plug ? true : false
+};
+
 export const AuthProvider: React.FC = ({ children }) => {
 	const navigate = useNavigate();
+	const { state } = useLocation();
 
 	const [isConnected, setIsConnected] = useState(false);
 	const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
 	const [isLoading, setIsLoading] = useState(false);
 	const [actor, setActor] = useState<_SERVICE | undefined>(undefined);
-
-	const { canisterId, currentWindow, host, isPlugWalletInstalled, whitelist } = useMemo(() => {
-		return {
-			currentWindow: window as any,
-			canisterId: process.env.REACT_APP_CANISTER_ID,
-			whitelist: [process.env.REACT_APP_CANISTER_ID],
-			host: isDevelopment ? 'http://localhost:8000' : 'https://mainnet.dfinity.network',
-			isPlugWalletInstalled: !!(window as any).ic.plug
-		};
-	}, []);
 
 	const loginPlug = async () => {
 		if (!isPlugWalletInstalled) {
@@ -95,7 +94,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
 				setIsLoading(false);
 
-				navigate('/');
+				navigate((state as Record<string, string>)?.path ?? '/');
 			}
 		} catch (error) {
 			console.log({ error });
@@ -111,7 +110,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 				isLoading,
 				isConnected,
 				actor,
-				isAuthenticated: isConnected && !!principal
+				isAuthenticated: isConnected && !!principal && !!actor && !isLoading
 			}}
 		>
 			{children}
