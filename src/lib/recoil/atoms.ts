@@ -7,9 +7,6 @@ export interface TableState {
 	selectedRows: string[];
 	order: Order;
 	orderBy: keyof Asset;
-	setSelectedRows: (rows: string[]) => void;
-	setOrder: (order: Order) => void;
-	setOrderBy: (orderBy: keyof Asset) => void;
 }
 
 export interface AssetsState {
@@ -32,13 +29,10 @@ export const assetsState = atom<AssetsState>({
  * State for showing current table state
  */
 export const tableState = atom<TableState>({
-	key: 'tableAssetsState',
+	key: 'tableState',
 	default: {
 		selectedRows: [],
 		order: 'asc',
-		orderBy: 'name',
-		setSelectedRows: () => {},
-		setOrder: () => {},
-		setOrderBy: () => {}
+		orderBy: 'name'
 	}
 });

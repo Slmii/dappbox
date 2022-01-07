@@ -1,10 +1,12 @@
-import { useTableAssets } from 'lib/hooks';
+import { useRecoilValue } from 'recoil';
+
+import { tableState } from 'lib/recoil';
 import { Box } from 'ui-components/box';
 import { Button } from 'ui-components/button';
 import { Caption } from 'ui-components/typography';
 
 export const ViewActions = () => {
-	const { selectedRows } = useTableAssets();
+	const { selectedRows } = useRecoilValue(tableState);
 
 	return (
 		<Box

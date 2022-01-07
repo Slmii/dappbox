@@ -1,8 +1,10 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { AuthContext } from 'lib/context';
 import { User } from 'lib/generated/dappbox_types';
-import { useTableAssets } from 'lib/hooks';
+import { tableAssetsState, tableState } from 'lib/recoil';
 import { Box } from 'ui-components/box';
 import { Column, Table } from 'ui-components/table';
 
@@ -36,11 +38,14 @@ const columns: Column = {
 };
 
 export const ViewAssets = () => {
+	const { pathname } = useLocation();
 	const { actor } = useContext(AuthContext);
 	const [profile, setProfile] = useState<User | null>(null);
 	const [isProfileLoading, setIsProfileLoading] = useState(false);
 
-	const { tableAssets, ...tableState } = useTableAssets();
+	const assetId = useMemo(() => pathname.split('/').pop(), [pathname]);
+	const assets = useRecoilValue(tableAssetsState(assetId));
+	const [{ order, orderBy, selectedRows }, setTableState] = useRecoilState(tableState);
 
 	useEffect(() => {
 		const initProfile = async () => {
@@ -77,7 +82,16 @@ export const ViewAssets = () => {
 			{isProfileLoading ? (
 				<>Setting up your account</>
 			) : profile ? (
-				<Table {...tableState} rows={tableAssets} columns={columns} />
+				<Table
+					rows={assets}
+					columns={columns}
+					order={order}
+					orderBy={orderBy}
+					selectedRows={selectedRows}
+					setOrder={order => setTableState(prevState => ({ ...prevState, order }))}
+					setOrderBy={orderBy => setTableState(prevState => ({ ...prevState, orderBy }))}
+					setSelectedRows={selectedRows => setTableState(prevState => ({ ...prevState, selectedRows }))}
+				/>
 			) : null}
 		</Box>
 	);

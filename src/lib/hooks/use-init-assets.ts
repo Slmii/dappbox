@@ -1,11 +1,10 @@
 import { Principal } from '@dfinity/principal';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import { Asset } from 'lib/generated/dappbox_types';
-import { assetsState, tableAssetsState, tableState as tableStateAtom } from 'lib/recoil';
-import { Order } from 'ui-components/table';
+import { assetsState, tableState as tableStateAtom } from 'lib/recoil';
 
 const dummyRows: Asset[] = [
 	{
@@ -95,13 +94,10 @@ const dummyRows: Asset[] = [
 	}
 ];
 
-export const useTableAssets = () => {
+export const useInitAssets = () => {
 	const { pathname } = useLocation();
-	const [tableState, setTableState] = useRecoilState(tableStateAtom);
+	const setTableState = useSetRecoilState(tableStateAtom);
 	const setAssets = useSetRecoilState(assetsState);
-
-	const assetId = useMemo(() => pathname.split('/').pop(), [pathname]);
-	const tableAssets = useRecoilValue(tableAssetsState(assetId));
 
 	useEffect(() => {
 		setAssets({
@@ -121,34 +117,5 @@ export const useTableAssets = () => {
 		}));
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [assetId]);
-
-	const handleOnSetSelectedRows = (rows: string[]) => {
-		setTableState(prevState => ({
-			...prevState,
-			selectedRows: rows
-		}));
-	};
-
-	const handleOnSetOrder = (order: Order) => {
-		setTableState(prevState => ({
-			...prevState,
-			order
-		}));
-	};
-
-	const handleOnSetOrderBy = (orderBy: keyof Asset) => {
-		setTableState(prevState => ({
-			...prevState,
-			orderBy
-		}));
-	};
-
-	return {
-		...tableState,
-		setSelectedRows: handleOnSetSelectedRows,
-		setOrder: handleOnSetOrder,
-		setOrderBy: handleOnSetOrderBy,
-		tableAssets
-	};
+	}, [pathname]);
 };

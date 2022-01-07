@@ -1,2 +1,2 @@
 export * from './use-localstorage';
-export * from './use-assets';
+export * from './use-init-assets';

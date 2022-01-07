@@ -8,13 +8,13 @@ import { ThemeProvider } from './theme';
 export const Providers: React.FC = ({ children }) => {
 	return (
 		<AuthProvider>
-			<RecoilRoot>
-				<ColorModeProvider>
-					<ThemeProvider>
+			<ColorModeProvider>
+				<ThemeProvider>
+					<RecoilRoot>
 						<HelmetProvider>{children}</HelmetProvider>
-					</ThemeProvider>
-				</ColorModeProvider>
-			</RecoilRoot>
+					</RecoilRoot>
+				</ThemeProvider>
+			</ColorModeProvider>
 		</AuthProvider>
 	);
 };
