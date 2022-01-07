@@ -36,10 +36,11 @@ const columns: Column = {
 };
 
 export const ViewAssets = () => {
-	const tableAssets = useTableAssets();
 	const { actor } = useContext(AuthContext);
 	const [profile, setProfile] = useState<User | null>(null);
 	const [isProfileLoading, setIsProfileLoading] = useState(false);
+
+	const { tableAssets, ...tableState } = useTableAssets();
 
 	useEffect(() => {
 		const initProfile = async () => {
@@ -49,12 +50,10 @@ export const ViewAssets = () => {
 				const profile = await actor.getUser();
 
 				if ('ok' in profile) {
-					console.log('profile exists', profile);
 					setProfile(profile.ok);
 				} else {
 					const profile = await actor.createUser();
 					if ('ok' in profile) {
-						console.log('profile doesnt exists, create profile', profile);
 						setProfile(profile.ok);
 					} else {
 						console.error(profile.err);
@@ -78,7 +77,7 @@ export const ViewAssets = () => {
 			{isProfileLoading ? (
 				<>Setting up your account</>
 			) : profile ? (
-				<Table {...tableAssets} columns={columns} />
+				<Table {...tableState} rows={tableAssets} columns={columns} />
 			) : null}
 		</Box>
 	);

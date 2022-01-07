@@ -10,16 +10,13 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import { useState } from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { constants } from 'lib/constants';
-import { assetFoldersState } from 'lib/recoil';
 import { Box } from 'ui-components/box';
 import { Icon } from 'ui-components/icon';
 
 export const Drawer = () => {
 	const [open, setOpen] = useState(false);
-	const folders = useRecoilValue(assetFoldersState);
 
 	const handleClick = () => {
 		setOpen(!open);

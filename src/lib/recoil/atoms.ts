@@ -3,8 +3,7 @@ import { atom } from 'recoil';
 import { Asset } from 'lib/generated/dappbox_types';
 import { Order } from 'ui-components/table';
 
-export interface TableAssetsState {
-	rows: Asset[];
+export interface TableState {
 	selectedRows: string[];
 	order: Order;
 	orderBy: keyof Asset;
@@ -13,21 +12,28 @@ export interface TableAssetsState {
 	setOrderBy: (orderBy: keyof Asset) => void;
 }
 
+export interface AssetsState {
+	assets: Asset[];
+	isLoading: boolean;
+}
+
 /**
  * State for all assets
  */
-export const assetsState = atom<Asset[]>({
+export const assetsState = atom<AssetsState>({
 	key: 'assetsState',
-	default: []
+	default: {
+		assets: [],
+		isLoading: false
+	}
 });
 
 /**
- * State for showing assets in table (nested folders/files)
+ * State for showing current table state
  */
-export const tableAssetsState = atom<TableAssetsState>({
+export const tableState = atom<TableState>({
 	key: 'tableAssetsState',
 	default: {
-		rows: [],
 		selectedRows: [],
 		order: 'asc',
 		orderBy: 'name',

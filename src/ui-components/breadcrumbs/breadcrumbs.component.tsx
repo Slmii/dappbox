@@ -10,7 +10,7 @@ import { assetsState } from 'lib/recoil';
 import { getPathToAsset } from 'lib/url';
 
 export const Breadcrumbs = () => {
-	const assets = useRecoilValue(assetsState);
+	const { assets } = useRecoilValue(assetsState);
 	const { pathname } = useLocation();
 
 	// Split param on `/` and filter out empty values
