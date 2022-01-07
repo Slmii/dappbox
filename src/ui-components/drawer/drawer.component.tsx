@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { constants } from 'lib/constants';
 import { Box } from 'ui-components/box';
 import { Icon } from 'ui-components/icon';
+import { Link } from 'ui-components/link';
 
 export const Drawer = () => {
 	const [open, setOpen] = useState(false);
@@ -45,9 +46,11 @@ export const Drawer = () => {
 				</Fab>
 			</Box>
 			<List>
-				<ListItem button>
-					<ListItemText primary='Home' />
-				</ListItem>
+				<Link href='/'>
+					<ListItem button>
+						<ListItemText primary='Home' />
+					</ListItem>
+				</Link>
 				<ListItem button onClick={handleClick}>
 					<ListItemText primary='Folders' />
 					{open ? <ExpandLess /> : <ExpandMore />}
@@ -79,9 +82,11 @@ export const Drawer = () => {
 				<ListItem button>
 					<ListItemText primary='NFTs' />
 				</ListItem>
-				<ListItem button>
-					<ListItemText primary='Favorites' />
-				</ListItem>
+				<Link href='/favorites'>
+					<ListItem button>
+						<ListItemText primary='Favorites' />
+					</ListItem>
+				</Link>
 				<ListItem button>
 					<ListItemText primary='Shared' />
 				</ListItem>

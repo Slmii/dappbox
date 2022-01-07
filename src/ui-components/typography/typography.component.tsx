@@ -7,3 +7,11 @@ export const Caption = ({ title }: { title: string }) => {
 		</Typography>
 	);
 };
+
+export const PageTitle = ({ title }: { title: string }) => {
+	return (
+		<Typography color='inherit' variant='h4' fontWeight='bold'>
+			{title}
+		</Typography>
+	);
+};

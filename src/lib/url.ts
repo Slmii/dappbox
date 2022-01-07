@@ -15,9 +15,9 @@ export const getPageTitle = (pathname: string, rows: Asset[]) => {
 };
 
 /**
- * Get the full path to the current asset (including parent assets), in the correct order
+ * Get the full URL path to the current asset (including parent assets), in the correct order
  */
-export const getPathToAsset = (assetId: number, assets: Asset[]) => {
+export const getUrlPathToAsset = (assetId: number, assets: Asset[]) => {
 	const paths: Asset[] = [];
 
 	const asset = assets.find(row => row.assetId === assetId);
@@ -27,7 +27,7 @@ export const getPathToAsset = (assetId: number, assets: Asset[]) => {
 
 		if (asset?.parentId[0]) {
 			// Put at the front of the array for the correct order
-			paths.unshift(...getPathToAsset(asset.parentId[0], assets));
+			paths.unshift(...getUrlPathToAsset(asset.parentId[0], assets));
 		}
 	}
 

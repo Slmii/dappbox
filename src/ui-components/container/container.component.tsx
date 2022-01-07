@@ -17,7 +17,7 @@ export const FilesContainer: React.FC = ({ children }) => {
 	);
 };
 
-export const TopContainer: React.FC = ({ children }) => {
+export const Content: React.FC = ({ children }) => {
 	return (
 		<Box
 			sx={{

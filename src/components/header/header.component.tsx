@@ -6,6 +6,7 @@ import { Appbar } from 'ui-components/app-bar';
 import { Box } from 'ui-components/box';
 import { Button } from 'ui-components/button';
 import { IconButton } from 'ui-components/icon-button';
+import { Link } from 'ui-components/link';
 import { Snackbar } from 'ui-components/snackbar';
 
 export const Header = () => {
@@ -35,7 +36,9 @@ export const Header = () => {
 
 	return (
 		<Appbar>
-			<Box sx={{ flexGrow: 1 }}>LOGO</Box>
+			<Box sx={{ flexGrow: 1 }}>
+				<Link href='/'>LOGO</Link>
+			</Box>
 			<Box
 				sx={{
 					display: 'flex',

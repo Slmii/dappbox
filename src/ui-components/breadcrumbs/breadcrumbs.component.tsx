@@ -7,7 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
 import { assetsState } from 'lib/recoil';
-import { getPathToAsset } from 'lib/url';
+import { getUrlPathToAsset } from 'lib/url';
 
 export const Breadcrumbs = () => {
 	const { assets } = useRecoilValue(assetsState);
@@ -29,6 +29,12 @@ export const Breadcrumbs = () => {
 		return breadcrumbs;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pathname]);
+
+	const generateBreadcrumbPath = (assetId: number) => {
+		return getUrlPathToAsset(assetId, assets)
+			.map(asset => encodeURIComponent(asset.assetId))
+			.join('/');
+	};
 
 	return (
 		<MuiBreadcrumbs aria-label='breadcrumb' separator={<NavigateNextIcon fontSize='small' />}>
@@ -55,9 +61,7 @@ export const Breadcrumbs = () => {
 						component={Link}
 						underline='hover'
 						color='inherit'
-						to={getPathToAsset(breadcrumb.assetId, assets)
-							.map(asset => encodeURIComponent(asset.assetId))
-							.join('/')}
+						to={generateBreadcrumbPath(breadcrumb.assetId)}
 					>
 						{breadcrumb.name}
 					</MuiLink>

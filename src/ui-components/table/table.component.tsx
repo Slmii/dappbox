@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import MuiTable from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import MuiTableCell from '@mui/material/TableCell';
@@ -10,11 +9,12 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 import React from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { Asset } from 'lib/generated/dappbox_types';
 import { Icon } from 'ui-components/icon';
 import { IconButton } from 'ui-components/icon-button';
+import { Link } from 'ui-components/link';
 import { Column, TableCellProps, TableHeadProps, TableProps } from './table.types';
 
 const TableCell = React.memo(({ columnId, column, row }: TableCellProps) => {
@@ -52,14 +52,9 @@ const TableCell = React.memo(({ columnId, column, row }: TableCellProps) => {
 		if (row.assetType === 'folder') {
 			return (
 				<Link
-					component={RouterLink}
-					to={`${pathname.split('/').filter(Boolean).join('/')}/${encodeURIComponent(
+					href={`${pathname.split('/').filter(Boolean).join('/')}/${encodeURIComponent(
 						row.assetId.toString()
 					)}`}
-					sx={{
-						textDecoration: 'unset',
-						color: 'text.primary'
-					}}
 					onClick={e => e.stopPropagation()}
 				>
 					{value}

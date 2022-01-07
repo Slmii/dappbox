@@ -8,7 +8,8 @@ import { getPageTitle } from 'lib/url';
 
 const breadcrumbsMapping: Record<string, string> = {
 	'/': 'Home',
-	'/authenticate': 'Authenticate'
+	'/authenticate': 'Authenticate',
+	'/favorites': 'Favorites'
 };
 
 export const PageTitle = () => {

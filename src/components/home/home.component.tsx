@@ -6,16 +6,14 @@ import { ViewMode } from 'components/view-mode';
 import { useInitAssets } from 'lib/hooks';
 import { Box } from 'ui-components/box';
 import { Breadcrumbs } from 'ui-components/breadcrumbs';
-import { FilesContainer, Main, TopContainer } from 'ui-components/container';
-import { Drawer } from 'ui-components/drawer';
+import { Content, FilesContainer, Main } from 'ui-components/container';
 
 export const Home = () => {
 	useInitAssets();
 
 	return (
 		<Main>
-			<Drawer />
-			<TopContainer>
+			<Content>
 				<Box
 					sx={{
 						display: 'flex',
@@ -27,7 +25,7 @@ export const Home = () => {
 					<Breadcrumbs />
 					<ViewMode />
 				</Box>
-			</TopContainer>
+			</Content>
 			<Divider />
 			<FilesContainer>
 				<ViewActions />
