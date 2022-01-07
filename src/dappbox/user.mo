@@ -3,39 +3,42 @@ import Iter "mo:base/Iter";
 import Map "mo:base/HashMap";
 import Principal "mo:base/Principal";
 
-import ProfileTypes "./types/profile";
+import UserTypes "./types/user.types";
 
 module {
-    type Profile = ProfileTypes.Profile;
-    type UserId = ProfileTypes.UserId;
+    type UserId = UserTypes.UserId;
+    type User = UserTypes.User;
 
     func isPrincipalIdEqual(x: UserId, y: UserId): Bool { 
         return x == y; 
     };
 
-    public class User() {
-        public let profiles = Map.HashMap<UserId, Profile>(1, isPrincipalIdEqual, Principal.hash);
+    public class UserClass() {
+        public let users = Map.HashMap<UserId, User>(1, isPrincipalIdEqual, Principal.hash);
 
-        public func createUser(userId: UserId): Profile {
-            let profile: Profile = {
+        public func createUser(userId: UserId): User {
+            let user: User = {
                 userId = userId;
                 createdAt = Time.now();
             };
 
-            profiles.put(
-                userId,
-                profile
-            );
+            users.put(userId, user);
 
-            return profile;
+            return user;
         };
 
-        public func getUser(userId: UserId): ?Profile {
-            return profiles.get(userId);
+        public func getUser(userId: UserId): ?User {
+            return users.get(userId);
         };
 
-        public func getUsers(): [(UserId, Profile)] {
-            return Iter.toArray(profiles.entries())
+        public func getUsers(): [(UserId, User)] {
+            let array = Iter.toArray(users.entries())
         };
+
+        public func rePopulateHashmap(values: [(UserId, User)] ) {
+            for ((userId, user) in values.vals()) {
+                users.put(userId, user);
+            }
+        }
     }
 }

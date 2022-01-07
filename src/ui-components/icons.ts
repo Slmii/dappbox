@@ -9,10 +9,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DownloadIcon from '@mui/icons-material/Download';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
+import FolderIcon from '@mui/icons-material/Folder';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import ListIcon from '@mui/icons-material/List';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ShareIcon from '@mui/icons-material/Share';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
@@ -34,8 +39,13 @@ const icons = {
 	copyOutlined: FileCopyOutlinedIcon,
 	delete: DeleteIcon,
 	deleteOutlined: DeleteOutlinedIcon,
+	folder: FolderIcon,
 	folderOutlined: FolderOpenOutlinedIcon,
-	addFolderOutlined: CreateNewFolderOutlinedIcon
+	addFolderOutlined: CreateNewFolderOutlinedIcon,
+	favorite: FavoriteIcon,
+	favoriteOutlined: FavoriteBorderIcon,
+	more: MoreVertIcon,
+	share: ShareIcon
 };
 
 export type Icons = keyof typeof icons;

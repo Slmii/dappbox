@@ -9,30 +9,36 @@ import HashMap "mo:base/HashMap";
 import Text "mo:base/Text";
 import Iter "mo:base/Iter";
 
-import ProfileTypes "./types/profile";
-import AssetsTypes "./types/assets";
+import UserTypes "./types/user.types";
+import AssetTypes "./types/assets.types";
 import User "./user";
+import Asset "./asset";
 
-actor DappBox {
+shared(msg) actor class DappBox() {
     type Error = {
         #NotFound;
         #AlreadyExists;
         #NotAuthorized;
     };
 
-    type UserId = ProfileTypes.UserId;
-    type Profile = ProfileTypes.Profile;
-    type Folder = AssetsTypes.Folder;
-    type File = AssetsTypes.File;
+    // TODO: use for only admin calls
+    // let admin = msg.caller;
 
-    let user = User.User();
+    type UserId = UserTypes.UserId;
+    type User = UserTypes.User;
+    type AssetId = AssetTypes.AssetId;
+    type AssetUser = AssetTypes.AssetUser;
+    type Asset = AssetTypes.Asset;
 
-    stable var users: [(UserId, Profile)] = [];
-    stable var folders: [(UserId, Folder)] = [];
-    stable var files: [(UserId, File)] = [];
+    let userClass = User.UserClass();
+    let assetClass = Asset.AssetClass();
+
+    stable var users: [(UserId, User)] = [];
+    stable var assets: [(AssetUser, Asset)] = [];
     stable var usersCount : Nat = 0;
 
-    public query(msg) func getUser(): async Result.Result<Profile, Error> {
+    // User functions
+    public query(msg) func getUser(): async Result.Result<User, Error> {
         let callerId = msg.caller;
 
         // Reject AnonymousIdentity
@@ -40,12 +46,12 @@ actor DappBox {
             return #err(#NotAuthorized);
         };
 
-        let result = user.getUser(callerId);
+        let result = userClass.getUser(callerId);
 
         return Result.fromOption(result, #NotFound);
     };  
 
-    public shared(msg) func createUser(): async Result.Result<Profile, Error> {
+    public shared(msg) func createUser(): async Result.Result<User, Error> {
         let callerId = msg.caller;
 
         // Reject AnonymousIdentity
@@ -53,31 +59,48 @@ actor DappBox {
             return #err(#NotAuthorized);
         };
 
-        let result = user.getUser(callerId);
+        let result = userClass.getUser(callerId);
         switch(result) {
             case null {
                 // Create profile
-                let createdProfile = user.createUser(callerId);
+                let createdUser = userClass.createUser(callerId);
 
                 // Increment user count
                 usersCount := usersCount + 1;
 
-                #ok(createdProfile);
+                #ok(createdUser);
             };
             case(?profile) {
                 #err(#AlreadyExists);
             };
         };
     };
+
+    // Asset functions
+    public query(msg) func getAssets(): async Result.Result<[Asset], Error> {
+        let callerId = msg.caller;
+
+        // Reject AnonymousIdentity
+        if (Principal.toText(callerId) == "2vxsx-fae") {
+            return #err(#NotAuthorized);
+        };
+
+        #ok(assetClass.getUserAssets(callerId));
+    };  
     
     system func preupgrade() {
-        let results = user.getUsers();
-        users := results;
+        let usersData = userClass.getUsers();
+        users := usersData;
+
+        let assetsData = assetClass.getAssets();
+        assets := assetsData;
     };
 
     system func postupgrade() {
+        userClass.rePopulateHashmap(users);
+        assetClass.rePopulateHashmap(assets);
+        
         users := [];
-        folders := [];
-        files := [];
+        assets := [];
     };
 }

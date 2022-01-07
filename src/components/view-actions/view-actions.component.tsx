@@ -1,15 +1,15 @@
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-
+import { useTableAssets } from 'lib/hooks';
 import { Box } from 'ui-components/box';
 import { Button } from 'ui-components/button';
+import { Caption } from 'ui-components/typography';
 
 export const ViewActions = () => {
+	const { selectedRows } = useTableAssets();
+
 	return (
-		<Toolbar
+		<Box
 			sx={{
-				pl: { sm: 0, md: 0 },
-				pr: { sm: 0, md: 0 }
+				paddingY: 1
 			}}
 		>
 			<Box
@@ -22,22 +22,32 @@ export const ViewActions = () => {
 					}
 				}}
 			>
-				<Button label='Add folder' startIcon='addFolderOutlined' variant='contained' color='inherit' />
-				{5 > 0 ? (
+				<Box
+					sx={{
+						color: 'black'
+					}}
+				>
+					<Button label='Add folder' startIcon='addFolderOutlined' variant='contained' color='inherit' />
+				</Box>
+				{selectedRows.length > 0 ? (
 					<>
-						{true ? (
+						{selectedRows.length === 1 ? (
 							<Button label='Preview' startIcon='viewOutlined' variant='outlined' color='inherit' />
 						) : null}
 						<Button label='Download' startIcon='downloadOutlined' variant='outlined' color='inherit' />
 						<Button label='Move' variant='outlined' startIcon='folderOutlined' color='inherit' />
 						<Button label='Copy' startIcon='copyOutlined' variant='outlined' color='inherit' />
 						<Button label='Delete' startIcon='deleteOutlined' color='error' />
-						<Typography sx={{ marginLeft: 'auto' }} color='inherit' variant='caption' fontWeight='bold'>
-							{5} selected
-						</Typography>
+						<Box
+							sx={{
+								marginLeft: 'auto'
+							}}
+						>
+							<Caption title={`${selectedRows.length} selected`} />
+						</Box>
 					</>
 				) : null}
 			</Box>
-		</Toolbar>
+		</Box>
 	);
 };

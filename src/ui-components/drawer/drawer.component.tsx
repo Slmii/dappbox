@@ -9,16 +9,17 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
 import { constants } from 'lib/constants';
-import { AuthContext } from 'lib/context';
+import { assetFoldersState } from 'lib/recoil';
 import { Box } from 'ui-components/box';
 import { Icon } from 'ui-components/icon';
 
 export const Drawer = () => {
-	const { isAuthenticated } = useContext(AuthContext);
 	const [open, setOpen] = useState(false);
+	const folders = useRecoilValue(assetFoldersState);
 
 	const handleClick = () => {
 		setOpen(!open);
@@ -27,7 +28,6 @@ export const Drawer = () => {
 	return (
 		<MuiDrawer
 			sx={{
-				display: isAuthenticated ? 'flex' : 'none',
 				width: constants.DRAWER_WIDTH,
 				flexShrink: 0,
 				'& > div': {
@@ -52,7 +52,7 @@ export const Drawer = () => {
 					<ListItemText primary='Home' />
 				</ListItem>
 				<ListItem button onClick={handleClick}>
-					<ListItemText primary='Files' />
+					<ListItemText primary='Folders' />
 					{open ? <ExpandLess /> : <ExpandMore />}
 				</ListItem>
 				<Collapse in={open} timeout='auto' unmountOnExit>
@@ -67,13 +67,13 @@ export const Drawer = () => {
 					>
 						<ListItem button sx={{ pl: 2 }}>
 							<ListItemIcon>
-								<FolderIcon fontSize='small' color='primary' />
+								<FolderIcon fontSize='small' color='info' />
 							</ListItemIcon>
 							<ListItemText primary='Folder A' />
 						</ListItem>
 						<ListItem button sx={{ pl: 2 }}>
 							<ListItemIcon>
-								<FolderIcon fontSize='small' color='primary' />
+								<FolderIcon fontSize='small' color='info' />
 							</ListItemIcon>
 							<ListItemText primary='Folder B' />
 						</ListItem>

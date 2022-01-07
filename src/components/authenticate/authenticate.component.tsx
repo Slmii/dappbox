@@ -1,13 +1,18 @@
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { useContext } from 'react';
+import { Navigate } from 'react-router-dom';
 
 import { AuthContext } from 'lib/context';
 import { Box, RowBox } from 'ui-components/box';
 import { Button } from 'ui-components/button';
 
 export const Authenticate = () => {
-	const { loginPlug, isLoading } = useContext(AuthContext);
+	const { isAuthenticated, loginPlug, isLoading } = useContext(AuthContext);
+
+	if (isAuthenticated) {
+		return <Navigate to='/' />;
+	}
 
 	return (
 		<Box
