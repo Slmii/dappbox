@@ -67,6 +67,18 @@ const dummyRows: Asset[] = [
 		size: [],
 		isFavorite: false,
 		createdAt: BigInt(new Date().getTime())
+	},
+	{
+		assetId: 6,
+		userId: Principal.fromText('2vxsx-fae'),
+		parentId: [4],
+		assetType: 'file',
+		name: 'Test file B-1-B',
+		extension: ['png'],
+		mimeType: ['png'],
+		size: [BigInt(200)],
+		isFavorite: true,
+		createdAt: BigInt(new Date().getTime())
 	}
 ];
 
