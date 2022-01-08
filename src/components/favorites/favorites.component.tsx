@@ -5,6 +5,7 @@ import TableCell from '@mui/material/TableCell';
 import { useRecoilValue } from 'recoil';
 
 import { assetsAtom, favoriteAssetsSelector } from 'lib/recoil';
+import { getUrlPathToAsset } from 'lib/url';
 import { Box } from 'ui-components/box';
 import { Content, Main } from 'ui-components/container';
 import { Icon } from 'ui-components/icon';
@@ -13,14 +14,14 @@ import { Link } from 'ui-components/link';
 import { Body, PageTitle } from 'ui-components/typography';
 
 export const Favorites = () => {
-	// const generateBreadcrumbPath = (assetId: number) => {
-	// 	return getUrlPathToAsset(assetId, assets)
-	// 		.map(asset => encodeURIComponent(asset.assetId))
-	// 		.join('/');
-	// };
-
 	const { isLoading } = useRecoilValue(assetsAtom);
 	const assets = useRecoilValue(favoriteAssetsSelector);
+
+	const generateAssetPath = (assetId: number) => {
+		return getUrlPathToAsset(assetId, assets)
+			.map(asset => encodeURIComponent(asset.assetId))
+			.join('/');
+	};
 
 	return (
 		<Main>
@@ -34,7 +35,7 @@ export const Favorites = () => {
 				) : (
 					<Stack spacing={0}>
 						{assets.map(asset => (
-							<Link key={asset.assetId} href='/'>
+							<Link key={asset.assetId} href={`${generateAssetPath(asset.assetId)}`}>
 								<TableCell
 									component='div'
 									sx={{

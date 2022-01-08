@@ -7,6 +7,7 @@ import { AuthContext } from 'lib/context';
 import { getTableAssets } from 'lib/functions';
 import { Asset } from 'lib/generated/dappbox_types';
 import { assetsAtom, tableAssetsAtom, tableStateAtom } from 'lib/recoil';
+import { getAssetId } from 'lib/url';
 
 const dummyRows: Asset[] = [
 	{
@@ -90,7 +91,7 @@ const dummyRows: Asset[] = [
 		extension: [],
 		mimeType: [],
 		size: [],
-		isFavorite: false,
+		isFavorite: true,
 		createdAt: BigInt(new Date().getTime())
 	}
 ];
@@ -143,14 +144,12 @@ export const useInitAssets = () => {
 			return;
 		}
 
-		const assetId = pathname.split('/').pop();
-
 		setTableAssets(
 			getTableAssets({
 				assets: dummyRows,
 				order,
 				orderBy,
-				assetId
+				assetId: getAssetId(pathname)
 			})
 		);
 

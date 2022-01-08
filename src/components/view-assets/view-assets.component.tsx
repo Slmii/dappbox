@@ -1,6 +1,9 @@
+import { useLocation } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import { getTableAssets } from 'lib/functions';
 import { tableAssetsAtom, tableStateAtom } from 'lib/recoil';
+import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/box';
 import { Column, Table } from 'ui-components/table';
 
@@ -34,6 +37,7 @@ const columns: Column = {
 };
 
 export const ViewAssets = () => {
+	const { pathname } = useLocation();
 	const [{ order, orderBy, selectedRows }, setTableState] = useRecoilState(tableStateAtom);
 	const assets = useRecoilValue(tableAssetsAtom);
 
@@ -45,7 +49,12 @@ export const ViewAssets = () => {
 			}}
 		>
 			<Table
-				rows={assets}
+				rows={getTableAssets({
+					assets,
+					order,
+					orderBy,
+					assetId: getAssetId(pathname)
+				})}
 				columns={columns}
 				order={order}
 				orderBy={orderBy}

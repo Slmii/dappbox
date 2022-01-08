@@ -33,3 +33,10 @@ export const getUrlPathToAsset = (assetId: number, assets: Asset[]) => {
 
 	return paths;
 };
+
+/**
+ * Get the last assetId param in the URL
+ */
+export const getAssetId = (pathname: string) => {
+	return pathname.split('/').pop();
+};
