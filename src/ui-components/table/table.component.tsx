@@ -41,7 +41,6 @@ const TableCell = React.memo(({ columnId, column, row }: TableCellProps) => {
 				return (
 					<IconButton
 						icon={value ? column.icon : column.iconAlt}
-						size='small'
 						onClick={e => e.stopPropagation()}
 						label={value ? 'Remove from favorites' : 'Add to favorites'}
 					/>
@@ -78,13 +77,7 @@ const TableCell = React.memo(({ columnId, column, row }: TableCellProps) => {
 	};
 
 	return (
-		<MuiTableCell
-			key={`${columnId}${row.assetId}`}
-			align={column.alignment}
-			sx={{
-				fontSize: 14
-			}}
-		>
+		<MuiTableCell key={`${columnId}${row.assetId}`} align={column.alignment}>
 			<Box
 				sx={{
 					display: '-webkit-box',

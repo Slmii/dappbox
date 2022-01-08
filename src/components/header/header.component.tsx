@@ -1,7 +1,8 @@
 import { useTheme } from '@mui/material/styles';
-import { useContext, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 
 import { AuthContext, ColorModeContext } from 'lib/context';
+import { useInitAssets } from 'lib/hooks';
 import { Appbar } from 'ui-components/app-bar';
 import { Box } from 'ui-components/box';
 import { Button } from 'ui-components/button';
@@ -15,7 +16,9 @@ export const Header = () => {
 	const { isAuthenticated, principal } = useContext(AuthContext);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 
-	const renderPrincipalId = () => {
+	useInitAssets();
+
+	const renderPrincipalId = useMemo(() => {
 		if (principal) {
 			const principalId = principal.toText();
 			const first = principalId.split('-')[0];
@@ -25,12 +28,12 @@ export const Header = () => {
 		}
 
 		return 'Authenticate';
-	};
+	}, [principal]);
 
-	const handleOnAddressCopy = () => {
+	const handleOnAddressCopy = useCallback(() => {
 		navigator.clipboard.writeText(principal?.toText() ?? '');
 		setIsAddressCopied(true);
-	};
+	}, [principal]);
 
 	const colorMode = theme.palette.mode;
 
@@ -55,7 +58,7 @@ export const Header = () => {
 				/>
 				<>
 					{isAuthenticated ? (
-						<Button label={renderPrincipalId()} onClick={handleOnAddressCopy} tooltip='Copy address' />
+						<Button label={renderPrincipalId} onClick={handleOnAddressCopy} tooltip='Copy address' />
 					) : null}
 				</>
 			</Box>

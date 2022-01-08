@@ -6,11 +6,11 @@ import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { assetsState } from 'lib/recoil';
+import { assetsAtom } from 'lib/recoil';
 import { getUrlPathToAsset } from 'lib/url';
 
 export const Breadcrumbs = () => {
-	const { assets } = useRecoilValue(assetsState);
+	const { assets } = useRecoilValue(assetsAtom);
 	const { pathname } = useLocation();
 
 	// Split param on `/` and filter out empty values

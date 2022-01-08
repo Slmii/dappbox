@@ -3,7 +3,7 @@ import { createContext, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { idlFactory } from 'lib/generated/dappbox_idl';
-import { _SERVICE } from 'lib/generated/dappbox_types';
+import { _SERVICE, User } from 'lib/generated/dappbox_types';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -12,6 +12,7 @@ interface IAuthClient {
 	 * Authenticate with Plug Wallet
 	 */
 	loginPlug: () => void;
+	initUser: () => Promise<void>;
 	/**
 	 * Actor
 	 */
@@ -33,15 +34,18 @@ interface IAuthClient {
 	 * then we're authenticated
 	 */
 	isAuthenticated: boolean;
+	user?: User;
 }
 
 export const AuthContext = createContext<IAuthClient>({
 	loginPlug: () => {},
+	initUser: () => Promise.resolve(),
 	actor: undefined,
 	isConnected: false,
 	principal: undefined,
 	isLoading: false,
-	isAuthenticated: false
+	isAuthenticated: false,
+	user: undefined
 });
 
 const { canisterId, currentWindow, host, isPlugWalletInstalled, whitelist } = {
@@ -60,6 +64,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 	const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
 	const [isLoading, setIsLoading] = useState(false);
 	const [actor, setActor] = useState<_SERVICE | undefined>(undefined);
+	const [user, setUser] = useState<User | undefined>(undefined);
 
 	const loginPlug = async () => {
 		if (!isPlugWalletInstalled) {
@@ -102,6 +107,30 @@ export const AuthProvider: React.FC = ({ children }) => {
 		}
 	};
 
+	const initUser = async () => {
+		if (!actor) {
+			return;
+		}
+
+		setIsLoading(true);
+
+		const user = await actor.getUser();
+
+		if ('ok' in user) {
+			setUser(user.ok);
+		} else {
+			const profile = await actor.createUser();
+			if ('ok' in profile) {
+				setUser(profile.ok);
+			} else {
+				// TODO: show dialog with error
+				console.error(profile.err);
+			}
+		}
+
+		setIsLoading(false);
+	};
+
 	return (
 		<AuthContext.Provider
 			value={{
@@ -110,7 +139,9 @@ export const AuthProvider: React.FC = ({ children }) => {
 				isLoading,
 				isConnected,
 				actor,
-				isAuthenticated: isConnected && !!principal && !!actor && !isLoading
+				isAuthenticated: isConnected && !!principal && !!actor,
+				initUser,
+				user
 			}}
 		>
 			{children}

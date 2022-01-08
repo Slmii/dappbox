@@ -7,14 +7,14 @@ import { ThemeProvider } from './theme';
 
 export const Providers: React.FC = ({ children }) => {
 	return (
-		<AuthProvider>
-			<ColorModeProvider>
-				<ThemeProvider>
-					<RecoilRoot>
+		<RecoilRoot>
+			<AuthProvider>
+				<ColorModeProvider>
+					<ThemeProvider>
 						<HelmetProvider>{children}</HelmetProvider>
-					</RecoilRoot>
-				</ThemeProvider>
-			</ColorModeProvider>
-		</AuthProvider>
+					</ThemeProvider>
+				</ColorModeProvider>
+			</AuthProvider>
+		</RecoilRoot>
 	);
 };

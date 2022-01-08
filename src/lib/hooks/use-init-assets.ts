@@ -1,10 +1,12 @@
 import { Principal } from '@dfinity/principal';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
+import { AuthContext } from 'lib/context';
+import { getTableAssets } from 'lib/functions';
 import { Asset } from 'lib/generated/dappbox_types';
-import { assetsState, tableState as tableStateAtom } from 'lib/recoil';
+import { assetsAtom, tableAssetsAtom, tableStateAtom } from 'lib/recoil';
 
 const dummyRows: Asset[] = [
 	{
@@ -19,7 +21,6 @@ const dummyRows: Asset[] = [
 		isFavorite: false,
 		createdAt: BigInt(new Date().getTime())
 	},
-
 	{
 		assetId: 6,
 		userId: Principal.fromText('2vxsx-fae'),
@@ -96,19 +97,63 @@ const dummyRows: Asset[] = [
 
 export const useInitAssets = () => {
 	const { pathname } = useLocation();
-	const setTableState = useSetRecoilState(tableStateAtom);
-	const setAssets = useSetRecoilState(assetsState);
+	const { isAuthenticated, initUser } = useContext(AuthContext);
+
+	const [{ order, orderBy }, setTableState] = useRecoilState(tableStateAtom);
+	const setTableAssets = useSetRecoilState(tableAssetsAtom);
+	const setAssets = useSetRecoilState(assetsAtom);
 
 	useEffect(() => {
-		setAssets({
-			assets: dummyRows,
-			isLoading: false
-		});
+		// Init user when authenticated and on the home page. We do not use
+		// this in the `AuthContext` because that would require a longer load
+		// time before being redirect to the home page
+		initUser();
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
+		const init = async () => {
+			if (!isAuthenticated) {
+				return;
+			}
+
+			setAssets({
+				isLoading: true,
+				assets: []
+			});
+
+			// Check if user exists, if not then create one
+			await initUser();
+
+			// Set all assets in recoil state
+			setAssets({
+				isLoading: false,
+				assets: dummyRows
+			});
+		};
+
+		init();
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isAuthenticated]);
+
+	useEffect(() => {
+		if (!isAuthenticated) {
+			return;
+		}
+
+		const assetId = pathname.split('/').pop();
+
+		setTableAssets(
+			getTableAssets({
+				assets: dummyRows,
+				order,
+				orderBy,
+				assetId
+			})
+		);
+
 		// Reset `selectedRows` in table state when redirecting
 		// to another folder
 		setTableState(prevState => ({
@@ -117,5 +162,5 @@ export const useInitAssets = () => {
 		}));
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [pathname]);
+	}, [pathname, isAuthenticated]);
 };
