@@ -10,6 +10,8 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DownloadIcon from '@mui/icons-material/Download';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import EditIcon from '@mui/icons-material/Edit';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
@@ -47,7 +49,9 @@ const icons = {
 	favoriteOutlined: FavoriteBorderIcon,
 	more: MoreVertIcon,
 	share: ShareIcon,
-	edit: EditIcon
+	edit: EditIcon,
+	expandMore: ExpandMoreIcon,
+	expandLess: ExpandLessIcon
 };
 
 export type Icons = keyof typeof icons;

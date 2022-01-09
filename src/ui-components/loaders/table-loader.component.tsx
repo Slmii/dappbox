@@ -1,6 +1,7 @@
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
-import TableCell from '@mui/material/TableCell';
+
+import { Box } from 'ui-components/box';
 
 export const TableLoader = () => {
 	const render = () => {
@@ -8,12 +9,12 @@ export const TableLoader = () => {
 
 		for (let i = 0; i < 10; i++) {
 			jsx.push(
-				<TableCell
-					component='div'
-					size='small'
+				<Box
+					key={i}
 					sx={{
-						padding: 0,
-						height: 57
+						height: 57,
+						borderBottom: 1,
+						borderColor: 'divider'
 					}}
 				>
 					<Skeleton
@@ -25,7 +26,7 @@ export const TableLoader = () => {
 							borderRadius: 0
 						}}
 					/>
-				</TableCell>
+				</Box>
 			);
 		}
 

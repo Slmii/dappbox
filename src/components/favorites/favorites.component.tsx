@@ -1,13 +1,11 @@
-import Divider from '@mui/material/Divider';
-import Stack from '@mui/material/Stack';
-import TableCell from '@mui/material/TableCell';
 import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { assetsAtom, favoriteAssetsSelector } from 'lib/recoil';
+import { assetsAtom, favoritsAtom } from 'lib/recoil';
 import { getUrlPathToAsset } from 'lib/url';
 import { Box } from 'ui-components/box';
 import { Content, Main } from 'ui-components/container';
+import { Divider } from 'ui-components/divider';
 import { Icon } from 'ui-components/icon';
 import { IconButton } from 'ui-components/icon-button';
 import { Link } from 'ui-components/link';
@@ -16,7 +14,7 @@ import { Body, PageTitle } from 'ui-components/typography';
 
 export const Favorites = () => {
 	const { assets, isLoading } = useRecoilValue(assetsAtom);
-	const favoriteAssets = useRecoilValue(favoriteAssetsSelector);
+	const favoriteAssets = useRecoilValue(favoritsAtom);
 
 	const generateAssetPath = useMemo(
 		() => (assetId: number) => {
@@ -38,20 +36,26 @@ export const Favorites = () => {
 				{isLoading ? (
 					<TableLoader />
 				) : (
-					<Stack spacing={0}>
+					<Box
+						sx={{
+							display: 'flex',
+							flexDirection: 'column'
+						}}
+					>
 						{favoriteAssets.map(asset => (
 							// TODO: make button of assetType is 'file'
 							<Link key={asset.assetId} href={`/${generateAssetPath(asset.assetId)}`}>
-								<TableCell
-									component='div'
+								<Box
 									sx={{
 										display: 'flex',
 										alignItems: 'center',
 										'&: hover': {
 											backgroundColor: 'action.hover'
-										}
+										},
+										padding: '6px 16px',
+										borderBottom: 1,
+										borderColor: 'divider'
 									}}
-									size='small'
 								>
 									<Icon
 										icon={asset.assetType === 'folder' ? 'folder' : 'download'}
@@ -70,10 +74,10 @@ export const Favorites = () => {
 											onClick={e => e.preventDefault()}
 										/>
 									</Box>
-								</TableCell>
+								</Box>
 							</Link>
 						))}
-					</Stack>
+					</Box>
 				)}
 			</>
 		</Main>

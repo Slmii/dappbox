@@ -4,7 +4,7 @@ import { useSetRecoilState } from 'recoil';
 
 import { AuthContext } from 'lib/context';
 import { Asset } from 'lib/generated/dappbox_types';
-import { assetsAtom } from 'lib/recoil';
+import { assetsAtom, favoritsAtom, foldersAtom } from 'lib/recoil';
 
 const dummyRows: Asset[] = [
 	{
@@ -96,6 +96,8 @@ const dummyRows: Asset[] = [
 export const useInitAssets = () => {
 	const { isAuthenticated, initUser } = useContext(AuthContext);
 	const setAssets = useSetRecoilState(assetsAtom);
+	const setFavorites = useSetRecoilState(favoritsAtom);
+	const setFolders = useSetRecoilState(foldersAtom);
 
 	useEffect(() => {
 		// Init user when authenticated and on the home page. We do not use
@@ -119,6 +121,9 @@ export const useInitAssets = () => {
 
 			// Check if user exists, if not then create one
 			await initUser();
+
+			setFavorites(dummyRows.filter(asset => asset.isFavorite));
+			setFolders(dummyRows.filter(asset => asset.assetType === 'folder'));
 
 			// Set all assets in recoil state
 			setAssets({

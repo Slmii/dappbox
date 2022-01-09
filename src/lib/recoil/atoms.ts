@@ -26,6 +26,22 @@ export const assetsAtom = atom<AssetsState>({
 });
 
 /**
+ * Atom for all favorites
+ */
+export const favoritsAtom = atom<Asset[]>({
+	key: 'favoritsAtom',
+	default: []
+});
+
+/**
+ * Atom for all folders only
+ */
+export const foldersAtom = atom<Asset[]>({
+	key: 'foldersAtom',
+	default: []
+});
+
+/**
  * Atom for current table state (order, orderBy and selectedRows)
  */
 export const tableStateAtom = atom<TableState>({

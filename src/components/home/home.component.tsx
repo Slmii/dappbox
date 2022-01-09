@@ -1,4 +1,3 @@
-import Divider from '@mui/material/Divider';
 import { useRecoilValue } from 'recoil';
 
 import { ViewActions } from 'components/view-actions';
@@ -8,6 +7,7 @@ import { assetsAtom } from 'lib/recoil';
 import { Box } from 'ui-components/box';
 import { Breadcrumbs } from 'ui-components/breadcrumbs';
 import { Content, FilesContainer, Main } from 'ui-components/container';
+import { Divider } from 'ui-components/divider';
 import { TableLoader, ViewActionLoader } from 'ui-components/loaders';
 
 export const Home = () => {

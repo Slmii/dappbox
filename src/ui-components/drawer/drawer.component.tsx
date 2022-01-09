@@ -1,6 +1,3 @@
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import FolderIcon from '@mui/icons-material/Folder';
 import Collapse from '@mui/material/Collapse';
 import MuiDrawer from '@mui/material/Drawer';
 import Fab from '@mui/material/Fab';
@@ -9,23 +6,34 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { constants } from 'lib/constants';
-import { assetsAtom } from 'lib/recoil';
+import { assetsAtom, foldersAtom } from 'lib/recoil';
+import { getUrlPathToAsset } from 'lib/url';
 import { Box } from 'ui-components/box';
 import { Icon } from 'ui-components/icon';
 import { Link } from 'ui-components/link';
 import { DrawerLoader } from 'ui-components/loaders';
 
 export const Drawer = () => {
-	const { isLoading } = useRecoilValue(assetsAtom);
+	const { assets, isLoading } = useRecoilValue(assetsAtom);
+	const folderAssets = useRecoilValue(foldersAtom);
 	const [open, setOpen] = useState(false);
 
 	const handleClick = () => {
 		setOpen(!open);
 	};
+
+	const generateAssetPath = useMemo(
+		() => (assetId: number) => {
+			return getUrlPathToAsset(assetId, assets)
+				.map(asset => encodeURIComponent(asset.assetId))
+				.join('/');
+		},
+		[assets]
+	);
 
 	return (
 		<MuiDrawer
@@ -36,7 +44,7 @@ export const Drawer = () => {
 					backgroundColor: theme => (theme.palette.mode === 'dark' ? '#010101' : '#f1f1f1')
 				},
 				[`& .MuiDrawer-paper`]: {
-					width: 240,
+					width: constants.DRAWER_WIDTH,
 					boxSizing: 'border-box'
 				}
 			}}
@@ -61,32 +69,41 @@ export const Drawer = () => {
 						</Link>
 						<ListItem button onClick={handleClick}>
 							<ListItemText primary='Folders' />
-							{open ? <ExpandLess /> : <ExpandMore />}
+							<Icon icon={open ? 'expandLess' : 'expandMore'} />
 						</ListItem>
-						<Collapse in={open} timeout='auto' unmountOnExit>
-							<List
-								dense
-								component='div'
-								sx={{
-									backgroundColor: theme => theme.palette.background.default,
-									borderTop: theme => `1px solid ${theme.palette.divider}`,
-									borderBottom: theme => `1px solid ${theme.palette.divider}`
-								}}
-							>
-								<ListItem button sx={{ pl: 2 }}>
-									<ListItemIcon>
-										<FolderIcon fontSize='small' color='info' />
-									</ListItemIcon>
-									<ListItemText primary='Folder A' />
-								</ListItem>
-								<ListItem button sx={{ pl: 2 }}>
-									<ListItemIcon>
-										<FolderIcon fontSize='small' color='info' />
-									</ListItemIcon>
-									<ListItemText primary='Folder B' />
-								</ListItem>
-							</List>
-						</Collapse>
+						{folderAssets.length ? (
+							<Collapse in={open} timeout='auto' unmountOnExit>
+								<List
+									dense
+									component='div'
+									sx={{
+										backgroundColor: theme => theme.palette.background.default,
+										borderTop: theme => `1px solid ${theme.palette.divider}`,
+										borderBottom: theme => `1px solid ${theme.palette.divider}`
+									}}
+								>
+									{folderAssets.map(folder => (
+										<Link key={folder.assetId} href={generateAssetPath(folder.assetId)}>
+											<ListItem button sx={{ pl: 2 }}>
+												<ListItemIcon>
+													<Icon icon='folder' fontSize='small' color='info' />
+												</ListItemIcon>
+												<ListItemText
+													primary={folder.name}
+													sx={{
+														'& > span': {
+															textOverflow: 'ellipsis',
+															whiteSpace: 'nowrap',
+															overflow: 'hidden'
+														}
+													}}
+												/>
+											</ListItem>
+										</Link>
+									))}
+								</List>
+							</Collapse>
+						) : null}
 						<ListItem button>
 							<ListItemText primary='NFTs' />
 						</ListItem>
