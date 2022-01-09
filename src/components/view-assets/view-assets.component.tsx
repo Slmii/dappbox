@@ -1,8 +1,9 @@
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { getTableAssets } from 'lib/functions';
-import { tableAssetsAtom, tableStateAtom } from 'lib/recoil';
+import { assetsAtom, tableAssetsAtom, tableStateAtom } from 'lib/recoil';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/box';
 import { Column, Table } from 'ui-components/table';
@@ -39,7 +40,34 @@ const columns: Column = {
 export const ViewAssets = () => {
 	const { pathname } = useLocation();
 	const [{ order, orderBy, selectedRows }, setTableState] = useRecoilState(tableStateAtom);
-	const assets = useRecoilValue(tableAssetsAtom);
+	const { assets } = useRecoilValue(assetsAtom);
+	const [tableAssets, setTableAssets] = useRecoilState(tableAssetsAtom);
+
+	useEffect(() => {
+		if (assets.length) {
+			setTableAssets(
+				getTableAssets({
+					assets,
+					order,
+					orderBy,
+					assetId: getAssetId(pathname)
+				})
+			);
+		}
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [order, orderBy, pathname, assets]);
+
+	// Reset `selectedRows` in table state when redirecting
+	// to another folder
+	useEffect(() => {
+		setTableState(prevState => ({
+			...prevState,
+			selectedRows: []
+		}));
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [pathname]);
 
 	return (
 		<Box
@@ -49,12 +77,7 @@ export const ViewAssets = () => {
 			}}
 		>
 			<Table
-				rows={getTableAssets({
-					assets,
-					order,
-					orderBy,
-					assetId: getAssetId(pathname)
-				})}
+				rows={tableAssets}
 				columns={columns}
 				order={order}
 				orderBy={orderBy}

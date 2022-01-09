@@ -1,13 +1,10 @@
 import { Principal } from '@dfinity/principal';
 import { useContext, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import { AuthContext } from 'lib/context';
-import { getTableAssets } from 'lib/functions';
 import { Asset } from 'lib/generated/dappbox_types';
-import { assetsAtom, tableAssetsAtom, tableStateAtom } from 'lib/recoil';
-import { getAssetId } from 'lib/url';
+import { assetsAtom } from 'lib/recoil';
 
 const dummyRows: Asset[] = [
 	{
@@ -97,11 +94,7 @@ const dummyRows: Asset[] = [
 ];
 
 export const useInitAssets = () => {
-	const { pathname } = useLocation();
 	const { isAuthenticated, initUser } = useContext(AuthContext);
-
-	const [{ order, orderBy }, setTableState] = useRecoilState(tableStateAtom);
-	const setTableAssets = useSetRecoilState(tableAssetsAtom);
 	const setAssets = useSetRecoilState(assetsAtom);
 
 	useEffect(() => {
@@ -138,28 +131,4 @@ export const useInitAssets = () => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated]);
-
-	useEffect(() => {
-		if (!isAuthenticated) {
-			return;
-		}
-
-		setTableAssets(
-			getTableAssets({
-				assets: dummyRows,
-				order,
-				orderBy,
-				assetId: getAssetId(pathname)
-			})
-		);
-
-		// Reset `selectedRows` in table state when redirecting
-		// to another folder
-		setTableState(prevState => ({
-			...prevState,
-			selectedRows: []
-		}));
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [pathname, isAuthenticated]);
 };

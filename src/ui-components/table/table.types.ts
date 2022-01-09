@@ -9,11 +9,11 @@ export type Column = {
 
 export interface TableProps {
 	rows: Asset[];
-	selectedRows: string[];
+	selectedRows: number[];
 	columns: Column;
 	order: Order;
 	orderBy: keyof Asset;
-	setSelectedRows: (rows: string[]) => void;
+	setSelectedRows: (rows: number[]) => void;
 	setOrder: (order: Order) => void;
 	setOrderBy: (orderBy: keyof Asset) => void;
 }

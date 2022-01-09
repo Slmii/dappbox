@@ -180,7 +180,7 @@ export const Table = ({
 
 	const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.checked) {
-			const newSelecteds = rows.map(n => n.name);
+			const newSelecteds = rows.map(n => n.assetId);
 			setSelectedRows(newSelecteds);
 			return;
 		}
@@ -188,12 +188,12 @@ export const Table = ({
 		setSelectedRows([]);
 	};
 
-	const handleClick = (_event: React.MouseEvent<unknown>, name: string) => {
-		const selectedIndex = selectedRows.indexOf(name);
-		let newSelected: string[] = [];
+	const handleClick = (_event: React.MouseEvent<unknown>, assetId: number) => {
+		const selectedIndex = selectedRows.indexOf(assetId);
+		let newSelected: number[] = [];
 
 		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(selectedRows, name);
+			newSelected = newSelected.concat(selectedRows, assetId);
 		} else if (selectedIndex === 0) {
 			newSelected = newSelected.concat(selectedRows.slice(1));
 		} else if (selectedIndex === selectedRows.length - 1) {
@@ -208,7 +208,7 @@ export const Table = ({
 		setSelectedRows(newSelected);
 	};
 
-	const isSelected = (name: string) => selectedRows.indexOf(name) !== -1;
+	const isSelected = (assetId: number) => selectedRows.indexOf(assetId) !== -1;
 
 	return (
 		<>
@@ -231,13 +231,13 @@ export const Table = ({
 						/>
 						<TableBody>
 							{rows.map((row, index) => {
-								const isItemSelected = isSelected(row.name as string);
+								const isItemSelected = isSelected(row.assetId);
 								const labelId = `enhanced-table-checkbox-${index}`;
 
 								return (
 									<TableRow
 										hover
-										onClick={event => handleClick(event, row.name as string)}
+										onClick={event => handleClick(event, row.assetId)}
 										role='checkbox'
 										aria-checked={isItemSelected}
 										tabIndex={-1}

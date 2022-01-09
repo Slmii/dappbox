@@ -4,7 +4,7 @@ import { Asset } from 'lib/generated/dappbox_types';
 import { Order } from 'ui-components/table';
 
 export interface TableState {
-	selectedRows: string[];
+	selectedRows: number[];
 	order: Order;
 	orderBy: keyof Asset;
 }

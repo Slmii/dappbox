@@ -23,6 +23,8 @@ export const Favorites = () => {
 			.join('/');
 	};
 
+	console.log(generateAssetPath(5));
+
 	return (
 		<Main>
 			<Content>
@@ -80,7 +82,7 @@ const FavoritesLoading = () => {
 		const jsx: JSX.Element[] = [];
 
 		for (let i = 0; i < 10; i++) {
-			jsx.push(<Skeleton variant='text' animation='wave' width='100%' height='100px' />);
+			jsx.push(<Skeleton key={i} variant='text' animation='wave' width='100%' height='100px' />);
 		}
 
 		return <Stack spacing={2}>{jsx}</Stack>;
