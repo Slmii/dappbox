@@ -4,7 +4,7 @@ import { Asset } from 'lib/generated/dappbox_types';
 import { Order } from 'ui-components/table';
 
 export interface TableState {
-	selectedRows: number[];
+	selectedRows: Asset[];
 	order: Order;
 	orderBy: keyof Asset;
 }
@@ -35,13 +35,4 @@ export const tableStateAtom = atom<TableState>({
 		order: 'asc',
 		orderBy: 'name'
 	}
-});
-
-/**
- * Atom for showing assets that are a child of the current assetId
- * in the URL param
- */
-export const tableAssetsAtom = atom<Asset[]>({
-	key: 'tableAssetsAtom',
-	default: []
 });

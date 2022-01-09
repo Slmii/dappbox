@@ -29,12 +29,18 @@ export const ViewActions = () => {
 			{selectedRows.length > 0 ? (
 				<>
 					{selectedRows.length === 1 ? (
-						<Button label='Preview' startIcon='viewOutlined' variant='outlined' color='inherit' />
+						<>
+							{selectedRows[0].assetType === 'folder' ? (
+								<Button label='Rename' startIcon='edit' variant='outlined' color='inherit' />
+							) : (
+								<Button label='Preview' startIcon='view' variant='outlined' color='inherit' />
+							)}
+						</>
 					) : null}
-					<Button label='Download' startIcon='downloadOutlined' variant='outlined' color='inherit' />
-					<Button label='Move' variant='outlined' startIcon='folderOutlined' color='inherit' />
-					<Button label='Copy' startIcon='copyOutlined' variant='outlined' color='inherit' />
-					<Button label='Delete' startIcon='deleteOutlined' color='error' />
+					<Button label='Download' startIcon='download' variant='outlined' color='inherit' />
+					<Button label='Move' variant='outlined' startIcon='folder' color='inherit' />
+					<Button label='Copy' startIcon='copy' variant='outlined' color='inherit' />
+					<Button label='Delete' startIcon='delete' color='error' />
 					<Box
 						sx={{
 							marginLeft: 'auto'

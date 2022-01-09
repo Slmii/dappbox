@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { getTableAssets } from 'lib/functions';
-import { assetsAtom, tableAssetsAtom, tableStateAtom } from 'lib/recoil';
+import { assetsAtom, tableStateAtom } from 'lib/recoil';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/box';
 import { Column, Table } from 'ui-components/table';
@@ -41,25 +41,18 @@ export const ViewAssets = () => {
 	const { pathname } = useLocation();
 	const [{ order, orderBy, selectedRows }, setTableState] = useRecoilState(tableStateAtom);
 	const { assets } = useRecoilValue(assetsAtom);
-	const [tableAssets, setTableAssets] = useRecoilState(tableAssetsAtom);
 
 	/**
 	 * 1. Render assets that are a child of the current assetId in the URL param
 	 * 2. Sort assets asc/desc
 	 */
-	useEffect(() => {
-		if (assets.length) {
-			setTableAssets(
-				getTableAssets({
-					assets,
-					order,
-					orderBy,
-					assetId: getAssetId(pathname)
-				})
-			);
-		}
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
+	const tableAssets = useMemo(() => {
+		return getTableAssets({
+			assets,
+			order,
+			orderBy,
+			assetId: getAssetId(pathname)
+		});
 	}, [order, orderBy, pathname, assets]);
 
 	// Reset `selectedRows` in table state when redirecting
