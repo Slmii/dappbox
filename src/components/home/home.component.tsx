@@ -1,5 +1,4 @@
 import Divider from '@mui/material/Divider';
-import Skeleton from '@mui/material/Skeleton';
 import { useRecoilValue } from 'recoil';
 
 import { ViewActions } from 'components/view-actions';
@@ -9,7 +8,7 @@ import { assetsAtom } from 'lib/recoil';
 import { Box } from 'ui-components/box';
 import { Breadcrumbs } from 'ui-components/breadcrumbs';
 import { Content, FilesContainer, Main } from 'ui-components/container';
-import { TableLoader } from 'ui-components/table';
+import { TableLoader, ViewActionLoader } from 'ui-components/loaders';
 
 export const Home = () => {
 	const { isLoading } = useRecoilValue(assetsAtom);
@@ -30,9 +29,7 @@ export const Home = () => {
 				</Box>
 			</Content>
 			<Divider />
-			<Content>
-				{isLoading ? <Skeleton animation='wave' height={40} sx={{ transform: 'unset' }} /> : <ViewActions />}
-			</Content>
+			<Content>{isLoading ? <ViewActionLoader /> : <ViewActions />}</Content>
 			<FilesContainer>{isLoading ? <TableLoader /> : <ViewAssets />}</FilesContainer>
 		</Main>
 	);

@@ -11,7 +11,7 @@ import { Content, Main } from 'ui-components/container';
 import { Icon } from 'ui-components/icon';
 import { IconButton } from 'ui-components/icon-button';
 import { Link } from 'ui-components/link';
-import { TableLoader } from 'ui-components/table';
+import { TableLoader } from 'ui-components/loaders';
 import { Body, PageTitle } from 'ui-components/typography';
 
 export const Favorites = () => {
@@ -40,6 +40,7 @@ export const Favorites = () => {
 				) : (
 					<Stack spacing={0}>
 						{favoriteAssets.map(asset => (
+							// TODO: make button of assetType is 'file'
 							<Link key={asset.assetId} href={`/${generateAssetPath(asset.assetId)}`}>
 								<TableCell
 									component='div'
@@ -65,7 +66,6 @@ export const Favorites = () => {
 									>
 										<IconButton
 											icon='delete'
-											color='error'
 											label='Remove from favorites'
 											onClick={e => e.preventDefault()}
 										/>
