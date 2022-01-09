@@ -1,7 +1,7 @@
 import Divider from '@mui/material/Divider';
-import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import TableCell from '@mui/material/TableCell';
+import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { assetsAtom, favoriteAssetsSelector } from 'lib/recoil';
@@ -11,19 +11,22 @@ import { Content, Main } from 'ui-components/container';
 import { Icon } from 'ui-components/icon';
 import { IconButton } from 'ui-components/icon-button';
 import { Link } from 'ui-components/link';
+import { TableLoader } from 'ui-components/table';
 import { Body, PageTitle } from 'ui-components/typography';
 
 export const Favorites = () => {
-	const { isLoading } = useRecoilValue(assetsAtom);
-	const assets = useRecoilValue(favoriteAssetsSelector);
+	const { assets, isLoading } = useRecoilValue(assetsAtom);
+	const favoriteAssets = useRecoilValue(favoriteAssetsSelector);
 
-	const generateAssetPath = (assetId: number) => {
-		return getUrlPathToAsset(assetId, assets)
-			.map(asset => encodeURIComponent(asset.assetId))
-			.join('/');
-	};
+	const generateAssetPath = useMemo(
+		() => (assetId: number) => {
+			return getUrlPathToAsset(assetId, assets)
+				.map(asset => encodeURIComponent(asset.assetId))
+				.join('/');
+		},
 
-	console.log(generateAssetPath(5));
+		[assets]
+	);
 
 	return (
 		<Main>
@@ -33,11 +36,11 @@ export const Favorites = () => {
 			<Divider />
 			<>
 				{isLoading ? (
-					<FavoritesLoading />
+					<TableLoader />
 				) : (
 					<Stack spacing={0}>
-						{assets.map(asset => (
-							<Link key={asset.assetId} href={`${generateAssetPath(asset.assetId)}`}>
+						{favoriteAssets.map(asset => (
+							<Link key={asset.assetId} href={`/${generateAssetPath(asset.assetId)}`}>
 								<TableCell
 									component='div'
 									sx={{
@@ -75,18 +78,4 @@ export const Favorites = () => {
 			</>
 		</Main>
 	);
-};
-
-const FavoritesLoading = () => {
-	const render = () => {
-		const jsx: JSX.Element[] = [];
-
-		for (let i = 0; i < 10; i++) {
-			jsx.push(<Skeleton key={i} variant='text' animation='wave' width='100%' height='100px' />);
-		}
-
-		return <Stack spacing={2}>{jsx}</Stack>;
-	};
-
-	return <>{render()}</>;
 };

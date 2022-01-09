@@ -25,9 +25,9 @@ export const getUrlPathToAsset = (assetId: number, assets: Asset[]) => {
 		// Put at the front of the array for the correct order
 		paths.unshift(asset);
 
-		if (asset.parentId.length > 0) {
+		if (typeof asset.parentId[0] !== 'undefined') {
 			// Put at the front of the array for the correct order
-			paths.unshift(...getUrlPathToAsset(asset.parentId[0]!, assets));
+			paths.unshift(...getUrlPathToAsset(asset.parentId[0], assets));
 		}
 	}
 
