@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { assetsAtom, favoritsAtom } from 'lib/recoil';
+import { useFavorites } from 'lib/hooks';
+import { assetsAtom } from 'lib/recoil';
 import { getUrlPathToAsset } from 'lib/url';
 import { Box } from 'ui-components/box';
 import { Content, Main } from 'ui-components/container';
@@ -10,11 +11,17 @@ import { Icon } from 'ui-components/icon';
 import { IconButton } from 'ui-components/icon-button';
 import { Link } from 'ui-components/link';
 import { TableLoader } from 'ui-components/loaders';
+import { Snackbar } from 'ui-components/snackbar';
 import { Body, PageTitle } from 'ui-components/typography';
 
 export const Favorites = () => {
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const { assets, isLoading } = useRecoilValue(assetsAtom);
-	const favoriteAssets = useRecoilValue(favoritsAtom);
+	const { handleOnToggleFavorites, handleOnUndo } = useFavorites();
+
+	const favoriteAssets = useMemo(() => {
+		return assets.filter(asset => asset.isFavorite);
+	}, [assets]);
 
 	const generateAssetPath = useMemo(
 		() => (assetId: number) => {
@@ -42,9 +49,8 @@ export const Favorites = () => {
 							flexDirection: 'column'
 						}}
 					>
-						{favoriteAssets.map(asset => (
-							// TODO: make button of assetType is 'file'
-							<Link key={asset.assetId} href={`/${generateAssetPath(asset.assetId)}`}>
+						{favoriteAssets.map(asset => {
+							const render = (
 								<Box
 									sx={{
 										display: 'flex',
@@ -71,15 +77,48 @@ export const Favorites = () => {
 										<IconButton
 											icon='delete'
 											label='Remove from favorites'
-											onClick={e => e.preventDefault()}
+											onClick={e => {
+												e.preventDefault();
+												e.stopPropagation();
+
+												handleOnToggleFavorites(asset.assetId, false);
+												setSnackbarOpen(true);
+											}}
 										/>
 									</Box>
 								</Box>
-							</Link>
-						))}
+							);
+
+							return (
+								<>
+									{asset.assetType === 'folder' ? (
+										<Link key={asset.assetId} href={`/${generateAssetPath(asset.assetId)}`}>
+											{render}
+										</Link>
+									) : (
+										<Box
+											sx={{
+												cursor: 'pointer'
+											}}
+											onClick={e => {
+												alert('preview');
+											}}
+										>
+											{render}
+										</Box>
+									)}
+								</>
+							);
+						})}
 					</Box>
 				)}
 			</>
+			<Snackbar
+				open={snackbarOpen}
+				onClose={() => setSnackbarOpen(false)}
+				message='Asset is removed from favorites'
+				onUndo={handleOnUndo}
+			/>
 		</Main>
 	);
 };

@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { constants } from 'lib/constants';
-import { assetsAtom, foldersAtom } from 'lib/recoil';
+import { assetsAtom } from 'lib/recoil';
 import { getUrlPathToAsset } from 'lib/url';
 import { Box } from 'ui-components/box';
 import { Icon } from 'ui-components/icon';
@@ -19,8 +19,11 @@ import { DrawerLoader } from 'ui-components/loaders';
 
 export const Drawer = () => {
 	const { assets, isLoading } = useRecoilValue(assetsAtom);
-	const folderAssets = useRecoilValue(foldersAtom);
 	const [open, setOpen] = useState(false);
+
+	const folderAssets = useMemo(() => {
+		return assets.filter(asset => asset.assetType === 'folder');
+	}, [assets]);
 
 	const handleClick = () => {
 		setOpen(!open);
