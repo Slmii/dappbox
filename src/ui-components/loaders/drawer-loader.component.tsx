@@ -15,7 +15,8 @@ export const DrawerLoader = () => {
 				sx={{
 					width: '100%',
 					height: '100%',
-					transform: 'unset'
+					transform: 'unset',
+					borderRadius: 0
 				}}
 			/>
 		</Box>
