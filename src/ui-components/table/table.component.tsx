@@ -136,7 +136,13 @@ const TableHead = ({
 						key={columnId}
 						align={column.alignment}
 						sortDirection={orderBy === columnId ? order : false}
-						width={columnId === 'name' ? `${100 - Object.keys(columns).length * 10 - 10}%` : undefined}
+						width={
+							columnId === 'name'
+								? `${100 - Object.keys(columns).length * 10 - 10}%`
+								: column.type === 'icon'
+								? '20px'
+								: undefined
+						}
 					>
 						{column.sortable ? (
 							<TableSortLabel

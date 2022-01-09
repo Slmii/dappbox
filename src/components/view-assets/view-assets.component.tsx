@@ -16,9 +16,9 @@ const columns: Column = {
 		type: 'string'
 	},
 	isFavorite: {
-		alignment: 'left',
-		label: 'Favorite',
-		sortable: true,
+		alignment: 'right',
+		label: '',
+		sortable: false,
 		type: 'icon',
 		icon: 'favorite',
 		iconAlt: 'favoriteOutlined'
@@ -43,6 +43,10 @@ export const ViewAssets = () => {
 	const { assets } = useRecoilValue(assetsAtom);
 	const [tableAssets, setTableAssets] = useRecoilState(tableAssetsAtom);
 
+	/**
+	 * 1. Render assets that are a child of the current assetId in the URL param
+	 * 2. Sort assets asc/desc
+	 */
 	useEffect(() => {
 		if (assets.length) {
 			setTableAssets(

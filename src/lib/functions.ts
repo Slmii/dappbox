@@ -37,8 +37,12 @@ export const getTableAssets = ({
 		// Seperate assets between folders and files
 		.forEach(row => (row.assetType === 'folder' ? folders.push(row) : files.push(row)));
 
-	// Return order of assets based on `asc/desc`
-	// `asc` is folders first, `desc` is files first
+	// Always shows files first
+	if (orderBy === 'extension' || orderBy === 'size') {
+		return [...files, ...folders];
+	}
+
+	// If orderBy `name` then: `asc` is folders first, `desc` is files first
 	return order === 'asc' ? [...folders, ...files] : [...files, ...folders];
 };
 

@@ -15,7 +15,7 @@ export interface AssetsState {
 }
 
 /**
- * State for all assets
+ * Atom for all assets
  */
 export const assetsAtom = atom<AssetsState>({
 	key: 'assetsAtom',
@@ -26,7 +26,7 @@ export const assetsAtom = atom<AssetsState>({
 });
 
 /**
- * State for showing current table state
+ * Atom for current table state (order, orderBy and selectedRows)
  */
 export const tableStateAtom = atom<TableState>({
 	key: 'tableStateAtom',
@@ -38,7 +38,8 @@ export const tableStateAtom = atom<TableState>({
 });
 
 /**
- * State for showing current table assets
+ * Atom for showing assets that are a child of the current assetId
+ * in the URL param
  */
 export const tableAssetsAtom = atom<Asset[]>({
 	key: 'tableAssetsAtom',
