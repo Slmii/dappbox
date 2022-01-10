@@ -19,13 +19,15 @@ export const ViewActions = () => {
 				}
 			}}
 		>
-			<Box
+			<Button
+				label='Add folder'
+				startIcon='addFolderOutlined'
+				variant='contained'
+				color='inherit'
 				sx={{
 					color: 'black'
 				}}
-			>
-				<Button label='Add folder' startIcon='addFolderOutlined' variant='contained' color='inherit' />
-			</Box>
+			/>
 			{selectedRows.length > 0 ? (
 				<>
 					{selectedRows.length === 1 ? (
