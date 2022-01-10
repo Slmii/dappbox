@@ -17,7 +17,7 @@ import { IconButton } from 'ui-components/icon-button';
 import { Link } from 'ui-components/link';
 import { Column, TableCellProps, TableHeadProps, TableProps } from './table.types';
 
-const TableCell = React.memo(({ columnId, column, row }: TableCellProps) => {
+const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: TableCellProps) => {
 	const { pathname } = useLocation();
 
 	const renderValue = () => {
@@ -41,7 +41,10 @@ const TableCell = React.memo(({ columnId, column, row }: TableCellProps) => {
 				return (
 					<IconButton
 						icon={value ? column.icon : column.iconAlt}
-						onClick={e => e.stopPropagation()}
+						onClick={e => {
+							e.stopPropagation();
+							onFavoriteToggle(row.assetId);
+						}}
 						label={value ? 'Remove from favorites' : 'Add to favorites'}
 					/>
 				);
@@ -176,7 +179,8 @@ export const Table = ({
 	order,
 	orderBy,
 	setOrder,
-	setOrderBy
+	setOrderBy,
+	onFavoriteToggle
 }: TableProps) => {
 	const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Asset) => {
 		const isAsc = orderBy === property && order === 'asc';
@@ -216,77 +220,65 @@ export const Table = ({
 	const isSelected = (assetId: number) => selectedRows.findIndex(row => row.assetId === assetId) !== -1;
 
 	return (
-		<>
-			{rows.length ? (
-				<TableContainer
-					sx={{
-						position: 'absolute',
-						height: theme => `calc(100% - ${theme.spacing(1)})`
-					}}
-				>
-					<MuiTable stickyHeader aria-labelledby='tableTitle' size='small' sx={{ minWidth: 1000 }}>
-						<TableHead
-							numSelected={selectedRows.length}
-							order={order}
-							orderBy={orderBy}
-							onSelectAllClick={handleSelectAllClick}
-							onRequestSort={handleRequestSort}
-							rowCount={rows.length}
-							columns={columns}
-						/>
-						<TableBody>
-							{rows.map((row, index) => {
-								const isItemSelected = isSelected(row.assetId);
-								const labelId = `enhanced-table-checkbox-${index}`;
+		<TableContainer
+			sx={{
+				position: 'absolute',
+				height: theme => `calc(100% - ${theme.spacing(1)})`
+			}}
+		>
+			<MuiTable stickyHeader aria-labelledby='tableTitle' size='small' sx={{ minWidth: 1000 }}>
+				<TableHead
+					numSelected={selectedRows.length}
+					order={order}
+					orderBy={orderBy}
+					onSelectAllClick={handleSelectAllClick}
+					onRequestSort={handleRequestSort}
+					rowCount={rows.length}
+					columns={columns}
+				/>
+				<TableBody>
+					{rows.map((row, index) => {
+						const isItemSelected = isSelected(row.assetId);
+						const labelId = `enhanced-table-checkbox-${index}`;
 
-								return (
-									<TableRow
-										hover
-										onClick={event => handleClick(event, row)}
-										role='checkbox'
-										aria-checked={isItemSelected}
-										tabIndex={-1}
-										key={row.name}
-										selected={isItemSelected}
-									>
-										<MuiTableCell padding='checkbox'>
-											<Checkbox
-												color='primary'
-												checked={isItemSelected}
-												inputProps={{
-													'aria-labelledby': labelId
-												}}
-												size='small'
-											/>
-										</MuiTableCell>
-										{Object.entries(columns).map(([columnId, column]) => (
-											<TableCell
-												key={`${columnId}${row.assetId}`}
-												row={row}
-												columnId={columnId as keyof Column}
-												column={column}
-											/>
-										))}
-										<MuiTableCell align='right'>
-											{/* <IconButton icon='share' label='Share' onClick={e => e.stopPropagation()} /> */}
-											<IconButton icon='more' label='More' onClick={e => e.stopPropagation()} />
-										</MuiTableCell>
-									</TableRow>
-								);
-							})}
-						</TableBody>
-					</MuiTable>
-				</TableContainer>
-			) : (
-				<Box
-					sx={{
-						display: 'flex',
-						justifyContent: 'center'
-					}}
-				>
-					Nothing to see yet, start uploading!
-				</Box>
-			)}
-		</>
+						return (
+							<TableRow
+								hover
+								onClick={event => handleClick(event, row)}
+								role='checkbox'
+								aria-checked={isItemSelected}
+								tabIndex={-1}
+								key={row.name}
+								selected={isItemSelected}
+							>
+								<MuiTableCell padding='checkbox'>
+									<Checkbox
+										color='primary'
+										checked={isItemSelected}
+										inputProps={{
+											'aria-labelledby': labelId
+										}}
+										size='small'
+									/>
+								</MuiTableCell>
+								{Object.entries(columns).map(([columnId, column]) => (
+									<TableCell
+										key={`${columnId}${row.assetId}`}
+										row={row}
+										columnId={columnId as keyof Column}
+										column={column}
+										onFavoriteToggle={onFavoriteToggle}
+									/>
+								))}
+								<MuiTableCell align='right'>
+									{/* <IconButton icon='share' label='Share' onClick={e => e.stopPropagation()} /> */}
+									<IconButton icon='more' label='More' onClick={e => e.stopPropagation()} />
+								</MuiTableCell>
+							</TableRow>
+						);
+					})}
+				</TableBody>
+			</MuiTable>
+		</TableContainer>
 	);
 };

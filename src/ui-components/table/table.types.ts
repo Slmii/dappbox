@@ -16,6 +16,7 @@ export interface TableProps {
 	setSelectedRows: (rows: Asset[]) => void;
 	setOrder: (order: Order) => void;
 	setOrderBy: (orderBy: keyof Asset) => void;
+	onFavoriteToggle: (assetId: number) => void;
 }
 
 export interface ColumnOptions {
@@ -41,4 +42,5 @@ export interface TableCellProps {
 	columnId: keyof Column;
 	column: ColumnOptions;
 	row: Asset;
+	onFavoriteToggle: (assetId: number) => void;
 }

@@ -37,7 +37,7 @@ export const Snackbar = ({ open, message, persist = false, onClose, onUndo }: Sn
 					{onUndo && (
 						<Button
 							type='button'
-							color='inherit'
+							color='info'
 							variant='text'
 							label='UNDO'
 							size='small'

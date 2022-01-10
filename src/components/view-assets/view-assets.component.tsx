@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { getTableAssets } from 'lib/functions';
+import { useFavorites } from 'lib/hooks';
 import { assetsAtom, tableStateAtom } from 'lib/recoil';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/box';
@@ -39,6 +40,7 @@ const columns: Column = {
 
 export const ViewAssets = () => {
 	const { pathname } = useLocation();
+	const { handleOnFavoritesToggle } = useFavorites();
 	const [{ order, orderBy, selectedRows }, setTableState] = useRecoilState(tableStateAtom);
 	const { assets } = useRecoilValue(assetsAtom);
 
@@ -82,6 +84,7 @@ export const ViewAssets = () => {
 				setOrder={order => setTableState(prevState => ({ ...prevState, order }))}
 				setOrderBy={orderBy => setTableState(prevState => ({ ...prevState, orderBy }))}
 				setSelectedRows={selectedRows => setTableState(prevState => ({ ...prevState, selectedRows }))}
+				onFavoriteToggle={assetId => handleOnFavoritesToggle(assetId)}
 			/>
 		</Box>
 	);

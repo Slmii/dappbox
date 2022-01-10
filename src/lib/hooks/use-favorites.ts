@@ -7,7 +7,7 @@ export const useFavorites = () => {
 	const [onUndoAssetId, setOnUndoAssetId] = useState<number | null>(null);
 	const [{ assets }, setAssets] = useRecoilState(assetsAtom);
 
-	const handleOnToggleFavorites = (assetId: number, state: boolean) => {
+	const handleOnFavoritesToggle = (assetId: number) => {
 		const index = assets.findIndex(asset => asset.assetId === assetId);
 
 		if (index !== -1) {
@@ -19,14 +19,18 @@ export const useFavorites = () => {
 
 			setAssets(prevState => ({
 				...prevState,
-				assets: [...assets.slice(0, index), { ...asset, isFavorite: state }, ...assets.slice(index + 1)]
+				assets: [
+					...assets.slice(0, index),
+					{ ...asset, isFavorite: !asset.isFavorite },
+					...assets.slice(index + 1)
+				]
 			}));
 		}
 	};
 
 	const handleOnUndo = () => {
 		if (onUndoAssetId) {
-			handleOnToggleFavorites(onUndoAssetId, true);
+			handleOnFavoritesToggle(onUndoAssetId);
 
 			// Remove asset from state after pressing `Undo`
 			setOnUndoAssetId(null);
@@ -34,7 +38,7 @@ export const useFavorites = () => {
 	};
 
 	return {
-		handleOnToggleFavorites,
+		handleOnFavoritesToggle,
 		handleOnUndo
 	};
 };

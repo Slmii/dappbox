@@ -7,7 +7,7 @@ export const FilesContainer: React.FC = ({ children }) => {
 		<Box
 			sx={{
 				flexGrow: 1,
-				height: 'calc(100vh - 220px)'
+				height: 'calc(100vh - 235px)'
 			}}
 		>
 			{children}

@@ -4,11 +4,11 @@ import { ViewActions } from 'components/view-actions';
 import { ViewAssets } from 'components/view-assets';
 import { ViewMode } from 'components/view-mode';
 import { assetsAtom } from 'lib/recoil';
-import { Box } from 'ui-components/box';
+import { Box, RowBox } from 'ui-components/box';
 import { Breadcrumbs } from 'ui-components/breadcrumbs';
 import { Content, FilesContainer, Main } from 'ui-components/container';
 import { Divider } from 'ui-components/divider';
-import { TableLoader, ViewActionLoader } from 'ui-components/loaders';
+import { TableLoader } from 'ui-components/loaders';
 
 export const Home = () => {
 	const { isLoading } = useRecoilValue(assetsAtom);
@@ -29,8 +29,12 @@ export const Home = () => {
 				</Box>
 			</Content>
 			<Divider />
-			<Content>{isLoading ? <ViewActionLoader /> : <ViewActions />}</Content>
-			<FilesContainer>{isLoading ? <TableLoader /> : <ViewAssets />}</FilesContainer>
+			<Content>
+				<RowBox>
+					{!isLoading && <ViewActions />}
+					<FilesContainer>{isLoading ? <TableLoader /> : <ViewAssets />}</FilesContainer>
+				</RowBox>
+			</Content>
 		</Main>
 	);
 };

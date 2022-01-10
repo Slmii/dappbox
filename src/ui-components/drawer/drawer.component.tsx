@@ -1,6 +1,5 @@
 import Collapse from '@mui/material/Collapse';
 import MuiDrawer from '@mui/material/Drawer';
-import Fab from '@mui/material/Fab';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -13,6 +12,7 @@ import { constants } from 'lib/constants';
 import { assetsAtom } from 'lib/recoil';
 import { getUrlPathToAsset } from 'lib/url';
 import { Box } from 'ui-components/box';
+import { Button } from 'ui-components/button';
 import { Icon } from 'ui-components/icon';
 import { Link } from 'ui-components/link';
 import { DrawerLoader } from 'ui-components/loaders';
@@ -59,19 +59,31 @@ export const Drawer = () => {
 			) : (
 				<>
 					<Box sx={{ padding: 1 }}>
-						<Fab variant='extended' color='primary' sx={{ width: '100%' }}>
-							<Icon icon='addOutlined' spacingRight />
-							Upload
-						</Fab>
+						<Button
+							startIcon='addOutlined'
+							label='Upload'
+							variant='contained'
+							color='primary'
+							size='large'
+							fullWidth
+							sx={{
+								borderRadius: 50
+							}}
+						/>
 					</Box>
-					<List>
+					<List
+						dense
+						sx={{
+							fontSize: 16
+						}}
+					>
 						<Link href='/'>
 							<ListItem button>
-								<ListItemText primary='Home' />
+								<ListItemText disableTypography primary='Home' />
 							</ListItem>
 						</Link>
 						<ListItem button onClick={handleClick}>
-							<ListItemText primary='Folders' />
+							<ListItemText disableTypography primary='Folders' />
 							<Icon icon={open ? 'expandLess' : 'expandMore'} />
 						</ListItem>
 						{folderAssets.length ? (
@@ -82,7 +94,8 @@ export const Drawer = () => {
 									sx={{
 										backgroundColor: theme => theme.palette.background.default,
 										borderTop: theme => `1px solid ${theme.palette.divider}`,
-										borderBottom: theme => `1px solid ${theme.palette.divider}`
+										borderBottom: theme => `1px solid ${theme.palette.divider}`,
+										fontSize: 14
 									}}
 								>
 									{folderAssets.map(folder => (
@@ -92,6 +105,7 @@ export const Drawer = () => {
 													<Icon icon='folder' fontSize='small' color='info' />
 												</ListItemIcon>
 												<ListItemText
+													disableTypography
 													primary={folder.name}
 													sx={{
 														'& > span': {
@@ -108,11 +122,11 @@ export const Drawer = () => {
 							</Collapse>
 						) : null}
 						<ListItem button>
-							<ListItemText primary='NFTs' />
+							<ListItemText disableTypography primary='NFTs' />
 						</ListItem>
 						<Link href='/favorites'>
 							<ListItem button>
-								<ListItemText primary='Favorites' />
+								<ListItemText disableTypography primary='Favorites' />
 							</ListItem>
 						</Link>
 						{/* <ListItem button>

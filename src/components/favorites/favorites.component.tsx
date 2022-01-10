@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
+import { Asset } from 'lib/generated/dappbox_types';
 import { useFavorites } from 'lib/hooks';
 import { assetsAtom } from 'lib/recoil';
 import { getUrlPathToAsset } from 'lib/url';
@@ -17,7 +18,7 @@ import { Body, PageTitle } from 'ui-components/typography';
 export const Favorites = () => {
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const { assets, isLoading } = useRecoilValue(assetsAtom);
-	const { handleOnToggleFavorites, handleOnUndo } = useFavorites();
+	const { handleOnFavoritesToggle, handleOnUndo } = useFavorites();
 
 	const favoriteAssets = useMemo(() => {
 		return assets.filter(asset => asset.isFavorite);
@@ -33,67 +34,28 @@ export const Favorites = () => {
 		[assets]
 	);
 
+	const handleOnRemoveFavorite = (assetId: number) => {
+		handleOnFavoritesToggle(assetId);
+		setSnackbarOpen(true);
+	};
+
 	return (
 		<Main>
 			<Content>
 				<PageTitle title='Favorites' />
 			</Content>
 			<Divider />
-			<>
-				{isLoading ? (
-					<TableLoader />
-				) : (
-					<Box
-						sx={{
-							display: 'flex',
-							flexDirection: 'column'
-						}}
-					>
-						{favoriteAssets.map(asset => {
-							const render = (
-								<Box
-									sx={{
-										display: 'flex',
-										alignItems: 'center',
-										'&: hover': {
-											backgroundColor: 'action.hover'
-										},
-										padding: '6px 16px',
-										borderBottom: 1,
-										borderColor: 'divider'
-									}}
-								>
-									<Icon
-										icon={asset.assetType === 'folder' ? 'folder' : 'download'}
-										color='info'
-										spacingRight
-									/>
-									<Body title={asset.name} />
-									<Box
-										sx={{
-											marginLeft: 'auto'
-										}}
-									>
-										<IconButton
-											icon='delete'
-											label='Remove from favorites'
-											onClick={e => {
-												e.preventDefault();
-												e.stopPropagation();
-
-												handleOnToggleFavorites(asset.assetId, false);
-												setSnackbarOpen(true);
-											}}
-										/>
-									</Box>
-								</Box>
-							);
-
-							return (
+			<Content>
+				<>
+					{isLoading ? (
+						<TableLoader />
+					) : (
+						<>
+							{favoriteAssets.map(asset => (
 								<>
 									{asset.assetType === 'folder' ? (
 										<Link key={asset.assetId} href={`/${generateAssetPath(asset.assetId)}`}>
-											{render}
+											<FavoriteAsset asset={asset} onClick={handleOnRemoveFavorite} />
 										</Link>
 									) : (
 										<Box
@@ -104,15 +66,15 @@ export const Favorites = () => {
 												alert('preview');
 											}}
 										>
-											{render}
+											<FavoriteAsset asset={asset} onClick={handleOnRemoveFavorite} />
 										</Box>
 									)}
 								</>
-							);
-						})}
-					</Box>
-				)}
-			</>
+							))}
+						</>
+					)}
+				</>
+			</Content>
 			<Snackbar
 				open={snackbarOpen}
 				onClose={() => setSnackbarOpen(false)}
@@ -120,5 +82,41 @@ export const Favorites = () => {
 				onUndo={handleOnUndo}
 			/>
 		</Main>
+	);
+};
+
+const FavoriteAsset = ({ asset, onClick }: { asset: Asset; onClick: (assetId: number) => void }) => {
+	return (
+		<Box
+			sx={{
+				display: 'flex',
+				alignItems: 'center',
+				'&: hover': {
+					backgroundColor: 'action.hover'
+				},
+				padding: '6px 16px',
+				borderBottom: 1,
+				borderColor: 'divider'
+			}}
+		>
+			<Icon icon={asset.assetType === 'folder' ? 'folder' : 'download'} color='info' spacingRight />
+			<Body title={asset.name} />
+			<Box
+				sx={{
+					marginLeft: 'auto'
+				}}
+			>
+				<IconButton
+					icon='favorite'
+					label='Remove from favorites'
+					onClick={e => {
+						e.preventDefault();
+						e.stopPropagation();
+
+						onClick(asset.assetId);
+					}}
+				/>
+			</Box>
+		</Box>
 	);
 };
