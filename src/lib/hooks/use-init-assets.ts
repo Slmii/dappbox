@@ -107,7 +107,7 @@ export const useInitAssets = () => {
 	}, []);
 
 	useEffect(() => {
-		// TODO: try and catch and show dialog with error
+		// TODO: error boundary
 		const init = async () => {
 			if (!isAuthenticated) {
 				return;

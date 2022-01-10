@@ -1,57 +1,112 @@
-import { useRecoilValue } from 'recoil';
+import { useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import * as z from 'zod';
 
-import { tableStateAtom } from 'lib/recoil';
+import { replaceAsset } from 'lib/functions';
+import { assetsAtom, tableStateAtom } from 'lib/recoil';
 import { Box } from 'ui-components/box';
 import { Button } from 'ui-components/button';
+import { Dialog } from 'ui-components/dialog';
+import { Field } from 'ui-components/field';
+import { Form } from 'ui-components/form';
 import { Caption } from 'ui-components/typography';
 
+const schema = z.object({
+	folderName: z.string().nonempty({ message: 'Required' })
+});
+
 export const ViewActions = () => {
+	const [renameOpenDialog, setRenameOpenDialog] = useState(false);
+	const [handleOnConfirmRenameDialog, setHandleOnConfirmRenameDialog] = useState<() => void>(() => null);
+
+	const [{ assets }, setAssets] = useRecoilState(assetsAtom);
 	const { selectedRows } = useRecoilValue(tableStateAtom);
 
+	const handleOnRenameFolder = () => {
+		setRenameOpenDialog(selectedRows.length === 1);
+		setHandleOnConfirmRenameDialog(() => () => {
+			// There should always be only 1 asset selected
+			// for the rename functionality
+			const index = assets.findIndex(asset => asset.assetId === selectedRows[0].assetId);
+
+			setAssets(prevState => ({
+				...prevState,
+				assets: replaceAsset({
+					assets,
+					value: {
+						...assets[index],
+						name: 'ZImbabwe'
+					},
+					index
+				})
+			}));
+
+			setRenameOpenDialog(false);
+		});
+	};
+
 	return (
-		<Box
-			sx={{
-				display: 'flex',
-				alignItems: 'center',
-				width: '100%',
-				'& > *:not(:last-child)': {
-					marginRight: 1
-				}
-			}}
-		>
-			<Button
-				label='Add folder'
-				startIcon='addFolderOutlined'
-				variant='contained'
-				color='inherit'
+		<>
+			<Box
 				sx={{
-					color: 'black'
+					display: 'flex',
+					alignItems: 'center',
+					width: '100%',
+					'& > *:not(:last-child)': {
+						marginRight: 1
+					}
 				}}
-			/>
-			{selectedRows.length > 0 ? (
-				<>
-					{selectedRows.length === 1 ? (
-						<>
-							{selectedRows[0].assetType === 'folder' ? (
-								<Button label='Rename' startIcon='edit' variant='outlined' color='inherit' />
-							) : (
-								<Button label='Preview' startIcon='view' variant='outlined' color='inherit' />
-							)}
-						</>
-					) : null}
-					<Button label='Download' startIcon='download' variant='outlined' color='inherit' />
-					<Button label='Move' variant='outlined' startIcon='folder' color='inherit' />
-					<Button label='Copy' startIcon='copy' variant='outlined' color='inherit' />
-					<Button label='Delete' startIcon='delete' color='error' />
-					<Box
-						sx={{
-							marginLeft: 'auto'
-						}}
-					>
-						<Caption title={`${selectedRows.length} selected`} />
-					</Box>
-				</>
-			) : null}
-		</Box>
+			>
+				<Button
+					label='Add folder'
+					startIcon='addFolderOutlined'
+					variant='contained'
+					color='inherit'
+					sx={{
+						color: 'black'
+					}}
+				/>
+				{selectedRows.length > 0 ? (
+					<>
+						{selectedRows.length === 1 ? (
+							<>
+								{selectedRows[0].assetType === 'folder' ? (
+									<Button
+										label='Rename'
+										startIcon='edit'
+										variant='outlined'
+										color='inherit'
+										onClick={handleOnRenameFolder}
+									/>
+								) : (
+									<Button label='Preview' startIcon='view' variant='outlined' color='inherit' />
+								)}
+							</>
+						) : null}
+						<Button label='Download' startIcon='download' variant='outlined' color='inherit' />
+						<Button label='Move' variant='outlined' startIcon='folder' color='inherit' />
+						<Button label='Copy' startIcon='copy' variant='outlined' color='inherit' />
+						<Button label='Delete' startIcon='delete' color='error' />
+						<Box
+							sx={{
+								marginLeft: 'auto'
+							}}
+						>
+							<Caption title={`${selectedRows.length} selected`} />
+						</Box>
+					</>
+				) : null}
+			</Box>
+			<Dialog
+				title='Rename folder'
+				onClose={() => setRenameOpenDialog(false)}
+				open={renameOpenDialog}
+				onConfirm={handleOnConfirmRenameDialog}
+			>
+				<Form action={data => alert(data)} defaultValues={{ folderName: '' }} schema={schema}>
+					<Field name='folderName' label='Folder name' />
+				</Form>
+			</Dialog>
+		</>
 	);
 };

@@ -116,7 +116,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
 		const user = await actor.getUser();
 
-		// TODO: try and catch and show dialog with error
+		// TODO: error boundary
 		if ('ok' in user) {
 			setUser(user.ok);
 		} else {

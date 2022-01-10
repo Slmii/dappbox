@@ -23,6 +23,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ShareIcon from '@mui/icons-material/Share';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 const icons = {
@@ -36,6 +37,7 @@ const icons = {
 	list: ListIcon,
 	view: VisibilityIcon,
 	viewOutlined: VisibilityOutlinedIcon,
+	viewOff: VisibilityOffIcon,
 	download: DownloadIcon,
 	downloadOutlined: DownloadOutlinedIcon,
 	copy: FileCopyIcon,
