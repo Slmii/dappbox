@@ -7,15 +7,18 @@ import Principal "mo:base/Principal";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import Debug "mo:base/Debug";
+import Result "mo:base/Result";
 
 import AssetTypes "./types/assets.types";
 import UserTypes "./types/user.types";
+import ErrorsTypes "./types/errors.types";
 
 module {
     type AssetUser = AssetTypes.AssetUser;
     type Asset = AssetTypes.Asset;
     type AssetId = AssetTypes.AssetId;
     type UserId = UserTypes.UserId;
+    type Error = ErrorsTypes.Error;
 
     func isPrincipalIdEqual(x: AssetUser, y: AssetUser): Bool { 
         return x == y; 
@@ -24,15 +27,15 @@ module {
     public class AssetClass() {
         public let assets = Map.HashMap<AssetUser, Asset>(1, isPrincipalIdEqual, func((assetId: AssetId, userId : UserId)) { Principal.hash(userId) & assetId });
 
-        public func getAsset(assetId: AssetId, userId: UserId): ?Asset {
-            return assets.get((assetId, userId));
+        public func getAsset(assetId: AssetId, userId: UserId): Result.Result<Asset, Error> {
+            return Result.fromOption(assets.get((assetId, userId)), #NotFound);
         };
 
         public func getAssets(): [(AssetUser, Asset)] {
             return Iter.toArray(assets.entries());
         };
 
-        public func getUserAssets(userId: UserId): [Asset] {
+        public func getUserAssets(userId: UserId): Result.Result<[Asset], Error> {
             let userAssets = Buffer.Buffer<Asset>(0);
 
             for (((aId, uId), asset) in getAssets().vals()) {
@@ -41,7 +44,7 @@ module {
                 }   
             };
 
-            return userAssets.toArray();
+            #ok(userAssets.toArray());
         };
 
         public func rePopulateHashmap(values: [(AssetUser, Asset)] ) {

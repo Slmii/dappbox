@@ -57,3 +57,7 @@ export const descendingComparator = <T>(a: T, b: T, orderBy: keyof T) => {
 
 	return 0;
 };
+
+export const replaceAsset = ({ assets, index, value }: { assets: Asset[]; index: number; value: Asset }) => {
+	return [...assets.slice(0, index), value, ...assets.slice(index + 1)];
+};

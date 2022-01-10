@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 
+import { replaceAsset } from 'lib/functions';
 import { assetsAtom } from 'lib/recoil';
 
 export const useFavorites = () => {
@@ -19,11 +20,11 @@ export const useFavorites = () => {
 
 			setAssets(prevState => ({
 				...prevState,
-				assets: [
-					...assets.slice(0, index),
-					{ ...asset, isFavorite: !asset.isFavorite },
-					...assets.slice(index + 1)
-				]
+				assets: replaceAsset({
+					assets,
+					index,
+					value: { ...asset, isFavorite: !asset.isFavorite }
+				})
 			}));
 		}
 	};

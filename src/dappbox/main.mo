@@ -11,16 +11,11 @@ import Iter "mo:base/Iter";
 
 import UserTypes "./types/user.types";
 import AssetTypes "./types/assets.types";
+import ErrorsTypes "./types/errors.types";
 import User "./user";
 import Asset "./asset";
 
 shared(msg) actor class DappBox() {
-    type Error = {
-        #NotFound;
-        #AlreadyExists;
-        #NotAuthorized;
-    };
-
     // TODO: use for only admin calls
     // let admin = msg.caller;
 
@@ -29,6 +24,7 @@ shared(msg) actor class DappBox() {
     type AssetId = AssetTypes.AssetId;
     type AssetUser = AssetTypes.AssetUser;
     type Asset = AssetTypes.Asset;
+    type Error = ErrorsTypes.Error;
 
     let userClass = User.UserClass();
     let assetClass = Asset.AssetClass();
@@ -46,9 +42,7 @@ shared(msg) actor class DappBox() {
             return #err(#NotAuthorized);
         };
 
-        let result = userClass.getUser(callerId);
-
-        return Result.fromOption(result, #NotFound);
+        return userClass.getUser(callerId);
     };  
 
     public shared(msg) func createUser(): async Result.Result<User, Error> {
@@ -59,21 +53,7 @@ shared(msg) actor class DappBox() {
             return #err(#NotAuthorized);
         };
 
-        let result = userClass.getUser(callerId);
-        switch(result) {
-            case null {
-                // Create profile
-                let createdUser = userClass.createUser(callerId);
-
-                // Increment user count
-                usersCount := usersCount + 1;
-
-                #ok(createdUser);
-            };
-            case(?profile) {
-                #err(#AlreadyExists);
-            };
-        };
+        return userClass.createUser(callerId);
     };
 
     // Asset functions
@@ -85,15 +65,12 @@ shared(msg) actor class DappBox() {
             return #err(#NotAuthorized);
         };
 
-        #ok(assetClass.getUserAssets(callerId));
+        return assetClass.getUserAssets(callerId);
     };  
     
     system func preupgrade() {
-        let usersData = userClass.getUsers();
-        users := usersData;
-
-        let assetsData = assetClass.getAssets();
-        assets := assetsData;
+        users := userClass.getUsers();
+        assets := assetClass.getAssets();
     };
 
     system func postupgrade() {
