@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import * as z from 'zod';
 
@@ -16,6 +16,7 @@ const schema = z.object({
 });
 
 export const ViewActions = () => {
+	const renameFolderFormRef = useRef<null | HTMLFormElement>(null);
 	const [renameOpenDialog, setRenameOpenDialog] = useState(false);
 	const [handleOnConfirmRenameDialog, setHandleOnConfirmRenameDialog] = useState<() => void>(() => null);
 
@@ -24,7 +25,7 @@ export const ViewActions = () => {
 
 	const handleOnRenameFolder = () => {
 		setRenameOpenDialog(selectedRows.length === 1);
-		setHandleOnConfirmRenameDialog(() => () => {
+		setHandleOnConfirmRenameDialog(() => (data: any) => {
 			// There should always be only 1 asset selected
 			// for the rename functionality
 			const index = assets.findIndex(asset => asset.assetId === selectedRows[0].assetId);
@@ -35,7 +36,7 @@ export const ViewActions = () => {
 					assets,
 					value: {
 						...assets[index],
-						name: 'ZImbabwe'
+						name: data.folderName
 					},
 					index
 				})
@@ -101,9 +102,19 @@ export const ViewActions = () => {
 				title='Rename folder'
 				onClose={() => setRenameOpenDialog(false)}
 				open={renameOpenDialog}
-				onConfirm={handleOnConfirmRenameDialog}
+				onConfirm={() =>
+					// Programatically submit react hook form outside the form component
+					renameFolderFormRef.current?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))
+				}
 			>
-				<Form action={data => alert(data)} defaultValues={{ folderName: '' }} schema={schema}>
+				<Form
+					action={handleOnConfirmRenameDialog}
+					defaultValues={{
+						folderName: selectedRows.length === 1 ? selectedRows[0].name : ''
+					}}
+					schema={schema}
+					myRef={renameFolderFormRef}
+				>
 					<Field name='folderName' label='Folder name' />
 				</Form>
 			</Dialog>
