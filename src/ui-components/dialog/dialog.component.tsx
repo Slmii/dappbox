@@ -1,6 +1,7 @@
 import MuiDialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
@@ -28,8 +29,23 @@ export const Dialog: React.FC<DialogProps> = ({ open, title, onClose, onConfirm,
 			TransitionComponent={Transition}
 			fullWidth
 		>
-			<DialogTitle id='dialog-title'>{title}</DialogTitle>
-			<DialogContent>{children}</DialogContent>
+			<DialogTitle
+				id='dialog-title'
+				sx={{
+					paddingBottom: 0
+				}}
+			>
+				{title}
+			</DialogTitle>
+			<DialogContent>
+				<DialogContentText
+					sx={{
+						paddingTop: 1.5
+					}}
+				>
+					{children}
+				</DialogContentText>
+			</DialogContent>
 			<DialogActions>
 				<Button label='Cancel' onClick={onClose} />
 				<Button label='Confirm' onClick={onConfirm} />

@@ -54,7 +54,6 @@ export const Field = ({
 					variant={disabled ? 'filled' : 'outlined'}
 					InputProps={{
 						sx: {
-							background: 'white',
 							'& input[type=number]': {
 								MozAppearance: 'textfield'
 							},

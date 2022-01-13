@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import * as z from 'zod';
+import { useRecoilState } from 'recoil';
 
 import { replaceAsset } from 'lib/functions';
 import { assetsAtom, tableStateAtom } from 'lib/recoil';
+import { renameFolderSchema } from 'lib/schemas';
 import { Box } from 'ui-components/box';
 import { Button } from 'ui-components/button';
 import { Dialog } from 'ui-components/dialog';
@@ -11,17 +11,13 @@ import { Field } from 'ui-components/field';
 import { Form } from 'ui-components/form';
 import { Caption } from 'ui-components/typography';
 
-const schema = z.object({
-	folderName: z.string().nonempty({ message: 'Required' })
-});
-
 export const ViewActions = () => {
 	const renameFolderFormRef = useRef<null | HTMLFormElement>(null);
 	const [renameOpenDialog, setRenameOpenDialog] = useState(false);
 	const [handleOnConfirmRenameDialog, setHandleOnConfirmRenameDialog] = useState<() => void>(() => null);
 
 	const [{ assets }, setAssets] = useRecoilState(assetsAtom);
-	const { selectedRows } = useRecoilValue(tableStateAtom);
+	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
 
 	const handleOnRenameFolder = () => {
 		setRenameOpenDialog(selectedRows.length === 1);
@@ -42,6 +38,10 @@ export const ViewActions = () => {
 				})
 			}));
 
+			setTableState(prevState => ({
+				...prevState,
+				selectedRows: []
+			}));
 			setRenameOpenDialog(false);
 		});
 	};
@@ -112,8 +112,9 @@ export const ViewActions = () => {
 					defaultValues={{
 						folderName: selectedRows.length === 1 ? selectedRows[0].name : ''
 					}}
-					schema={schema}
+					schema={renameFolderSchema}
 					myRef={renameFolderFormRef}
+					mode='onSubmit'
 				>
 					<Field name='folderName' label='Folder name' />
 				</Form>
