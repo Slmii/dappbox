@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { constants } from 'lib/constants';
 import { replaceAsset } from 'lib/functions';
@@ -21,7 +21,7 @@ export const RenameFolder = () => {
 	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
 
 	const [{ assets }, setAssets] = useRecoilState(assetsAtom);
-	const { selectedRows } = useRecoilValue(tableStateAtom);
+	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
 
 	const handleOnRenameFolder = () => {
 		setRenameOpenDialog(selectedRows.length === 1);
@@ -47,39 +47,55 @@ export const RenameFolder = () => {
 			}));
 
 			setRenameOpenDialog(false);
+			setTableState(prevState => ({
+				...prevState,
+				selectedRows: []
+			}));
 		});
 	};
 
 	return (
 		<>
-			<Button label='Rename' startIcon='edit' variant='outlined' color='inherit' onClick={handleOnRenameFolder} />
-			<Dialog
-				title='Rename folder'
-				onClose={() => setRenameOpenDialog(false)}
-				open={renameOpenDialog}
-				onConfirm={() =>
-					// Programatically submit react hook form outside the form component
-					renameFolderFormRef.current?.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }))
-				}
-			>
-				<Box
-					sx={{
-						marginTop: constants.SPACING
-					}}
-				>
-					<Form<RenameFolderFormData>
-						action={handleOnConfirmRenameDialog}
-						defaultValues={{
-							folderName: selectedRows.length === 1 ? selectedRows[0].name : ''
-						}}
-						schema={renameFolderSchema}
-						myRef={renameFolderFormRef}
-						mode='onSubmit'
+			{selectedRows.length === 1 ? (
+				<>
+					<Button
+						label='Rename'
+						startIcon='edit'
+						variant='outlined'
+						color='inherit'
+						onClick={handleOnRenameFolder}
+					/>
+					<Dialog
+						title='Rename folder'
+						onClose={() => setRenameOpenDialog(false)}
+						open={renameOpenDialog}
+						onConfirm={() =>
+							// Programatically submit react hook form outside the form component
+							renameFolderFormRef.current?.dispatchEvent(
+								new Event('submit', { cancelable: true, bubbles: true })
+							)
+						}
 					>
-						<Field name='folderName' label='Folder name' />
-					</Form>
-				</Box>
-			</Dialog>
+						<Box
+							sx={{
+								marginTop: constants.SPACING
+							}}
+						>
+							<Form<RenameFolderFormData>
+								action={handleOnConfirmRenameDialog}
+								defaultValues={{
+									folderName: selectedRows.length === 1 ? selectedRows[0].name : ''
+								}}
+								schema={renameFolderSchema}
+								myRef={renameFolderFormRef}
+								mode='onSubmit'
+							>
+								<Field name='folderName' label='Folder name' />
+							</Form>
+						</Box>
+					</Dialog>
+				</>
+			) : null}
 			<Snackbar
 				open={!!undoAssets.length}
 				message='Folder renamed successfully'

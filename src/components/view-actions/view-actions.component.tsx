@@ -31,29 +31,21 @@ export const ViewActions = () => {
 						color: 'black'
 					}}
 				/>
-				{selectedRows.length > 0 ? (
-					<>
-						{selectedRows.length === 1 ? (
-							<>
-								{selectedRows[0].assetType === 'folder' ? (
-									<RenameFolder />
-								) : (
-									<Button label='Preview' startIcon='view' variant='outlined' color='inherit' />
-								)}
-							</>
-						) : null}
-						<Button label='Download' startIcon='download' variant='outlined' color='inherit' />
-						<MoveAssets />
-						<Button label='Delete' startIcon='delete' color='error' />
-						<Box
-							sx={{
-								marginLeft: 'auto'
-							}}
-						>
-							<Caption title={`${selectedRows.length} selected`} />
-						</Box>
-					</>
-				) : null}
+				<RenameFolder />
+				{/* // TODO: move to own component */}
+				<Button label='Preview' startIcon='view' variant='outlined' color='inherit' />
+				{/* // TODO: move to own component */}
+				<Button label='Download' startIcon='download' variant='outlined' color='inherit' />
+				<MoveAssets />
+				{/* // TODO: move to own component */}
+				<Button label='Delete' startIcon='delete' color='error' />
+				<Box
+					sx={{
+						marginLeft: 'auto'
+					}}
+				>
+					<Caption title={`${selectedRows.length} selected`} />
+				</Box>
 			</Box>
 		</>
 	);
