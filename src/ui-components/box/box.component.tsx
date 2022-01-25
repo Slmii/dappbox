@@ -1,6 +1,8 @@
 import MuiBox, { BoxProps } from '@mui/material/Box';
 import { SxProps, Theme } from '@mui/material/styles';
 
+import { constants } from 'lib/constants';
+
 export const Box: React.FC<BoxProps> = ({ children, ...props }) => {
 	return <MuiBox {...props}>{children}</MuiBox>;
 };
@@ -12,7 +14,7 @@ export const RowBox: React.FC = ({ children }) => {
 				display: 'flex',
 				flexDirection: 'column',
 				'& > *:not(:last-child)': {
-					marginBottom: 1
+					marginBottom: constants.SPACING
 				}
 			}}
 		>

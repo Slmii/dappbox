@@ -5,7 +5,7 @@ import { Box } from 'ui-components/box';
 import { Button } from 'ui-components/button';
 import { Caption } from 'ui-components/typography';
 import { MoveAssets } from './move-folder';
-import { RenameFolder } from './rename-folder.component';
+import { RenameFolder } from './rename-folder';
 
 export const ViewActions = () => {
 	const { selectedRows } = useRecoilValue(tableStateAtom);

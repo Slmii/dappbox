@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useRecoilValue } from 'recoil';
 
+import { constants } from 'lib/constants';
 import { assetsAtom } from 'lib/recoil';
 import { getUrlPathToAsset } from 'lib/url';
 import { Box } from 'ui-components/box';
@@ -27,7 +28,7 @@ export const MoveFolderBreadcrumbs = ({
 			sx={{
 				display: 'flex',
 				flexWrap: 'wrap',
-				marginTop: 1.5,
+				marginTop: constants.SPACING,
 				'& > *:not(:last-child) > span': {
 					color: 'text.secondary',
 					'&:hover': {
@@ -41,15 +42,15 @@ export const MoveFolderBreadcrumbs = ({
 				}
 			}}
 		>
-			{parentAssetId > 0 ? (
-				<Box
-					sx={{
-						display: 'flex',
-						alignItems: 'center'
-					}}
-					onClick={() => onBreadcrumbClick(0)}
-				>
-					<Caption title='DappBox' />
+			<Box
+				sx={{
+					display: 'flex',
+					alignItems: 'center'
+				}}
+				onClick={() => onBreadcrumbClick(0)}
+			>
+				<Caption title='DappBox' />
+				{parentAssetId > 0 ? (
 					<Icon
 						icon='next'
 						spacingLeft
@@ -58,8 +59,8 @@ export const MoveFolderBreadcrumbs = ({
 							fontSize: theme => theme.typography.fontSize
 						}}
 					/>
-				</Box>
-			) : null}
+				) : null}
+			</Box>
 			{breadcrumbs.map((breadcrumb, index) => (
 				<Box
 					key={breadcrumb.assetId}
