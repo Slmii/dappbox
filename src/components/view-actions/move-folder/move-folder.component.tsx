@@ -2,10 +2,12 @@ import { useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { getTableAssets, replaceAsset } from 'lib/functions';
+import { Asset } from 'lib/generated/dappbox_types';
 import { assetsAtom, assetsSelector, tableStateAtom } from 'lib/recoil';
 import { Button } from 'ui-components/button';
 import { Dialog } from 'ui-components/dialog';
 import { AssetsList } from 'ui-components/list';
+import { Snackbar } from 'ui-components/snackbar';
 import { MoveFolderBreadcrumbs } from './breadcrumbs.component';
 
 export const MoveAssets = () => {
@@ -14,6 +16,7 @@ export const MoveAssets = () => {
 	const [selectedFolderAssetId, setSelectedFolderAssetId] = useState<number>(0);
 	// State for showing only children of the selected parentAssetId
 	const [parentAssetId, setParentAssetId] = useState<number>(0);
+	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
 
 	const [{ assets }, setAssets] = useRecoilState(assetsAtom);
 	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
@@ -27,21 +30,6 @@ export const MoveAssets = () => {
 			assetId: parentAssetId
 		}).filter(asset => asset.assetType === 'folder');
 	}, [assets, parentAssetId]);
-
-	const handleOnMoveFolder = () => {
-		setMoveFolderDialogOpen(selectedRows.length > 0);
-	};
-
-	const handleOnFolderNavigation = (assetId: number) => {
-		setSelectedFolderAssetId(0);
-		setParentAssetId(assetId);
-	};
-
-	const resetState = () => {
-		setSelectedFolderAssetId(0);
-		setParentAssetId(0);
-		setMoveFolderDialogOpen(false);
-	};
 
 	// Filter out assets who cannot be moved to the same folder or if the folder asset is being moved to a child
 	const assetsToMove = useMemo(() => {
@@ -97,9 +85,26 @@ export const MoveAssets = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [selectedFolderAssetId]);
 
+	const handleOnMoveFolder = () => {
+		setMoveFolderDialogOpen(selectedRows.length > 0);
+	};
+
+	const handleOnFolderNavigation = (assetId: number) => {
+		setSelectedFolderAssetId(0);
+		setParentAssetId(assetId);
+	};
+
+	const resetState = () => {
+		setSelectedFolderAssetId(0);
+		setParentAssetId(0);
+		setMoveFolderDialogOpen(false);
+	};
+
 	const handleOnConfirmMoveAssets = () => {
 		// Make a copy of the current assets
 		let replacingAssets = [...assets];
+
+		setUndoAssets(replacingAssets);
 
 		for (const assetToMove of assetsToMove) {
 			// Find the index of the asset to move
@@ -133,41 +138,61 @@ export const MoveAssets = () => {
 
 	return (
 		<>
-			<Button
-				label='Move'
-				variant='outlined'
-				startIcon='folderMove'
-				color='inherit'
-				onClick={handleOnMoveFolder}
+			{selectedRows.length > 0 ? (
+				<>
+					<Button
+						label='Move'
+						variant='outlined'
+						startIcon='folderMove'
+						color='inherit'
+						onClick={handleOnMoveFolder}
+					/>
+					<Dialog
+						title='Move asset'
+						onClose={resetState}
+						open={moveFolderDialogOpen}
+						onConfirm={handleOnConfirmMoveAssets}
+						// Disable if no parent folder has been selected
+						onConfirmDisabled={selectedFolderAssetId === 0 || !assetsToMove.length}
+						onConfirmText='Move here'
+					>
+						<MoveFolderBreadcrumbs
+							parentAssetId={parentAssetId}
+							onBreadcrumbClick={handleOnFolderNavigation}
+						/>
+						<AssetsList
+							assets={folderAssets.map(asset => ({
+								assetId: asset.assetId,
+								isSelected: asset.assetId === selectedFolderAssetId,
+								name: asset.name,
+								icon: 'folder',
+								onClick: setSelectedFolderAssetId,
+								secondaryAction: getChildAssets(asset.assetId).filter(
+									asset => asset.assetType === 'folder'
+								).length
+									? {
+											icon: 'next',
+											label: 'Go to folder',
+											onClick: handleOnFolderNavigation
+									  }
+									: undefined
+							}))}
+						/>
+					</Dialog>
+				</>
+			) : null}
+			<Snackbar
+				open={!!undoAssets.length}
+				message='Asset(s) moved successfully'
+				onUndo={() => {
+					setAssets(prevState => ({
+						...prevState,
+						assets: undoAssets
+					}));
+					setUndoAssets([]);
+				}}
+				onClose={() => setUndoAssets([])}
 			/>
-			<Dialog
-				title='Move asset'
-				onClose={resetState}
-				open={moveFolderDialogOpen}
-				onConfirm={handleOnConfirmMoveAssets}
-				// Disable if no parent folder has been selected
-				onConfirmDisabled={selectedFolderAssetId === 0 || !assetsToMove.length}
-				onConfirmText='Move here'
-			>
-				<MoveFolderBreadcrumbs parentAssetId={parentAssetId} onBreadcrumbClick={handleOnFolderNavigation} />
-				<AssetsList
-					assets={folderAssets.map(asset => ({
-						assetId: asset.assetId,
-						isSelected: asset.assetId === selectedFolderAssetId,
-						name: asset.name,
-						icon: 'folder',
-						onClick: setSelectedFolderAssetId,
-						secondaryAction: getChildAssets(asset.assetId).filter(asset => asset.assetType === 'folder')
-							.length
-							? {
-									icon: 'next',
-									label: 'Go to folder',
-									onClick: handleOnFolderNavigation
-							  }
-							: undefined
-					}))}
-				/>
-			</Dialog>
 		</>
 	);
 };
