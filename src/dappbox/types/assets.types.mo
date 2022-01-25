@@ -14,7 +14,7 @@ module {
         assetType: Text;
         name: Text;
         isFavorite: Bool;
-        size: ?Nat;
+        size: ?Nat32;
         extension: ?Text;
         mimeType: ?Text;
         createdAt: Time.Time;

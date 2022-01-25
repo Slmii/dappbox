@@ -8,6 +8,7 @@ export const Icon = ({ spacingLeft, spacingRight, icon, ...props }: IconProps) =
 		<IconComponent
 			{...props}
 			sx={{
+				...props.sx,
 				ml: spacingLeft ? 1 : 0,
 				mr: spacingRight ? 1 : 0
 			}}

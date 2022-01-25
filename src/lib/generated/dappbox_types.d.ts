@@ -4,7 +4,7 @@ export interface Asset {
   'userId' : UserId__1,
   'name' : string,
   'createdAt' : Time,
-  'size' : [] | [bigint],
+  'size' : [] | [number],
   'mimeType' : [] | [string],
   'isFavorite' : boolean,
   'assetType' : string,

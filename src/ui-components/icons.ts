@@ -9,6 +9,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import DownloadIcon from '@mui/icons-material/Download';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
+import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
+import DriveFileMoveOutlinedIcon from '@mui/icons-material/DriveFileMoveOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -20,6 +22,8 @@ import FolderIcon from '@mui/icons-material/Folder';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import ListIcon from '@mui/icons-material/List';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ShareIcon from '@mui/icons-material/Share';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -46,6 +50,8 @@ const icons = {
 	deleteOutlined: DeleteOutlinedIcon,
 	folder: FolderIcon,
 	folderOutlined: FolderOpenOutlinedIcon,
+	folderMove: DriveFileMoveIcon,
+	folderMoveOutlined: DriveFileMoveOutlinedIcon,
 	addFolderOutlined: CreateNewFolderOutlinedIcon,
 	favorite: FavoriteIcon,
 	favoriteOutlined: FavoriteBorderIcon,
@@ -53,7 +59,9 @@ const icons = {
 	share: ShareIcon,
 	edit: EditIcon,
 	expandMore: ExpandMoreIcon,
-	expandLess: ExpandLessIcon
+	expandLess: ExpandLessIcon,
+	next: NavigateNextIcon,
+	previous: NavigateBeforeIcon
 };
 
 export type Icons = keyof typeof icons;

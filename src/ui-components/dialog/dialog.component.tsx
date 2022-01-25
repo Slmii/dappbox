@@ -19,7 +19,18 @@ const Transition = React.forwardRef(function Transition(
 	return <Slide direction='up' ref={ref} {...props} />;
 });
 
-export const Dialog: React.FC<DialogProps> = ({ open, title, onClose, onConfirm, children }) => {
+export const Dialog: React.FC<DialogProps> = ({
+	open,
+	title,
+	text,
+	onClose,
+	onConfirmText,
+	onCancelText,
+	onConfirmDisabled,
+	onCancelDisabled,
+	onConfirm,
+	children
+}) => {
 	return (
 		<MuiDialog
 			open={open}
@@ -38,17 +49,20 @@ export const Dialog: React.FC<DialogProps> = ({ open, title, onClose, onConfirm,
 				{title}
 			</DialogTitle>
 			<DialogContent>
-				<DialogContentText
-					sx={{
-						paddingTop: 1.5
-					}}
-				>
-					{children}
-				</DialogContentText>
+				{text && (
+					<DialogContentText
+						sx={{
+							paddingTop: 1.5
+						}}
+					>
+						{text}
+					</DialogContentText>
+				)}
+				{children}
 			</DialogContent>
 			<DialogActions>
-				<Button label='Cancel' onClick={onClose} />
-				<Button label='Confirm' onClick={onConfirm} />
+				<Button label={onCancelText ?? 'Cancel'} onClick={onClose} disabled={onCancelDisabled} />
+				<Button label={onConfirmText ?? 'Confirm'} onClick={onConfirm} disabled={onConfirmDisabled} />
 			</DialogActions>
 		</MuiDialog>
 	);

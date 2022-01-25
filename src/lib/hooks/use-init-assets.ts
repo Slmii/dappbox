@@ -15,7 +15,7 @@ const dummyRows: Asset[] = [
 		name: 'Test file A',
 		extension: ['txt'],
 		mimeType: ['txt'],
-		size: [BigInt(5)],
+		size: [5],
 		isFavorite: false,
 		createdAt: BigInt(new Date().getTime())
 	},
@@ -27,7 +27,7 @@ const dummyRows: Asset[] = [
 		name: 'Test file B-1-B',
 		extension: ['png'],
 		mimeType: ['png'],
-		size: [BigInt(200)],
+		size: [200],
 		isFavorite: true,
 		createdAt: BigInt(new Date().getTime())
 	},
@@ -75,7 +75,19 @@ const dummyRows: Asset[] = [
 		name: 'Test file B',
 		extension: ['pdf'],
 		mimeType: ['pdf'],
-		size: [BigInt(557)],
+		size: [557],
+		isFavorite: false,
+		createdAt: BigInt(new Date().getTime())
+	},
+	{
+		assetId: 8,
+		userId: Principal.fromText('2vxsx-fae'),
+		parentId: [2],
+		assetType: 'file',
+		name: 'Test file C',
+		extension: ['pdf'],
+		mimeType: ['pdf'],
+		size: [557],
 		isFavorite: false,
 		createdAt: BigInt(new Date().getTime())
 	},

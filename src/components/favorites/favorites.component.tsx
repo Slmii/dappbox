@@ -1,21 +1,19 @@
 import { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import { Asset } from 'lib/generated/dappbox_types';
 import { useFavorites } from 'lib/hooks';
 import { assetsAtom } from 'lib/recoil';
 import { getUrlPathToAsset } from 'lib/url';
-import { Box } from 'ui-components/box';
 import { Content, Main } from 'ui-components/container';
 import { Divider } from 'ui-components/divider';
-import { Icon } from 'ui-components/icon';
-import { IconButton } from 'ui-components/icon-button';
-import { Link } from 'ui-components/link';
+import { AssetsList } from 'ui-components/list';
 import { TableLoader } from 'ui-components/loaders';
 import { Snackbar } from 'ui-components/snackbar';
-import { Body, PageTitle } from 'ui-components/typography';
+import { PageTitle } from 'ui-components/typography';
 
 export const Favorites = () => {
+	const navigate = useNavigate();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
 	const { assets, isLoading } = useRecoilValue(assetsAtom);
 	const { handleOnFavoritesToggle, handleOnUndo } = useFavorites();
@@ -50,28 +48,22 @@ export const Favorites = () => {
 					{isLoading ? (
 						<TableLoader />
 					) : (
-						<>
-							{favoriteAssets.map(asset => (
-								<>
-									{asset.assetType === 'folder' ? (
-										<Link key={asset.assetId} href={`/${generateAssetPath(asset.assetId)}`}>
-											<FavoriteAsset asset={asset} onClick={handleOnRemoveFavorite} />
-										</Link>
-									) : (
-										<Box
-											sx={{
-												cursor: 'pointer'
-											}}
-											onClick={e => {
-												alert('preview');
-											}}
-										>
-											<FavoriteAsset asset={asset} onClick={handleOnRemoveFavorite} />
-										</Box>
-									)}
-								</>
-							))}
-						</>
+						<AssetsList
+							assets={favoriteAssets.map(asset => ({
+								assetId: asset.assetId,
+								name: asset.name,
+								icon: asset.assetType === 'folder' ? 'folder' : 'download',
+								onClick:
+									asset.assetType === 'folder'
+										? () => navigate(`/${generateAssetPath(asset.assetId)}`)
+										: undefined,
+								secondaryAction: {
+									icon: 'favorite',
+									label: 'Remove from favorites',
+									onClick: handleOnRemoveFavorite
+								}
+							}))}
+						/>
 					)}
 				</>
 			</Content>
@@ -82,41 +74,5 @@ export const Favorites = () => {
 				onUndo={handleOnUndo}
 			/>
 		</Main>
-	);
-};
-
-const FavoriteAsset = ({ asset, onClick }: { asset: Asset; onClick: (assetId: number) => void }) => {
-	return (
-		<Box
-			sx={{
-				display: 'flex',
-				alignItems: 'center',
-				'&: hover': {
-					backgroundColor: 'action.hover'
-				},
-				padding: '6px 16px',
-				borderBottom: 1,
-				borderColor: 'divider'
-			}}
-		>
-			<Icon icon={asset.assetType === 'folder' ? 'folder' : 'download'} color='info' spacingRight />
-			<Body title={asset.name} />
-			<Box
-				sx={{
-					marginLeft: 'auto'
-				}}
-			>
-				<IconButton
-					icon='favorite'
-					label='Remove from favorites'
-					onClick={e => {
-						e.preventDefault();
-						e.stopPropagation();
-
-						onClick(asset.assetId);
-					}}
-				/>
-			</Box>
-		</Box>
 	);
 };

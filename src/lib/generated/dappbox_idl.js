@@ -15,7 +15,7 @@ export const idlFactory = ({ IDL }) => {
     'userId' : UserId__1,
     'name' : IDL.Text,
     'createdAt' : Time,
-    'size' : IDL.Opt(IDL.Nat),
+    'size' : IDL.Opt(IDL.Nat32),
     'mimeType' : IDL.Opt(IDL.Text),
     'isFavorite' : IDL.Bool,
     'assetType' : IDL.Text,

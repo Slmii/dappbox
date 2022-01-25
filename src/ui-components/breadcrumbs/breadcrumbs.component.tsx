@@ -27,8 +27,7 @@ export const Breadcrumbs = () => {
 		});
 
 		return breadcrumbs;
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [pathname]);
+	}, [assets, params]);
 
 	const generateBreadcrumbPath = (assetId: number) => {
 		return getUrlPathToAsset(assetId, assets)

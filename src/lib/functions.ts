@@ -8,7 +8,7 @@ export const getTableAssets = ({
 	orderBy
 }: {
 	assets: Asset[];
-	assetId?: string;
+	assetId?: string | number;
 	order: Order;
 	orderBy: keyof Asset;
 }) => {
@@ -25,7 +25,7 @@ export const getTableAssets = ({
 					accum.push(asset);
 				}
 			} else {
-				if (asset.parentId[0]?.toString() === decodeURIComponent(assetId)) {
+				if (asset.parentId[0]?.toString() === decodeURIComponent(assetId.toString())) {
 					accum.push(asset);
 				}
 			}

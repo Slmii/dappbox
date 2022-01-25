@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { idlFactory } from 'lib/generated/dappbox_idl';
 import { _SERVICE, User } from 'lib/generated/dappbox_types';
+import { Snackbar } from 'ui-components/snackbar';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -60,6 +61,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 	const navigate = useNavigate();
 	const { state } = useLocation();
 
+	const [errorSnackbarOpen, setErrorSnackarOpen] = useState(false);
 	const [isConnected, setIsConnected] = useState(false);
 	const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
 	const [isLoading, setIsLoading] = useState(false);
@@ -103,6 +105,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 			}
 		} catch (error) {
 			console.log({ error });
+			setErrorSnackarOpen(true);
 			setIsLoading(false);
 		}
 	};
@@ -133,19 +136,27 @@ export const AuthProvider: React.FC = ({ children }) => {
 	};
 
 	return (
-		<AuthContext.Provider
-			value={{
-				loginPlug,
-				principal,
-				isLoading,
-				isConnected,
-				actor,
-				isAuthenticated: isConnected && !!principal && !!actor,
-				initUser,
-				user
-			}}
-		>
-			{children}
-		</AuthContext.Provider>
+		<>
+			<AuthContext.Provider
+				value={{
+					loginPlug,
+					principal,
+					isLoading,
+					isConnected,
+					actor,
+					isAuthenticated: isConnected && !!principal && !!actor,
+					initUser,
+					user
+				}}
+			>
+				{children}
+			</AuthContext.Provider>
+			<Snackbar
+				open={errorSnackbarOpen}
+				message='Oops, something went wrong...'
+				onClose={() => setErrorSnackarOpen(false)}
+				persist
+			/>
+		</>
 	);
 };
