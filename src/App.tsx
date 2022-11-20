@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-import { Layout } from 'components/layout';
-import { RequireAuthentication } from 'components/require-authentication';
+import { Layout } from 'components/Layout';
+import { RequireAuthentication } from 'components/RequireAuthentication';
 import { AuthenticatePage, FavoritesPage, HomePage } from 'pages';
 
 function App() {

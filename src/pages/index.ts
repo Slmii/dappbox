@@ -1,3 +1,3 @@
-export * from './home.page';
-export * from './authenticate.page';
-export * from './favorites.page';
+export * from './Home.page';
+export * from './Authenticate.page';
+export * from './Favorites.page';
