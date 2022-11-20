@@ -7,7 +7,7 @@ import { api } from 'api/index';
 import { canisterId } from 'declarations/dappbox';
 import { User } from 'declarations/dappbox/dappbox.did';
 import { loadIIAuthClient } from 'lib/auth';
-import { Snackbar } from 'ui-components/snackbar';
+import { Snackbar } from 'ui-components/Snackbar';
 
 interface IAuthClient {
 	/**

@@ -1,5 +1,5 @@
 import { Asset } from 'declarations/dappbox/dappbox.did';
-import { Order } from 'ui-components/table';
+import { Order } from 'ui-components/Table';
 
 export const getTableAssets = ({
 	assets,
