@@ -1,6 +1,6 @@
 import { selector } from 'recoil';
 
-import { Asset } from 'lib/generated/dappbox_types';
+import { Asset } from 'declarations/dappbox/dappbox.did';
 import { assetsAtom } from './atoms';
 
 interface AssetSelector {

@@ -2,11 +2,11 @@ import { Principal } from '@dfinity/principal';
 import { useContext, useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
 
+import { Asset } from 'declarations/dappbox/dappbox.did';
 import { AuthContext } from 'lib/context';
-import { Asset } from 'lib/generated/dappbox_types';
 import { assetsAtom } from 'lib/recoil';
 
-const dummyRows: Asset[] = [
+export const dummyRows: Asset[] = [
 	{
 		assetId: 3,
 		userId: Principal.fromText('2vxsx-fae'),
@@ -106,32 +106,17 @@ const dummyRows: Asset[] = [
 ];
 
 export const useInitAssets = () => {
-	const { isAuthenticated, initUser } = useContext(AuthContext);
+	const { isAuthenticated } = useContext(AuthContext);
 	const setAssets = useSetRecoilState(assetsAtom);
 
 	useEffect(() => {
-		// Init user when authenticated and on the home page. We do not use
-		// this in the `AuthContext` because that would require a longer load
-		// time before being redirect to the home page
-		initUser();
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	useEffect(() => {
-		// TODO: error boundary
 		const init = async () => {
 			if (!isAuthenticated) {
 				return;
 			}
 
-			setAssets({
-				isLoading: true,
-				assets: []
-			});
-
-			// Check if user exists, if not then create one
-			await initUser();
+			// TODO: fetch from canister and remove `sleep`
+			await sleep(2000);
 
 			// Set all assets in recoil state
 			setAssets({
@@ -145,3 +130,7 @@ export const useInitAssets = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated]);
 };
+
+function sleep(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}

@@ -11,7 +11,7 @@ import { visuallyHidden } from '@mui/utils';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { Asset } from 'lib/generated/dappbox_types';
+import { Asset } from 'declarations/dappbox/dappbox.did';
 import { Icon } from 'ui-components/icon';
 import { IconButton } from 'ui-components/icon-button';
 import { Link } from 'ui-components/link';

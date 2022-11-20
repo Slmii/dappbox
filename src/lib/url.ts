@@ -1,4 +1,4 @@
-import { Asset } from './generated/dappbox_types';
+import { Asset } from 'declarations/dappbox/dappbox.did';
 
 /**
  * Get the page title of the current asset

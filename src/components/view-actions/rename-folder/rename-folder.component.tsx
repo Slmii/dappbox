@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
+import { Asset } from 'declarations/dappbox/dappbox.did';
 import { constants } from 'lib/constants';
 import { replaceAsset } from 'lib/functions';
-import { Asset } from 'lib/generated/dappbox_types';
 import { assetsAtom, tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
 import { Box } from 'ui-components/box';

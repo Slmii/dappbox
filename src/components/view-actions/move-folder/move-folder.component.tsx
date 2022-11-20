@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import { Asset } from 'declarations/dappbox/dappbox.did';
 import { getTableAssets, replaceAsset } from 'lib/functions';
-import { Asset } from 'lib/generated/dappbox_types';
 import { assetsAtom, assetsSelector, tableStateAtom } from 'lib/recoil';
 import { Button } from 'ui-components/button';
 import { Dialog } from 'ui-components/dialog';

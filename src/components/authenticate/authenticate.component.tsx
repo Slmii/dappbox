@@ -8,7 +8,7 @@ import { Divider } from 'ui-components/divider';
 import { PageTitle } from 'ui-components/typography';
 
 export const Authenticate = () => {
-	const { isAuthenticated, loginPlug, isLoading } = useContext(AuthContext);
+	const { isAuthenticated, loginII, isLoading } = useContext(AuthContext);
 
 	if (isAuthenticated) {
 		return <Navigate to='/' />;
@@ -29,18 +29,11 @@ export const Authenticate = () => {
 				<PageTitle title='DappBox' />
 				<Divider />
 				<Button
-					label='Authenticate with plug'
+					label='Authenticate with II'
+					color='primary'
 					variant='contained'
 					loading={isLoading}
-					onClick={loginPlug}
-					startImage='/assets/plug-wallet.png'
-					size='large'
-				/>
-				<Button
-					label='Authenticate with II'
-					color='secondary'
-					variant='contained'
-					onClick={() => alert('TODO')}
+					onClick={loginII}
 					startImage='/assets/dfn.svg'
 					size='large'
 				/>

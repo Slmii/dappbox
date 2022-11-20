@@ -2,26 +2,19 @@ import { Principal } from '@dfinity/principal';
 import { createContext, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { idlFactory } from 'lib/generated/dappbox_idl';
-import { _SERVICE, User } from 'lib/generated/dappbox_types';
+import { Actor } from 'api/actor';
+import { api } from 'api/index';
+import { canisterId } from 'declarations/dappbox';
+import { User } from 'declarations/dappbox/dappbox.did';
+import { loadIIAuthClient } from 'lib/auth';
 import { Snackbar } from 'ui-components/snackbar';
-
-const isDevelopment = process.env.NODE_ENV === 'development';
 
 interface IAuthClient {
 	/**
-	 * Authenticate with Plug Wallet
+	 * Authenticate with II
 	 */
-	loginPlug: () => void;
+	loginII: () => void;
 	initUser: () => Promise<void>;
-	/**
-	 * Actor
-	 */
-	actor?: _SERVICE;
-	/**
-	 * If connected to Plug Wallet
-	 */
-	isConnected: boolean;
 	/**
 	 * Principal
 	 */
@@ -31,120 +24,76 @@ interface IAuthClient {
 	 */
 	isLoading: boolean;
 	/**
-	 * Is connected to plug and principal is available
-	 * then we're authenticated
+	 * Is principal is available then we're authenticated
 	 */
 	isAuthenticated: boolean;
 	user?: User;
 }
 
 export const AuthContext = createContext<IAuthClient>({
-	loginPlug: () => {},
+	loginII: () => {},
 	initUser: () => Promise.resolve(),
-	actor: undefined,
-	isConnected: false,
 	principal: undefined,
 	isLoading: false,
 	isAuthenticated: false,
 	user: undefined
 });
 
-const { canisterId, currentWindow, host, isPlugWalletInstalled, whitelist } = {
-	currentWindow: window as any,
-	canisterId: process.env.REACT_APP_CANISTER_ID,
-	whitelist: [process.env.REACT_APP_CANISTER_ID],
-	host: isDevelopment ? 'http://localhost:8000' : 'https://mainnet.dfinity.network',
-	isPlugWalletInstalled: (window as any).ic?.plug ? true : false
-};
-
 export const AuthProvider: React.FC = ({ children }) => {
 	const navigate = useNavigate();
 	const { state } = useLocation();
 
 	const [errorSnackbarOpen, setErrorSnackarOpen] = useState(false);
-	const [isConnected, setIsConnected] = useState(false);
 	const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
 	const [isLoading, setIsLoading] = useState(false);
-	const [actor, setActor] = useState<_SERVICE | undefined>(undefined);
 	const [user, setUser] = useState<User | undefined>(undefined);
 
-	const loginPlug = async () => {
-		if (!isPlugWalletInstalled) {
-			return;
-		}
-
+	const loginII = async () => {
 		setIsLoading(true);
 
-		try {
-			await currentWindow.ic.plug.requestConnect({
-				whitelist,
-				host
-			});
+		const authClient = await loadIIAuthClient();
+		await authClient.login({
+			onSuccess: async () => {
+				Actor.setAuthClient(authClient);
 
-			const connected = (await currentWindow.ic.plug.isConnected()) as boolean;
-			if (connected) {
-				setIsConnected(true);
+				const identity = authClient.getIdentity();
+				setPrincipal(identity.getPrincipal());
 
-				// Get the user principal
-				const principal = (await currentWindow.ic.plug.agent.getPrincipal()) as Principal;
-				setPrincipal(principal);
+				const actor = await Actor.getActor();
+				Actor.setActor(actor);
 
-				if (isDevelopment) {
-					await currentWindow.ic.plug.agent.fetchRootKey();
-				}
-
-				const actor: _SERVICE = await currentWindow.ic.plug.createActor({
-					canisterId,
-					interfaceFactory: idlFactory
-				});
-				setActor(actor);
-
-				setIsLoading(false);
+				await initUser();
 
 				navigate((state as Record<string, string>)?.path ?? '/');
-			}
-		} catch (error) {
-			console.log({ error });
-			setErrorSnackarOpen(true);
-			setIsLoading(false);
-		}
+			},
+			// 7 days
+			maxTimeToLive: BigInt(Date.now() + 7 * 86400000),
+			identityProvider: `http://127.0.0.1:8000/?canisterId=${canisterId}` // ? : 'https://identity.ic0.app/#authorize'
+		});
 	};
 
 	const initUser = async () => {
-		if (!actor) {
-			return;
-		}
-
-		setIsLoading(true);
-
-		const user = await actor.getUser();
-
-		// TODO: error boundary
-		if ('ok' in user) {
-			setUser(user.ok);
-		} else {
-			const profile = await actor.createUser();
-			if ('ok' in profile) {
-				setUser(profile.ok);
-			} else {
-				// TODO: show dialog with error
-				console.error(profile.err);
+		try {
+			const user = await api.User.getUser();
+			setUser(user);
+		} catch (error) {
+			try {
+				const user = await api.User.createUser();
+				setUser(user);
+			} catch (error) {
+				setErrorSnackarOpen(true);
 			}
 		}
-
-		setIsLoading(false);
 	};
 
 	return (
 		<>
 			<AuthContext.Provider
 				value={{
-					loginPlug,
+					loginII,
 					principal,
 					isLoading,
-					isConnected,
-					actor,
-					isAuthenticated: isConnected && !!principal && !!actor,
+					isAuthenticated: !!user,
 					initUser,
 					user
 				}}
@@ -154,7 +103,10 @@ export const AuthProvider: React.FC = ({ children }) => {
 			<Snackbar
 				open={errorSnackbarOpen}
 				message='Oops, something went wrong...'
-				onClose={() => setErrorSnackarOpen(false)}
+				onClose={() => {
+					setErrorSnackarOpen(false);
+					setIsLoading(false);
+				}}
 				persist
 			/>
 		</>

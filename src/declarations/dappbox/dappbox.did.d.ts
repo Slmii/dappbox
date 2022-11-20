@@ -1,4 +1,6 @@
 import type { Principal } from '@dfinity/principal';
+import type { ActorMethod } from '@dfinity/agent';
+
 export interface Asset {
   'assetId' : AssetId,
   'userId' : UserId__1,
@@ -13,9 +15,9 @@ export interface Asset {
 }
 export type AssetId = number;
 export interface DappBox {
-  'createUser' : () => Promise<Result>,
-  'getAssets' : () => Promise<Result_1>,
-  'getUser' : () => Promise<Result>,
+  'createUser' : ActorMethod<[], Result>,
+  'getAssets' : ActorMethod<[], Result_1>,
+  'getUser' : ActorMethod<[], Result>,
 }
 export type Error = { 'NotFound' : null } |
   { 'NotAuthorized' : null } |
