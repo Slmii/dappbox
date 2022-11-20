@@ -26,11 +26,11 @@ export const AssetsList = ({ assets }: AssetsListProps) => {
 					}
 				>
 					<ListItemButton onClick={() => asset.onClick?.(asset.assetId)} selected={asset.isSelected}>
-						{asset.icon && (
+						{asset.icon ? (
 							<ListItemIcon>
 								<Icon icon={asset.icon} color='info' spacingRight />
 							</ListItemIcon>
-						)}
+						) : null}
 						<ListItemText
 							primary={asset.name}
 							disableTypography

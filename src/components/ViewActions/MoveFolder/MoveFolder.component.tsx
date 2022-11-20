@@ -128,6 +128,7 @@ export const MoveAssets = () => {
 			assets: replacingAssets
 		}));
 
+		// Reset selected rows
 		setTableState(prevState => ({
 			...prevState,
 			selectedRows: []

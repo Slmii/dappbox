@@ -47,6 +47,8 @@ export const RenameFolder = () => {
 			}));
 
 			setRenameOpenDialog(false);
+
+			// Reset selected rows
 			setTableState(prevState => ({
 				...prevState,
 				selectedRows: []
@@ -100,10 +102,13 @@ export const RenameFolder = () => {
 				open={!!undoAssets.length}
 				message='Folder renamed successfully'
 				onUndo={() => {
+					// Apply `undo` assets
 					setAssets(prevState => ({
 						...prevState,
 						assets: undoAssets
 					}));
+
+					// Reset assets for `undo` functionality
 					setUndoAssets([]);
 				}}
 				onClose={() => setUndoAssets([])}
