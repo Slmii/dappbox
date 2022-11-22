@@ -59,7 +59,7 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 					)}`}
 					onClick={e => e.stopPropagation()}
 				>
-					{value}
+					{value.toString()}
 				</Link>
 			);
 		} else if (row.assetType === 'file') {
@@ -71,12 +71,12 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 					// TODO: open full dialog with preview
 					onClick={e => e.stopPropagation()}
 				>
-					{value}
+					{value.toString()}
 				</Box>
 			);
 		}
 
-		return value;
+		return value.toString();
 	};
 
 	return (

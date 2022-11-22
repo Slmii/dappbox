@@ -5,7 +5,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { constants } from 'lib/constants';
 import { Button } from 'ui-components/Button';
@@ -20,7 +20,7 @@ const Transition = React.forwardRef(function Transition(
 	return <Slide direction='up' ref={ref} {...props} />;
 });
 
-export const Dialog: React.FC<DialogProps> = ({
+export const Dialog = ({
 	open,
 	title,
 	text,
@@ -31,7 +31,7 @@ export const Dialog: React.FC<DialogProps> = ({
 	onCancelDisabled,
 	onConfirm,
 	children
-}) => {
+}: PropsWithChildren<DialogProps>) => {
 	return (
 		<MuiDialog
 			open={open}

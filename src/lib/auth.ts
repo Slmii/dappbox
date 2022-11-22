@@ -6,14 +6,13 @@ import { idlFactory } from 'declarations/dappbox';
 import { _SERVICE } from 'declarations/dappbox/dappbox.did';
 
 export const loadIIAuthClient = () => {
-	return AuthClient.create();
-	// {
-	// 	storage: new LocalStorage(''),
-	// 	idleOptions: {
-	// 		disableDefaultIdleCallback: true,
-	// 		disableIdle: true
-	// 	}
-	// }
+	return AuthClient.create({
+		storage: new LocalStorage(''),
+		idleOptions: {
+			disableDefaultIdleCallback: true,
+			disableIdle: true
+		}
+	});
 };
 
 export async function getLocalStorageIdentity() {

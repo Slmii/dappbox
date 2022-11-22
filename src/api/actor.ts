@@ -3,7 +3,7 @@ import { AuthClient } from '@dfinity/auth-client';
 
 import { canisterId, createActor } from 'declarations/dappbox';
 import { _SERVICE } from 'declarations/dappbox/dappbox.did';
-import { loadIIAuthClient } from 'lib/auth';
+import { getLocalStorageIdentity, loadIIAuthClient } from 'lib/auth';
 
 export abstract class Actor {
 	static authClient: AuthClient | undefined = undefined;
@@ -18,10 +18,14 @@ export abstract class Actor {
 			this.authClient = await loadIIAuthClient();
 		}
 
-		const identity = this.authClient.getIdentity();
+		if (this.actor) {
+			return this.actor;
+		}
+
 		const actor = createActor(canisterId, {
 			agentOptions: {
-				identity
+				identity: getLocalStorageIdentity(),
+				host: 'https://ic0.app'
 			}
 		});
 

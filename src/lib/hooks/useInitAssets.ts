@@ -115,6 +115,11 @@ export const useInitAssets = () => {
 				return;
 			}
 
+			setAssets({
+				isLoading: true,
+				assets: []
+			});
+
 			// TODO: fetch from canister and remove `sleep`
 			await sleep(2000);
 

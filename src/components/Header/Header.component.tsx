@@ -2,6 +2,7 @@ import { useTheme } from '@mui/material/styles';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
 import { AuthContext, ColorModeContext } from 'lib/context';
+import { useInitAssets } from 'lib/hooks';
 import { Appbar } from 'ui-components/AppBar';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -14,6 +15,8 @@ export const Header = () => {
 	const { toggleColorMode } = useContext(ColorModeContext);
 	const { isAuthenticated, principal } = useContext(AuthContext);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
+
+	useInitAssets();
 
 	const renderPrincipalId = useMemo(() => {
 		if (principal) {

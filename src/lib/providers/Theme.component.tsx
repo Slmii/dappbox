@@ -1,10 +1,10 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
-import React, { useContext } from 'react';
+import React, { PropsWithChildren, useContext } from 'react';
 
 import { ColorModeContext } from 'lib/context';
 
-export const ThemeProvider: React.FC = ({ children }) => {
+export const ThemeProvider = ({ children }: PropsWithChildren) => {
 	const { theme } = useContext(ColorModeContext);
 
 	return (

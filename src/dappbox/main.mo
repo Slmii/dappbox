@@ -34,38 +34,32 @@ shared(msg) actor class DappBox() {
     stable var usersCount : Nat = 0;
 
     // User functions
-    public query(msg) func getUser(): async Result.Result<User, Error> {
-        let callerId = msg.caller;
-
+    public query({ caller }) func getUser(): async Result.Result<User, Error> {
         // Reject AnonymousIdentity
-        if (Principal.toText(callerId) == "2vxsx-fae") {
+        if (Principal.toText(caller) == "2vxsx-fae") {
             return #err(#NotAuthorized);
         };
 
-        return userClass.getUser(callerId);
+        return userClass.getUser(caller);
     };  
 
-    public shared(msg) func createUser(): async Result.Result<User, Error> {
-        let callerId = msg.caller;
-
+    public shared({ caller }) func createUser(): async Result.Result<User, Error> {
         // Reject AnonymousIdentity
-        if (Principal.toText(callerId) == "2vxsx-fae") {
+        if (Principal.toText(caller) == "2vxsx-fae") {
             return #err(#NotAuthorized);
         };
 
-        return userClass.createUser(callerId);
+        return userClass.createUser(caller);
     };
 
     // Asset functions
-    public query(msg) func getAssets(): async Result.Result<[Asset], Error> {
-        let callerId = msg.caller;
-
+    public query({ caller }) func getAssets(): async Result.Result<[Asset], Error> {
         // Reject AnonymousIdentity
-        if (Principal.toText(callerId) == "2vxsx-fae") {
+        if (Principal.toText(caller) == "2vxsx-fae") {
             return #err(#NotAuthorized);
         };
 
-        return assetClass.getUserAssets(callerId);
+        return assetClass.getUserAssets(caller);
     };  
     
     system func preupgrade() {

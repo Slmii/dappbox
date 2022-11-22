@@ -20,7 +20,7 @@ function initCanisterIds() {
 		console.log('No production canister_ids.json found. Continuing with local');
 	}
 
-	network = process.env.NODE_ENV === 'production' && !localEnv ? 'ic' : 'local';
+	network = 'ic'; // process.env.NODE_ENV === 'production' && !localEnv ? 'ic' : 'local';
 
 	canisters = network === 'local' || localEnv ? localCanisters : prodCanisters;
 	for (const canister in canisters) {
@@ -52,7 +52,7 @@ module.exports = {
 		plugins: [
 			new webpack.EnvironmentPlugin({
 				DFX_NETWORK: network,
-				DAPPBOX_CANISTER_ID: canisters['dappbox'],
+				DAPPBOX_CANISTER_ID: 'fqd3w-cqaaa-aaaao-aaxyq-cai',
 				NODE_ENV: isDevelopment
 			})
 		],

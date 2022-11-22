@@ -1,5 +1,5 @@
 import { createTheme, responsiveFontSizes, Theme } from '@mui/material/styles';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 import { useLocalStorage } from 'lib/hooks';
 
@@ -15,7 +15,7 @@ export const ColorModeContext = React.createContext<ColorModeContextInterface>({
 
 type ColorMode = 'light' | 'dark';
 
-export const ColorModeProvider: React.FC = ({ children }) => {
+export const ColorModeProvider = ({ children }: PropsWithChildren) => {
 	const [mode, setMode] = useLocalStorage<ColorMode>('colorMode', 'light');
 
 	const { toggleColorMode } = React.useMemo(

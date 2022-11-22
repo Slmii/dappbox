@@ -1,13 +1,14 @@
 import MuiBox, { BoxProps } from '@mui/material/Box';
 import { SxProps, Theme } from '@mui/material/styles';
+import { PropsWithChildren } from 'react';
 
 import { constants } from 'lib/constants';
 
-export const Box: React.FC<BoxProps> = ({ children, ...props }) => {
+export const Box = ({ children, ...props }: PropsWithChildren<BoxProps>) => {
 	return <MuiBox {...props}>{children}</MuiBox>;
 };
 
-export const RowBox: React.FC = ({ children }) => {
+export const RowBox = ({ children }: PropsWithChildren) => {
 	return (
 		<Box
 			sx={{

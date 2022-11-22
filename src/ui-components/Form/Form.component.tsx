@@ -1,10 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormGroup from '@mui/material/FormGroup';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FieldValues, FormProvider, useForm } from 'react-hook-form';
 
 import { FormProps } from './Form.types';
 
-export function Form<T>({ children, action, schema, defaultValues, mode = 'onBlur', render, myRef }: FormProps<T>) {
+export function Form<T extends FieldValues>({
+	children,
+	action,
+	schema,
+	defaultValues,
+	mode = 'onBlur',
+	render,
+	myRef
+}: FormProps<T>) {
 	const methods = useForm<T>({
 		resolver: zodResolver(schema),
 		defaultValues,

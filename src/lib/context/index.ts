@@ -1,2 +1,2 @@
-export * from './auth.context';
-export * from './color-mode.context';
+export * from './Auth.context';
+export * from './ColorMode.context';

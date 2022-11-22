@@ -1,8 +1,9 @@
 import Box from '@mui/material/Box';
+import { PropsWithChildren } from 'react';
 
 import { constants } from 'lib/constants';
 
-export const FilesContainer: React.FC = ({ children }) => {
+export const FilesContainer = ({ children }: PropsWithChildren) => {
 	return (
 		<Box
 			sx={{
@@ -15,7 +16,7 @@ export const FilesContainer: React.FC = ({ children }) => {
 	);
 };
 
-export const Content: React.FC = ({ children }) => {
+export const Content = ({ children }: PropsWithChildren) => {
 	return (
 		<Box
 			sx={{
@@ -27,7 +28,7 @@ export const Content: React.FC = ({ children }) => {
 	);
 };
 
-export const Main: React.FC = ({ children }) => {
+export const Main = ({ children }: PropsWithChildren) => {
 	return (
 		<Box
 			component='main'

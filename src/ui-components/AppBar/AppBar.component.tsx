@@ -1,10 +1,11 @@
 import AppBar from '@mui/material/AppBar';
 import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
+import { PropsWithChildren } from 'react';
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
-export const Appbar: React.FC = ({ children }) => {
+export const Appbar = ({ children }: PropsWithChildren) => {
 	return (
 		<>
 			<AppBar

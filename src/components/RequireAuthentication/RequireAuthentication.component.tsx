@@ -1,9 +1,9 @@
-import { useContext } from 'react';
+import { PropsWithChildren, useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 
 import { AuthContext } from 'lib/context';
 
-export const RequireAuthentication: React.FC = ({ children }) => {
+export const RequireAuthentication = ({ children }: PropsWithChildren) => {
 	const { isAuthenticated } = useContext(AuthContext);
 	const location = useLocation();
 

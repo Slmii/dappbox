@@ -1,0 +1,4 @@
+[workspace]
+members = [
+    "src/dappbox_rust_backend",
+]

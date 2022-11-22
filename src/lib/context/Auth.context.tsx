@@ -1,20 +1,35 @@
+import { Identity } from '@dfinity/agent';
+import { AuthClient } from '@dfinity/auth-client';
 import { Principal } from '@dfinity/principal';
-import { createContext, useState } from 'react';
+import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Actor } from 'api/actor';
 import { api } from 'api/index';
-import { canisterId } from 'declarations/dappbox';
 import { User } from 'declarations/dappbox/dappbox.did';
-import { loadIIAuthClient } from 'lib/auth';
+import { getLocalStorageIdentity, loadIIAuthClient } from 'lib/auth';
 import { Snackbar } from 'ui-components/Snackbar';
+
+interface ValidateSession {
+	/**
+	 * Callback to execute when session is still valid
+	 */
+	onSuccess: (identity: Identity) => void;
+	/**
+	 * Callback to execute when session is not valid
+	 */
+	onError: () => void;
+}
 
 interface IAuthClient {
 	/**
 	 * Authenticate with II
 	 */
 	loginII: () => void;
-	initUser: () => Promise<void>;
+	/**
+	 * Validate session on load
+	 */
+	validateSession: (props: ValidateSession) => Promise<void>;
 	/**
 	 * Principal
 	 */
@@ -24,7 +39,7 @@ interface IAuthClient {
 	 */
 	isLoading: boolean;
 	/**
-	 * Is principal is available then we're authenticated
+	 * If authenticated
 	 */
 	isAuthenticated: boolean;
 	user?: User;
@@ -32,14 +47,14 @@ interface IAuthClient {
 
 export const AuthContext = createContext<IAuthClient>({
 	loginII: () => {},
-	initUser: () => Promise.resolve(),
+	validateSession: () => Promise.resolve(),
 	principal: undefined,
 	isLoading: false,
 	isAuthenticated: false,
 	user: undefined
 });
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider = ({ children }: PropsWithChildren) => {
 	const navigate = useNavigate();
 	const { state } = useLocation();
 
@@ -48,28 +63,55 @@ export const AuthProvider: React.FC = ({ children }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [user, setUser] = useState<User | undefined>(undefined);
 
+	useEffect(() => {
+		const init = async () => {
+			await validateSession({
+				onSuccess: async () => {
+					try {
+						const user = await api.User.getUser();
+						setUser(user);
+
+						setIsLoading(false);
+					} catch (error) {
+						navigate('/authenticate');
+					}
+				},
+				onError: () => {
+					navigate('/authenticate');
+				}
+			});
+		};
+
+		init();
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	const loginII = async () => {
 		setIsLoading(true);
 
 		const authClient = await loadIIAuthClient();
 		await authClient.login({
 			onSuccess: async () => {
-				Actor.setAuthClient(authClient);
-
-				const identity = authClient.getIdentity();
-				setPrincipal(identity.getPrincipal());
-
-				const actor = await Actor.getActor();
-				Actor.setActor(actor);
-
+				await initAuthClient(authClient);
 				await initUser();
 
 				navigate((state as Record<string, string>)?.path ?? '/');
 			},
 			// 7 days
 			maxTimeToLive: BigInt(Date.now() + 7 * 86400000),
-			identityProvider: `http://127.0.0.1:8000/?canisterId=${canisterId}` // ? : 'https://identity.ic0.app/#authorize'
+			identityProvider: 'https://identity.ic0.app/#authorize'
 		});
+	};
+
+	const initAuthClient = async (authClient: AuthClient) => {
+		Actor.setAuthClient(authClient);
+
+		const identity = authClient.getIdentity();
+		setPrincipal(identity.getPrincipal());
+
+		const actor = await Actor.getActor();
+		Actor.setActor(actor);
 	};
 
 	const initUser = async () => {
@@ -86,6 +128,18 @@ export const AuthProvider: React.FC = ({ children }) => {
 		}
 	};
 
+	const validateSession = async ({ onSuccess, onError }: ValidateSession) => {
+		const identity = await getLocalStorageIdentity();
+		if (!identity) {
+			return onError();
+		}
+
+		const authClient = await loadIIAuthClient();
+		await initAuthClient(authClient);
+
+		onSuccess(authClient.getIdentity());
+	};
+
 	return (
 		<>
 			<AuthContext.Provider
@@ -94,7 +148,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 					principal,
 					isLoading,
 					isAuthenticated: !!user,
-					initUser,
+					validateSession,
 					user
 				}}
 			>

@@ -1,8 +1,8 @@
 import { ReactNode, Ref } from 'react';
-import { DeepPartial, Mode, SubmitHandler, UnpackNestedValue, UseFormReturn } from 'react-hook-form';
+import { DeepPartial, FieldValues, Mode, SubmitHandler, UseFormReturn } from 'react-hook-form';
 import * as z from 'zod';
 
-export interface FormProps<T> {
+export interface FormProps<T extends FieldValues> {
 	/**
 	 * Function to execute on form submit
 	 */
@@ -14,7 +14,7 @@ export interface FormProps<T> {
 	/**
 	 * Default values in a form
 	 */
-	defaultValues: UnpackNestedValue<DeepPartial<T>>;
+	defaultValues: DeepPartial<T>;
 	/**
 	 * Option to configure the validation before onSubmit event
 	 */
