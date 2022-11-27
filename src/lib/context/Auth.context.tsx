@@ -1,20 +1,17 @@
-import { Identity } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
 import { Principal } from '@dfinity/principal';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Actor } from 'api/actor';
 import { api } from 'api/index';
 import { User } from 'declarations/users/users.did';
-import { getLocalStorageIdentity, loadIIAuthClient } from 'lib/auth';
 import { Snackbar } from 'ui-components/Snackbar';
 
 interface ValidateSession {
 	/**
 	 * Callback to execute when session is still valid
 	 */
-	onSuccess: (identity: Identity) => void;
+	onSuccess: (authClient: AuthClient) => void;
 	/**
 	 * Callback to execute when session is not valid
 	 */
@@ -26,10 +23,6 @@ interface IAuthClient {
 	 * Authenticate with II
 	 */
 	loginII: () => void;
-	/**
-	 * Validate session on load
-	 */
-	validateSession: (props: ValidateSession) => Promise<void>;
 	/**
 	 * Principal
 	 */
@@ -47,7 +40,6 @@ interface IAuthClient {
 
 export const AuthContext = createContext<IAuthClient>({
 	loginII: () => {},
-	validateSession: () => Promise.resolve(),
 	principal: undefined,
 	isLoading: false,
 	isAuthenticated: false,
@@ -62,16 +54,21 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
 	const [isLoading, setIsLoading] = useState(false);
 	const [user, setUser] = useState<User | undefined>(undefined);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 	useEffect(() => {
 		const init = async () => {
 			await validateSession({
-				onSuccess: async () => {
+				onSuccess: async authClient => {
 					try {
+						await initAuthClient(authClient);
+
 						const user = await api.User.getUser();
 						setUser(user);
 
+						setIsAuthenticated(true);
 						setIsLoading(false);
+						navigate((state as Record<string, string>)?.path ?? '/');
 					} catch (error) {
 						console.log('Validation Session Error', error);
 						navigate('/authenticate');
@@ -91,12 +88,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	const loginII = async () => {
 		setIsLoading(true);
 
-		const authClient = await loadIIAuthClient();
+		const authClient = await api.Actor.getAuthClient();
 		await authClient.login({
 			onSuccess: async () => {
 				await initAuthClient(authClient);
 				await initUser();
 
+				setIsAuthenticated(true);
+				setIsLoading(false);
 				navigate((state as Record<string, string>)?.path ?? '/');
 			},
 			// 7 days
@@ -107,8 +106,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
 	const initAuthClient = async (authClient: AuthClient) => {
 		try {
-			Actor.setAuthClient(authClient);
-
+			api.Actor.setAuthClient(authClient);
 			const identity = authClient.getIdentity();
 			setPrincipal(identity.getPrincipal());
 		} catch (error) {
@@ -134,15 +132,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const validateSession = async ({ onSuccess, onError }: ValidateSession) => {
-		const identity = await getLocalStorageIdentity();
-		if (!identity) {
+		const authClient = await api.Actor.getAuthClient();
+		const isAuthenticated = await authClient.isAuthenticated();
+
+		if (!isAuthenticated) {
 			return onError();
 		}
 
-		const authClient = await loadIIAuthClient();
-		await initAuthClient(authClient);
-
-		onSuccess(authClient.getIdentity());
+		onSuccess(authClient);
 	};
 
 	return (
@@ -152,8 +149,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 					loginII,
 					principal,
 					isLoading,
-					isAuthenticated: !!user,
-					validateSession,
+					isAuthenticated,
 					user
 				}}
 			>

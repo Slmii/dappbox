@@ -17,6 +17,7 @@ import { Button } from 'ui-components/Button';
 import { Icon } from 'ui-components/Icon';
 import { Link } from 'ui-components/Link';
 import { DrawerLoader } from 'ui-components/Loaders';
+import { Menu } from 'ui-components/Menu';
 
 export const Drawer = () => {
 	const { assets, isLoading } = useRecoilValue(assetsAtom);
@@ -59,19 +60,32 @@ export const Drawer = () => {
 				<DrawerLoader />
 			) : (
 				<>
-					<Box sx={{ padding: 1 }}>
-						<Button
-							startIcon='addOutlined'
-							label='Upload'
-							variant='contained'
-							color='primary'
-							size='large'
-							fullWidth
-							sx={{
-								borderRadius: 50
-							}}
-						/>
-					</Box>
+					<Menu
+						label={
+							<Box sx={{ padding: 1 }}>
+								<Button
+									startIcon='addOutlined'
+									label='Upload'
+									variant='contained'
+									color='primary'
+									size='large'
+									fullWidth
+									sx={{
+										borderRadius: 50
+									}}
+								/>
+							</Box>
+						}
+						id='upload'
+						menu={[
+							{
+								label: 'Upload file'
+							},
+							{
+								label: 'New folder'
+							}
+						]}
+					/>
 					<List
 						dense
 						sx={{

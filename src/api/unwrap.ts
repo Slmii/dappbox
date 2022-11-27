@@ -5,7 +5,6 @@ export const unwrap = <T>(result: { Ok: T } | { Err: ApiError }): Promise<T> => 
 		if ('Ok' in result) {
 			resolve(result.Ok);
 		} else {
-			console.trace('error', result);
 			reject(result.Err);
 		}
 	});

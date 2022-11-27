@@ -3,7 +3,6 @@ import { AuthClient } from '@dfinity/auth-client';
 
 import { createActor } from 'declarations/users';
 import { _SERVICE } from 'declarations/users/users.did';
-import { getLocalStorageIdentity, loadIIAuthClient } from 'lib/auth';
 import canisters from './canister_ids.json';
 
 type Controller = keyof typeof canisters;
@@ -16,18 +15,23 @@ export abstract class Actor {
 		this.authClient = authClient;
 	}
 
-	static async getActor(controller: Controller) {
-		if (!this.authClient) {
-			this.authClient = await loadIIAuthClient();
+	static async getAuthClient() {
+		if (this.authClient) {
+			return this.authClient;
 		}
 
+		return AuthClient.create();
+	}
+
+	static async getActor(controller: Controller) {
 		if (this.actor[controller]) {
 			return this.actor[controller];
 		}
 
+		const authClient = await this.getAuthClient();
 		const actor = createActor(canisters[controller].ic, {
 			agentOptions: {
-				identity: getLocalStorageIdentity(),
+				identity: authClient.getIdentity(),
 				host: 'https://ic0.app'
 			}
 		});
