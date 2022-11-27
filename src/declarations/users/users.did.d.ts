@@ -14,4 +14,5 @@ export interface User {
 export interface _SERVICE {
   'create_user' : ActorMethod<[[] | [string]], Result>,
   'get_user' : ActorMethod<[], Result>,
+  'get_users' : ActorMethod<[], Array<User>>,
 }

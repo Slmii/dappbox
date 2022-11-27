@@ -6,6 +6,8 @@ import { _SERVICE } from 'declarations/users/users.did';
 import canisters from './canister_ids.json';
 
 type Controller = keyof typeof canisters;
+const environment = process.env.REACT_APP_ENV ?? 'local';
+const isLocal = environment === 'local';
 
 export abstract class Actor {
 	static authClient: AuthClient | undefined = undefined;
@@ -29,10 +31,14 @@ export abstract class Actor {
 		}
 
 		const authClient = await this.getAuthClient();
-		const actor = createActor(canisters[controller].ic, {
+
+		const canisterEnv = canisters[controller];
+		const canisterId = canisterEnv[environment as keyof typeof canisterEnv];
+
+		const actor = createActor(canisterId, {
 			agentOptions: {
 				identity: authClient.getIdentity(),
-				host: 'https://ic0.app'
+				host: isLocal ? 'http://localhost:8000' : 'https://ic0.app'
 			}
 		});
 

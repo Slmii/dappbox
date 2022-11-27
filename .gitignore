@@ -25,4 +25,3 @@ yarn-error.log*
 target/
 dfx-help.md
 scripts
-src/api/canister_ids.json
