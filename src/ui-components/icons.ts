@@ -24,6 +24,7 @@ import ListIcon from '@mui/icons-material/List';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import ShareIcon from '@mui/icons-material/Share';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -61,7 +62,8 @@ const icons = {
 	expandMore: ExpandMoreIcon,
 	expandLess: ExpandLessIcon,
 	next: NavigateNextIcon,
-	previous: NavigateBeforeIcon
+	previous: NavigateBeforeIcon,
+	signOUt: PowerSettingsNewIcon
 };
 
 export type Icons = keyof typeof icons;

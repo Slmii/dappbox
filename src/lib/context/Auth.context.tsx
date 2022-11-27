@@ -22,7 +22,11 @@ interface IAuthClient {
 	/**
 	 * Authenticate with II
 	 */
-	loginII: () => void;
+	loginII: () => Promise<void>;
+	/**
+	 * Sign Out with II
+	 */
+	signOut: () => Promise<void>;
 	/**
 	 * Principal
 	 */
@@ -39,7 +43,8 @@ interface IAuthClient {
 }
 
 export const AuthContext = createContext<IAuthClient>({
-	loginII: () => {},
+	loginII: () => Promise.resolve(),
+	signOut: () => Promise.resolve(),
 	principal: undefined,
 	isLoading: false,
 	isAuthenticated: false,
@@ -58,6 +63,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
 	useEffect(() => {
 		const init = async () => {
+			setIsLoading(true);
+
 			await validateSession({
 				onSuccess: async authClient => {
 					try {
@@ -71,10 +78,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 						navigate((state as Record<string, string>)?.path ?? '/');
 					} catch (error) {
 						console.log('Validation Session Error', error);
+
+						setIsLoading(false);
 						navigate('/authenticate');
 					}
 				},
 				onError: () => {
+					setIsLoading(false);
 					navigate('/authenticate');
 				}
 			});
@@ -95,7 +105,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 				await initUser();
 
 				setIsAuthenticated(true);
-				setIsLoading(false);
 				navigate((state as Record<string, string>)?.path ?? '/');
 			},
 			// 7 days
@@ -107,8 +116,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	const initAuthClient = async (authClient: AuthClient) => {
 		try {
 			api.Actor.setAuthClient(authClient);
-			const identity = authClient.getIdentity();
-			setPrincipal(identity.getPrincipal());
+			setPrincipal(authClient.getIdentity().getPrincipal());
 		} catch (error) {
 			console.log('Init AuthClient Error', error);
 		}
@@ -142,11 +150,24 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 		onSuccess(authClient);
 	};
 
+	const signOut = async () => {
+		const authClient = await api.Actor.getAuthClient();
+		await authClient.logout();
+
+		setPrincipal(undefined);
+		setIsLoading(false);
+		setUser(undefined);
+		setIsAuthenticated(false);
+
+		navigate('/authenticate');
+	};
+
 	return (
 		<>
 			<AuthContext.Provider
 				value={{
 					loginII,
+					signOut,
 					principal,
 					isLoading,
 					isAuthenticated,
