@@ -30,7 +30,8 @@
 		"start": "craco start",
 		"build": "craco build",
 		"test": "craco test",
-		"generate": "dfx generate dappbox_backend"
+		"sync": "bash scripts/sync_declarations.sh",
+		"deploy": "dfx deploy --network ic frontend"
 	},
 	"eslintConfig": {
 		"extends": [

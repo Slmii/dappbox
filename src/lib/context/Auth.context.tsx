@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Actor } from 'api/actor';
 import { api } from 'api/index';
-import { User } from 'declarations/dappbox/dappbox.did';
+import { User } from 'declarations/users/users.did';
 import { getLocalStorageIdentity, loadIIAuthClient } from 'lib/auth';
 import { Snackbar } from 'ui-components/Snackbar';
 
@@ -73,6 +73,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
 						setIsLoading(false);
 					} catch (error) {
+						console.log('Validation Session Error', error);
 						navigate('/authenticate');
 					}
 				},
@@ -105,13 +106,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const initAuthClient = async (authClient: AuthClient) => {
-		Actor.setAuthClient(authClient);
+		try {
+			Actor.setAuthClient(authClient);
 
-		const identity = authClient.getIdentity();
-		setPrincipal(identity.getPrincipal());
-
-		const actor = await Actor.getActor();
-		Actor.setActor(actor);
+			const identity = authClient.getIdentity();
+			setPrincipal(identity.getPrincipal());
+		} catch (error) {
+			console.log('Init AuthClient Error', error);
+		}
 	};
 
 	const initUser = async () => {
@@ -119,10 +121,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 			const user = await api.User.getUser();
 			setUser(user);
 		} catch (error) {
+			console.log('Init User Error', error);
+
 			try {
 				const user = await api.User.createUser();
 				setUser(user);
 			} catch (error) {
+				console.log('Create User Error', error);
 				setErrorSnackarOpen(true);
 			}
 		}

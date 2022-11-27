@@ -1,4 +1,4 @@
-import { Asset } from 'declarations/dappbox/dappbox.did';
+import { Asset } from 'lib/types/Asset.types';
 import { Icons } from 'ui-components/icons';
 
 export type Order = 'asc' | 'desc';

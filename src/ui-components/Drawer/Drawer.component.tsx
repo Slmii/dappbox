@@ -1,3 +1,4 @@
+import Chip from '@mui/material/Chip';
 import Collapse from '@mui/material/Collapse';
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -21,7 +22,7 @@ export const Drawer = () => {
 	const { assets, isLoading } = useRecoilValue(assetsAtom);
 	const [open, setOpen] = useState(false);
 
-	const folderAssets = useMemo(() => {
+	const folders = useMemo(() => {
 		return assets.filter(asset => asset.assetType === 'folder');
 	}, [assets]);
 
@@ -86,7 +87,7 @@ export const Drawer = () => {
 							<ListItemText disableTypography primary='Folders' />
 							<Icon icon={open ? 'expandLess' : 'expandMore'} />
 						</ListItem>
-						{folderAssets.length ? (
+						{folders.length ? (
 							<Collapse in={open} timeout='auto' unmountOnExit>
 								<List
 									dense
@@ -98,7 +99,7 @@ export const Drawer = () => {
 										fontSize: 14
 									}}
 								>
-									{folderAssets.map(folder => (
+									{folders.map(folder => (
 										<Link key={folder.assetId} href={generateAssetPath(folder.assetId)}>
 											<ListItem button sx={{ pl: 2 }}>
 												<ListItemIcon>
@@ -121,17 +122,47 @@ export const Drawer = () => {
 								</List>
 							</Collapse>
 						) : null}
-						<ListItem button>
-							<ListItemText disableTypography primary='NFTs' />
-						</ListItem>
 						<Link href='/favorites'>
 							<ListItem button>
 								<ListItemText disableTypography primary='Favorites' />
 							</ListItem>
 						</Link>
-						{/* <ListItem button>
-					<ListItemText primary='Shared' />
-				</ListItem> */}
+						<ListItem button disabled>
+							<ListItemText
+								disableTypography
+								primary={
+									<>
+										NFT's
+										<Chip
+											size='small'
+											label='Soon'
+											sx={{
+												marginLeft: theme => theme.spacing(constants.SPACING)
+											}}
+											color='secondary'
+										/>
+									</>
+								}
+							/>
+						</ListItem>
+						<ListItem button disabled>
+							<ListItemText
+								disableTypography
+								primary={
+									<>
+										Shared
+										<Chip
+											size='small'
+											label='Soon'
+											sx={{
+												marginLeft: theme => theme.spacing(constants.SPACING)
+											}}
+											color='secondary'
+										/>
+									</>
+								}
+							/>{' '}
+						</ListItem>
 					</List>
 				</>
 			)}

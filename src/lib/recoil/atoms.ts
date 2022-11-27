@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-import { Asset } from 'declarations/dappbox/dappbox.did';
+import { Asset } from 'lib/types/Asset.types';
 import { Order } from 'ui-components/Table';
 
 export interface TableState {

@@ -3,16 +3,16 @@ import { unwrap } from './unwrap';
 
 export abstract class User {
 	static async getUser() {
-		const actor = await Actor.getActor();
+		const actor = await Actor.getActor('users');
 
-		const response = await actor.getUser();
+		const response = await actor.get_user();
 		return unwrap(response);
 	}
 
 	static async createUser() {
-		const actor = await Actor.getActor();
+		const actor = await Actor.getActor('users');
 
-		const response = await actor.createUser();
+		const response = await actor.create_user([]);
 		return unwrap(response);
 	}
 }

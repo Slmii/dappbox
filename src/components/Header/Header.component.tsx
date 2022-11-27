@@ -39,9 +39,7 @@ export const Header = () => {
 
 	return (
 		<Appbar>
-			<Box sx={{ flexGrow: 1 }}>
-				<Link href='/'>LOGO</Link>
-			</Box>
+			<Box sx={{ flexGrow: 1 }}>{isAuthenticated ? <Link href='/'>LOGO</Link> : 'LOGO'}</Box>
 			<Box
 				sx={{
 					display: 'flex',

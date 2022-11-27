@@ -1,4 +1,4 @@
-import { Asset } from 'declarations/dappbox/dappbox.did';
+import { Asset } from 'lib/types/Asset.types';
 import { Order } from 'ui-components/Table';
 
 export const getTableAssets = ({
@@ -21,11 +21,11 @@ export const getTableAssets = ({
 		// If homepage, then only return assets that do not have a parent
 		.reduce((accum, asset) => {
 			if (!assetId) {
-				if (!asset.parentId.length) {
+				if (!asset.parentId) {
 					accum.push(asset);
 				}
 			} else {
-				if (asset.parentId[0]?.toString() === decodeURIComponent(assetId.toString())) {
+				if (asset.parentId?.toString() === decodeURIComponent(assetId.toString())) {
 					accum.push(asset);
 				}
 			}

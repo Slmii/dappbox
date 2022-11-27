@@ -1,14 +1,7 @@
 {
 	"canisters": {
-		"dappbox": {
-			"candid": "src/dappbox_backend/dappbox_backend.did",
-			"package": "dappbox_backend",
-			"type": "rust"
-		},
 		"frontend": {
-			"dependencies": [
-				"dappbox"
-			],
+			"dependencies": [],
 			"frontend": {
 				"entrypoint": "build/index.html"
 			},

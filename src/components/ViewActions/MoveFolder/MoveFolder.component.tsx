@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
-import { Asset } from 'declarations/dappbox/dappbox.did';
 import { getTableAssets, replaceAsset } from 'lib/functions';
 import { assetsAtom, assetsSelector, tableStateAtom } from 'lib/recoil';
+import { Asset } from 'lib/types/Asset.types';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { AssetsList } from 'ui-components/List';
@@ -116,7 +116,7 @@ export const MoveAssets = () => {
 				assets: replacingAssets,
 				value: {
 					...replacingAssets[index],
-					parentId: [selectedFolderAssetId]
+					parentId: selectedFolderAssetId
 				},
 				index
 			});

@@ -1,4 +1,4 @@
-import { Asset } from 'declarations/dappbox/dappbox.did';
+import { Asset } from 'lib/types/Asset.types';
 
 /**
  * Get the page title of the current asset
@@ -25,9 +25,9 @@ export const getUrlPathToAsset = (assetId: number, assets: Asset[]) => {
 		// Put at the front of the array for the correct order
 		paths.unshift(asset);
 
-		if (typeof asset.parentId[0] !== 'undefined') {
+		if (typeof asset.parentId !== 'undefined') {
 			// Put at the front of the array for the correct order
-			paths.unshift(...getUrlPathToAsset(asset.parentId[0], assets));
+			paths.unshift(...getUrlPathToAsset(asset.parentId, assets));
 		}
 	}
 

@@ -11,7 +11,7 @@ import { visuallyHidden } from '@mui/utils';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { Asset } from 'declarations/dappbox/dappbox.did';
+import { Asset } from 'lib/types/Asset.types';
 import { Icon } from 'ui-components/Icon';
 import { IconButton } from 'ui-components/IconButton';
 import { Link } from 'ui-components/Link';
@@ -23,17 +23,12 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 	const renderValue = () => {
 		const value = row[columnId as keyof Column];
 
-		if (Array.isArray(value)) {
-			if (value[0]) {
-				return `${value[0].toString()}`;
-			}
-
+		if (typeof value !== 'boolean' && !value) {
 			return '-';
 		}
 
-		if (typeof value === 'bigint') {
-			const d = new Date(Number(value));
-			return new Intl.DateTimeFormat('nl-NL').format(d);
+		if (value instanceof Date) {
+			return new Intl.DateTimeFormat('nl-NL').format(value);
 		}
 
 		if (typeof value === 'boolean') {
@@ -76,7 +71,7 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 			);
 		}
 
-		return value.toString();
+		return `${value.toString()}`;
 	};
 
 	return (

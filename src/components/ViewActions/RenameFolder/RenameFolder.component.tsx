@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
-import { Asset } from 'declarations/dappbox/dappbox.did';
 import { constants } from 'lib/constants';
 import { replaceAsset } from 'lib/functions';
 import { assetsAtom, tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
+import { Asset } from 'lib/types/Asset.types';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';

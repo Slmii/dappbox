@@ -1,6 +1,6 @@
 import { selector } from 'recoil';
 
-import { Asset } from 'declarations/dappbox/dappbox.did';
+import { Asset } from 'lib/types/Asset.types';
 import { assetsAtom } from './atoms';
 
 interface AssetSelector {
@@ -16,7 +16,7 @@ export const assetsSelector = selector<AssetSelector>({
 		const { assets } = get(assetsAtom);
 
 		const getChildAssets = (assetId: number) => {
-			return assets.filter(asset => typeof asset.parentId[0] !== 'undefined' && asset.parentId[0] === assetId);
+			return assets.filter(asset => typeof asset.parentId !== 'undefined' && asset.parentId === assetId);
 		};
 
 		const getParentAsset = (assetId: number) => {
@@ -24,8 +24,8 @@ export const assetsSelector = selector<AssetSelector>({
 		};
 
 		const getParentId = (asset: Asset) => {
-			if (typeof asset.parentId[0] !== 'undefined') {
-				return asset.parentId[0];
+			if (typeof asset.parentId !== 'undefined') {
+				return asset.parentId;
 			}
 
 			return null;
@@ -34,8 +34,8 @@ export const assetsSelector = selector<AssetSelector>({
 		const getRootParent = (assetId: number): Asset | null => {
 			const asset = assets.find(asset => asset.assetId === assetId);
 
-			if (typeof asset?.parentId[0] !== 'undefined') {
-				return getRootParent(asset.parentId[0]);
+			if (typeof asset?.parentId !== 'undefined') {
+				return getRootParent(asset.parentId);
 			}
 
 			return asset ?? null;
