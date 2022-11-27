@@ -5,6 +5,7 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import { useMemo, useState } from 'react';
 import { useRecoilValue } from 'recoil';
@@ -17,6 +18,10 @@ import { Button } from 'ui-components/Button';
 import { Icon } from 'ui-components/Icon';
 import { Link } from 'ui-components/Link';
 import { DrawerLoader } from 'ui-components/Loaders';
+
+const Input = styled('input')({
+	display: 'none'
+});
 
 export const Drawer = () => {
 	const { assets, isLoading } = useRecoilValue(assetsAtom);
@@ -60,22 +65,27 @@ export const Drawer = () => {
 			) : (
 				<>
 					<Box sx={{ padding: constants.SPACING }}>
-						<Button
-							startIcon='addOutlined'
-							label='Upload'
-							variant='contained'
-							color='primary'
-							size='large'
-							fullWidth
-							sx={{
-								borderRadius: 50
-							}}
-						/>
+						<label htmlFor='upload-file'>
+							<Input id='upload-file' multiple type='file' onChange={e => console.log(e.target.files)} />
+							<Button
+								startIcon='addOutlined'
+								label='Upload'
+								variant='contained'
+								color='primary'
+								size='large'
+								fullWidth
+								// @ts-ignore
+								component='span'
+								sx={{
+									borderRadius: 50
+								}}
+							/>
+						</label>
 					</Box>
 					<List
 						dense
 						sx={{
-							fontSize: 16
+							fontSize: theme => theme.typography.fontSize
 						}}
 					>
 						<Link href='/'>
