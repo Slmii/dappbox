@@ -23,6 +23,7 @@ export const ViewActions = () => {
 					}
 				}}
 			>
+				{/* // TODO: move to own component */}
 				<Button
 					label='Add folder'
 					startIcon='addFolderOutlined'
