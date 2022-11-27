@@ -13,7 +13,7 @@ import { Snackbar } from 'ui-components/Snackbar';
 export const Header = () => {
 	const theme = useTheme();
 	const { toggleColorMode } = useContext(ColorModeContext);
-	const { isAuthenticated, principal, signOut, isLoading } = useContext(AuthContext);
+	const { isAuthenticated, principal, signOut } = useContext(AuthContext);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 
 	useInitAssets();
@@ -51,7 +51,7 @@ export const Header = () => {
 			>
 				<>
 					{isAuthenticated ? (
-						<Button label={renderPrincipalId} onClick={handleOnAddressCopy} tooltip='Copy address' />
+						<Button label={renderPrincipalId} onClick={handleOnAddressCopy} tooltip='Copy principal' />
 					) : null}
 				</>
 				<IconButton
@@ -59,9 +59,7 @@ export const Header = () => {
 					label={colorMode === 'dark' ? 'Lights on' : 'Lights off'}
 					onClick={toggleColorMode}
 				/>
-				{isAuthenticated ? (
-					<IconButton icon='signOUt' label='Sign Out' onClick={signOut} disabled={isLoading} />
-				) : null}
+				{isAuthenticated ? <IconButton icon='signOUt' label='Sign out' onClick={signOut} /> : null}
 			</Box>
 			<Snackbar open={isAddressCopied} message='Copied' onClose={() => setIsAddressCopied(false)} />
 		</Appbar>

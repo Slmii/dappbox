@@ -56,7 +56,7 @@ export const Favorites = () => {
 								onClick:
 									asset.assetType === 'folder'
 										? () => navigate(`/${generateAssetPath(asset.assetId)}`)
-										: undefined,
+										: () => alert('TODO: preview'),
 								secondaryAction: {
 									icon: 'favorite',
 									label: 'Remove from favorites',

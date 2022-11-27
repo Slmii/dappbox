@@ -31,14 +31,22 @@ export const ViewActions = () => {
 						color: 'black'
 					}}
 				/>
-				<RenameFolder />
-				{/* // TODO: move to own component */}
-				<Button label='Preview' startIcon='view' variant='outlined' color='inherit' />
-				{/* // TODO: move to own component */}
-				<Button label='Download' startIcon='download' variant='outlined' color='inherit' />
-				<MoveAssets />
-				{/* // TODO: move to own component */}
-				<Button label='Delete' startIcon='delete' color='error' />
+				{selectedRows.length ? (
+					<>
+						<RenameFolder />
+						{selectedRows.some(row => row.assetType === 'file') ? (
+							<>
+								{/* // TODO: move to own component */}
+								<Button label='Preview' startIcon='view' variant='outlined' color='inherit' />
+							</>
+						) : null}
+						{/* // TODO: move to own component */}
+						<Button label='Download' startIcon='download' variant='outlined' color='inherit' />
+						<MoveAssets />
+						{/* // TODO: move to own component */}
+						<Button label='Delete' startIcon='delete' color='error' />
+					</>
+				) : null}
 				<Box
 					sx={{
 						marginLeft: 'auto'

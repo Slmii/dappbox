@@ -17,7 +17,6 @@ import { Button } from 'ui-components/Button';
 import { Icon } from 'ui-components/Icon';
 import { Link } from 'ui-components/Link';
 import { DrawerLoader } from 'ui-components/Loaders';
-import { Menu } from 'ui-components/Menu';
 
 export const Drawer = () => {
 	const { assets, isLoading } = useRecoilValue(assetsAtom);
@@ -60,32 +59,19 @@ export const Drawer = () => {
 				<DrawerLoader />
 			) : (
 				<>
-					<Menu
-						label={
-							<Box sx={{ padding: 1 }}>
-								<Button
-									startIcon='addOutlined'
-									label='Upload'
-									variant='contained'
-									color='primary'
-									size='large'
-									fullWidth
-									sx={{
-										borderRadius: 50
-									}}
-								/>
-							</Box>
-						}
-						id='upload'
-						menu={[
-							{
-								label: 'Upload file'
-							},
-							{
-								label: 'New folder'
-							}
-						]}
-					/>
+					<Box sx={{ padding: constants.SPACING }}>
+						<Button
+							startIcon='addOutlined'
+							label='Upload'
+							variant='contained'
+							color='primary'
+							size='large'
+							fullWidth
+							sx={{
+								borderRadius: 50
+							}}
+						/>
+					</Box>
 					<List
 						dense
 						sx={{
@@ -151,7 +137,7 @@ export const Drawer = () => {
 											size='small'
 											label='Soon'
 											sx={{
-												marginLeft: theme => theme.spacing(constants.SPACING)
+												marginLeft: constants.SPACING
 											}}
 											color='secondary'
 										/>
@@ -169,7 +155,7 @@ export const Drawer = () => {
 											size='small'
 											label='Soon'
 											sx={{
-												marginLeft: theme => theme.spacing(constants.SPACING)
+												marginLeft: constants.SPACING
 											}}
 											color='secondary'
 										/>
