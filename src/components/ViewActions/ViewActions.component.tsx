@@ -1,5 +1,6 @@
 import { useRecoilValue } from 'recoil';
 
+import { constants } from 'lib/constants';
 import { tableStateAtom } from 'lib/recoil';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -18,7 +19,7 @@ export const ViewActions = () => {
 					alignItems: 'center',
 					width: '100%',
 					'& > *:not(:last-child)': {
-						marginRight: 1
+						marginRight: constants.SPACING
 					}
 				}}
 			>

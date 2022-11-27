@@ -1,14 +1,20 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useRecoilState } from 'recoil';
 
+import { constants } from 'lib/constants';
 import { replaceAsset } from 'lib/functions';
-import { assetsAtom } from 'lib/recoil';
+import { useUserAssets } from './useUserAssets';
 
 export const useFavorites = () => {
+	const queryClient = useQueryClient();
+	const { data: assets } = useUserAssets();
 	const [onUndoAssetId, setOnUndoAssetId] = useState<number | null>(null);
-	const [{ assets }, setAssets] = useRecoilState(assetsAtom);
 
 	const handleOnFavoritesToggle = (assetId: number) => {
+		if (!assets) {
+			return;
+		}
+
 		const index = assets.findIndex(asset => asset.assetId === assetId);
 
 		if (index !== -1) {
@@ -18,14 +24,16 @@ export const useFavorites = () => {
 			// the user is making use of the `Undo` button
 			setOnUndoAssetId(asset.assetId);
 
-			setAssets(prevState => ({
-				...prevState,
-				assets: replaceAsset({
+			// TODO: mutate canister
+			// TODO: update cache in react query or invalidate query after udpdate
+			// TODO: move to useMutation call
+			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], () => {
+				return replaceAsset({
 					assets,
 					index,
 					value: { ...asset, isFavorite: !asset.isFavorite }
-				})
-			}));
+				});
+			});
 		}
 	};
 

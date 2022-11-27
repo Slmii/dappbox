@@ -1,7 +1,7 @@
 export const idlFactory = ({ IDL }) => {
   const User = IDL.Record({
     'username' : IDL.Opt(IDL.Text),
-    'created_on' : IDL.Nat64,
+    'created_at' : IDL.Nat64,
     'user_id' : IDL.Principal,
   });
   const ApiError = IDL.Variant({

@@ -10,7 +10,7 @@ export const ToggleGroup = ({ selected, onChange, options }: ToggleGroupProps) =
 		<ToggleButtonGroup
 			orientation='horizontal'
 			exclusive
-			onChange={(e, value) => onChange(value)}
+			onChange={(_, value) => onChange(value)}
 			size='medium'
 			color='primary'
 		>

@@ -1,8 +1,11 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
+import { constants } from 'lib/constants';
 import { getTableAssets, replaceAsset } from 'lib/functions';
-import { assetsAtom, assetsSelector, tableStateAtom } from 'lib/recoil';
+import { useUserAssets } from 'lib/hooks';
+import { assetsSelector, tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
@@ -11,18 +14,25 @@ import { Snackbar } from 'ui-components/Snackbar';
 import { MoveFolderBreadcrumbs } from './Breadcrumbs.component';
 
 export const MoveAssets = () => {
+	const queryClient = useQueryClient();
 	const [moveFolderDialogOpen, setMoveFolderDialogOpen] = useState(false);
 	// State for the current folder (asset) to move to assets in
 	const [selectedFolderAssetId, setSelectedFolderAssetId] = useState<number>(0);
 	// State for showing only children of the selected parentAssetId
 	const [parentAssetId, setParentAssetId] = useState<number>(0);
 	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
+	const { data: assets } = useUserAssets();
 
-	const [{ assets }, setAssets] = useRecoilState(assetsAtom);
+	// const [{ assets }, setAssets] = useRecoilState(assetsAtom);
 	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
+	// TODO: make custom hook of this, using the useUserAssets
 	const { getChildAssets, getParentId, getRootParent } = useRecoilValue(assetsSelector);
 
 	const folderAssets = useMemo(() => {
+		if (!assets) {
+			return [];
+		}
+
 		return getTableAssets({
 			assets,
 			order: 'asc',
@@ -102,14 +112,14 @@ export const MoveAssets = () => {
 
 	const handleOnConfirmMoveAssets = () => {
 		// Make a copy of the current assets
-		let replacingAssets = [...assets];
+		let replacingAssets = [...(assets ?? [])];
 
 		setUndoAssets(replacingAssets);
 
 		for (const assetToMove of assetsToMove) {
 			// Find the index of the asset to move
 			// Here we need to loop through all available assets to find the correct index
-			const index = assets.findIndex(asset => asset.assetId === assetToMove.assetId);
+			const index = (assets ?? []).findIndex(asset => asset.assetId === assetToMove.assetId);
 
 			// Overwrite assets including the asset that's been replaced
 			replacingAssets = replaceAsset({
@@ -122,11 +132,12 @@ export const MoveAssets = () => {
 			});
 		}
 
-		// Update assets in atom state
-		setAssets(prevState => ({
-			...prevState,
-			assets: replacingAssets
-		}));
+		// TODO: mutate canister
+		// TODO: update cache in react query or invalidate query after udpdate
+		// TODO: move to useMutation call
+		queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], () => {
+			return replacingAssets;
+		});
 
 		// Reset selected rows
 		setTableState(prevState => ({
@@ -186,10 +197,12 @@ export const MoveAssets = () => {
 				open={!!undoAssets.length}
 				message='Asset(s) moved successfully'
 				onUndo={() => {
-					setAssets(prevState => ({
-						...prevState,
-						assets: undoAssets
-					}));
+					// TODO: mutate canister
+					// TODO: update cache in react query or invalidate query after udpdate
+					// TODO: move to useMutation call
+					queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], () => {
+						return undoAssets;
+					});
 					setUndoAssets([]);
 				}}
 				onClose={() => setUndoAssets([])}

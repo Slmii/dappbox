@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 
-import { assetsAtom } from 'lib/recoil';
+import { useUserAssets } from 'lib/hooks';
 import { getPageTitle } from 'lib/url';
 
 const breadcrumbsMapping: Record<string, string> = {
@@ -14,10 +13,16 @@ const breadcrumbsMapping: Record<string, string> = {
 
 export const PageTitle = () => {
 	const { pathname } = useLocation();
-	const { assets } = useRecoilValue(assetsAtom);
+	const { data: assets } = useUserAssets();
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const pageTitle = useMemo(() => getPageTitle(pathname, assets), [pathname]);
+	const pageTitle = useMemo(() => {
+		if (!assets) {
+			return '';
+		}
+
+		return getPageTitle(pathname, assets);
+	}, [pathname, assets]);
 
 	return <Helmet title={`${breadcrumbsMapping[pathname] ?? pageTitle} - DappBox`} />;
 };

@@ -1,9 +1,7 @@
-import { useRecoilValue } from 'recoil';
-
 import { ViewActions } from 'components/ViewActions';
 import { ViewAssets } from 'components/ViewAssets';
 import { ViewMode } from 'components/ViewMode';
-import { assetsAtom } from 'lib/recoil';
+import { useUserAssets } from 'lib/hooks';
 import { Box, RowBox } from 'ui-components/Box';
 import { Breadcrumbs } from 'ui-components/Breadcrumbs';
 import { Content, FilesContainer, Main } from 'ui-components/Container';
@@ -11,7 +9,8 @@ import { Divider } from 'ui-components/Divider';
 import { TableLoader } from 'ui-components/Loaders';
 
 export const Home = () => {
-	const { isLoading } = useRecoilValue(assetsAtom);
+	const { data: assets, isLoading } = useUserAssets();
+	const isLoaded = !!assets && !isLoading;
 
 	return (
 		<Main>
@@ -31,8 +30,8 @@ export const Home = () => {
 			<Divider />
 			<Content>
 				<RowBox>
-					{!isLoading && <ViewActions />}
-					<FilesContainer>{isLoading ? <TableLoader /> : <ViewAssets />}</FilesContainer>
+					{isLoaded && <ViewActions />}
+					<FilesContainer>{!isLoaded ? <TableLoader /> : <ViewAssets assets={assets} />}</FilesContainer>
 				</RowBox>
 			</Content>
 		</Main>

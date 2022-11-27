@@ -1,1 +1,1 @@
-export * from './ToggleFroup.component';
+export * from './ToggleGroup.component';

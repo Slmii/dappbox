@@ -1,10 +1,11 @@
 import { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { getTableAssets } from 'lib/functions';
 import { useFavorites } from 'lib/hooks';
-import { assetsAtom, tableStateAtom } from 'lib/recoil';
+import { tableStateAtom } from 'lib/recoil';
+import { Asset } from 'lib/types/Asset.types';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Column, Table } from 'ui-components/Table';
@@ -38,14 +39,13 @@ const columns: Column = {
 	}
 };
 
-export const ViewAssets = () => {
+export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 	const { pathname } = useLocation();
 	const { handleOnFavoritesToggle } = useFavorites();
 	const [{ order, orderBy, selectedRows }, setTableState] = useRecoilState(tableStateAtom);
-	const { assets } = useRecoilValue(assetsAtom);
 
 	/**
-	 * 1. Render assets that are a child of the current assetId in the URL param
+	 * 1. Render assets that are a child of the current assetId in the URL
 	 * 2. Sort assets asc/desc
 	 */
 	const tableAssets = useMemo(() => {

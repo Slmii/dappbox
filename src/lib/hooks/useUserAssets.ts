@@ -1,9 +1,9 @@
 import { Principal } from '@dfinity/principal';
-import { useContext, useEffect } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useQuery } from '@tanstack/react-query';
+import { useContext } from 'react';
 
+import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
-import { assetsAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 
 export const dummyRows: Asset[] = [
@@ -105,37 +105,11 @@ export const dummyRows: Asset[] = [
 	}
 ];
 
-export const useInitAssets = () => {
+export const useUserAssets = () => {
 	const { isAuthenticated } = useContext(AuthContext);
-	const setAssets = useSetRecoilState(assetsAtom);
 
-	useEffect(() => {
-		const init = async () => {
-			if (!isAuthenticated) {
-				return;
-			}
-
-			setAssets({
-				isLoading: true,
-				assets: []
-			});
-
-			// TODO: fetch from canister and remove `sleep`
-			await sleep(2000);
-
-			// Set all assets in recoil state
-			setAssets({
-				isLoading: false,
-				assets: dummyRows
-			});
-		};
-
-		init();
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isAuthenticated]);
+	return useQuery([constants.QUERY_KEYS.USER_ASSETS], {
+		queryFn: () => Promise.resolve(dummyRows),
+		enabled: isAuthenticated
+	});
 };
-
-function sleep(ms: number) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}

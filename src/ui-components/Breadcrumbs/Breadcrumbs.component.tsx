@@ -4,13 +4,12 @@ import MuiLink from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 
-import { assetsAtom } from 'lib/recoil';
+import { useUserAssets } from 'lib/hooks';
 import { getUrlPathToAsset } from 'lib/url';
 
 export const Breadcrumbs = () => {
-	const { assets } = useRecoilValue(assetsAtom);
+	const { data: assets } = useUserAssets();
 	const { pathname } = useLocation();
 
 	// Split param on `/` and filter out empty values
@@ -19,7 +18,7 @@ export const Breadcrumbs = () => {
 
 	const breadcrumbs = useMemo(() => {
 		const breadcrumbs = params.map(param => {
-			const asset = assets.find(asset => asset.assetId === Number(param));
+			const asset = assets?.find(asset => asset.assetId === Number(param));
 			return {
 				name: asset?.name ?? '',
 				assetId: asset?.assetId ?? 0
@@ -30,6 +29,10 @@ export const Breadcrumbs = () => {
 	}, [assets, params]);
 
 	const generateBreadcrumbPath = (assetId: number) => {
+		if (!assets) {
+			return '';
+		}
+
 		return getUrlPathToAsset(assetId, assets)
 			.map(asset => encodeURIComponent(asset.assetId))
 			.join('/');

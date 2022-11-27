@@ -4,7 +4,7 @@ import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { api } from 'api/index';
-import { User } from 'declarations/users/users.did';
+import { User } from 'lib/types/User.types';
 import { Snackbar } from 'ui-components/Snackbar';
 
 interface ValidateSession {

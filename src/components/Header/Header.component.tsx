@@ -1,8 +1,8 @@
 import { useTheme } from '@mui/material/styles';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
+import { constants } from 'lib/constants';
 import { AuthContext, ColorModeContext } from 'lib/context';
-import { useInitAssets } from 'lib/hooks';
 import { Appbar } from 'ui-components/AppBar';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -15,8 +15,6 @@ export const Header = () => {
 	const { toggleColorMode } = useContext(ColorModeContext);
 	const { isAuthenticated, principal, signOut } = useContext(AuthContext);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
-
-	useInitAssets();
 
 	const renderPrincipalId = useMemo(() => {
 		if (principal) {
@@ -45,7 +43,7 @@ export const Header = () => {
 					display: 'flex',
 					alignItems: 'center',
 					'& > *:not(:last-child)': {
-						marginRight: 1
+						marginRight: constants.SPACING
 					}
 				}}
 			>

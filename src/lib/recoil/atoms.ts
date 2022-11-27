@@ -9,21 +9,6 @@ export interface TableState {
 	orderBy: keyof Asset;
 }
 
-export interface AssetsState {
-	assets: Asset[];
-	isLoading: boolean;
-}
-
-/**
- * Atom for all assets
- */
-export const assetsAtom = atom<AssetsState>({
-	key: 'assetsAtom',
-	default: {
-		assets: [],
-		isLoading: false
-	}
-});
 /**
  * Atom for current table state (order, orderBy and selectedRows)
  */

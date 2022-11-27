@@ -8,10 +8,9 @@ import ListItemText from '@mui/material/ListItemText';
 import { styled } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import { useMemo, useState } from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { constants } from 'lib/constants';
-import { assetsAtom } from 'lib/recoil';
+import { useUserAssets } from 'lib/hooks';
 import { getUrlPathToAsset } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -24,25 +23,35 @@ const Input = styled('input')({
 });
 
 export const Drawer = () => {
-	const { assets, isLoading } = useRecoilValue(assetsAtom);
-	const [open, setOpen] = useState(false);
+	const { data: assets, isLoading } = useUserAssets();
+	const [foldersOpen, setFoldersOpen] = useState(false);
 
 	const folders = useMemo(() => {
+		if (!assets) {
+			return [];
+		}
+
 		return assets.filter(asset => asset.assetType === 'folder');
 	}, [assets]);
 
 	const handleClick = () => {
-		setOpen(!open);
+		setFoldersOpen(!foldersOpen);
 	};
 
 	const generateAssetPath = useMemo(
 		() => (assetId: number) => {
+			if (!assets) {
+				return '';
+			}
+
 			return getUrlPathToAsset(assetId, assets)
 				.map(asset => encodeURIComponent(asset.assetId))
 				.join('/');
 		},
 		[assets]
 	);
+
+	const isLoaded = !!assets && !isLoading;
 
 	return (
 		<MuiDrawer
@@ -60,7 +69,7 @@ export const Drawer = () => {
 			variant='permanent'
 		>
 			<Toolbar />
-			{isLoading ? (
+			{!isLoaded ? (
 				<DrawerLoader />
 			) : (
 				<>
@@ -95,10 +104,10 @@ export const Drawer = () => {
 						</Link>
 						<ListItem button onClick={handleClick}>
 							<ListItemText disableTypography primary='Folders' />
-							<Icon icon={open ? 'expandLess' : 'expandMore'} />
+							<Icon icon={foldersOpen ? 'expandLess' : 'expandMore'} />
 						</ListItem>
 						{folders.length ? (
-							<Collapse in={open} timeout='auto' unmountOnExit>
+							<Collapse in={foldersOpen} timeout='auto' unmountOnExit>
 								<List
 									dense
 									component='div'
@@ -142,7 +151,7 @@ export const Drawer = () => {
 								disableTypography
 								primary={
 									<>
-										NFT's
+										NFTs
 										<Chip
 											size='small'
 											label='Soon'

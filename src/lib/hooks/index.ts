@@ -1,3 +1,3 @@
 export * from './useLocalstorage';
-export * from './useInitAssets';
+export * from './useUserAssets';
 export * from './useFavorites';

@@ -16,6 +16,8 @@
 		"@mui/icons-material": "^5.10.15",
 		"@mui/material": "^5.10.15",
 		"@mui/utils": "^5.10.15",
+		"@tanstack/react-query": "^4.18.0",
+		"date-fns": "^2.29.3",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-helmet-async": "^1.3.0",

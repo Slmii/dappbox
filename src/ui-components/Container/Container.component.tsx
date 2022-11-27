@@ -20,7 +20,7 @@ export const Content = ({ children }: PropsWithChildren) => {
 	return (
 		<Box
 			sx={{
-				padding: 1
+				padding: constants.SPACING
 			}}
 		>
 			{children}

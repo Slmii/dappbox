@@ -8,7 +8,7 @@ export type Result = { 'Ok' : User } |
   { 'Err' : ApiError };
 export interface User {
   'username' : [] | [string],
-  'created_on' : bigint,
+  'created_at' : bigint,
   'user_id' : Principal,
 }
 export interface _SERVICE {

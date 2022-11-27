@@ -1,8 +1,7 @@
-import { ActorSubclass } from '@dfinity/agent';
+import { Actor as DfinityActor, ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
 
-import { createActor } from 'declarations/users';
-import { _SERVICE } from 'declarations/users/users.did';
+import { idlFactory } from 'declarations/users';
 import canisters from './canister_ids.json';
 
 type Controller = keyof typeof canisters;
@@ -11,7 +10,7 @@ const isLocal = environment === 'local';
 
 export abstract class Actor {
 	static authClient: AuthClient | undefined = undefined;
-	static actor: Record<string, ActorSubclass<_SERVICE>> = {};
+	static actor: Record<string, ActorSubclass<unknown>> = {};
 
 	static async setAuthClient(authClient: AuthClient) {
 		this.authClient = authClient;
@@ -25,9 +24,9 @@ export abstract class Actor {
 		return AuthClient.create();
 	}
 
-	static async getActor(controller: Controller) {
+	static async getActor<T>(controller: Controller): Promise<ActorSubclass<T>> {
 		if (this.actor[controller]) {
-			return this.actor[controller];
+			return this.actor[controller] as ActorSubclass<T>;
 		}
 
 		const authClient = await this.getAuthClient();
@@ -35,11 +34,12 @@ export abstract class Actor {
 		const canisterEnv = canisters[controller];
 		const canisterId = canisterEnv[environment as keyof typeof canisterEnv];
 
-		const actor = createActor(canisterId, {
-			agentOptions: {
-				identity: authClient.getIdentity(),
-				host: isLocal ? 'http://localhost:8000' : 'https://ic0.app'
-			}
+		const actor = DfinityActor.createActor<T>(idlFactory, {
+			agent: new HttpAgent({
+				host: isLocal ? 'http://localhost:8000' : 'https://ic0.app',
+				identity: authClient.getIdentity()
+			}),
+			canisterId: canisterId
 		});
 
 		this.actor[controller] = actor;

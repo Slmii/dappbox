@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
-import { useRecoilValue } from 'recoil';
 
 import { constants } from 'lib/constants';
-import { assetsAtom } from 'lib/recoil';
+import { useUserAssets } from 'lib/hooks';
 import { getUrlPathToAsset } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Icon } from 'ui-components/Icon';
@@ -15,13 +14,17 @@ export const MoveFolderBreadcrumbs = ({
 	parentAssetId: number;
 	onBreadcrumbClick: (assetId: number) => void;
 }) => {
-	const { assets } = useRecoilValue(assetsAtom);
+	const { data: assets } = useUserAssets();
 
 	const breadcrumbs = useMemo(() => {
+		if (!assets) {
+			return [];
+		}
+
 		return getUrlPathToAsset(parentAssetId, assets);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [parentAssetId]);
+	}, [parentAssetId, assets]);
 
 	return (
 		<Box

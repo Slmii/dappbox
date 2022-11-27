@@ -1,9 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 
-import { useFavorites } from 'lib/hooks';
-import { assetsAtom } from 'lib/recoil';
+import { useFavorites, useUserAssets } from 'lib/hooks';
 import { getUrlPathToAsset } from 'lib/url';
 import { Content, Main } from 'ui-components/Container';
 import { Divider } from 'ui-components/Divider';
@@ -15,15 +13,23 @@ import { PageTitle } from 'ui-components/Typography';
 export const Favorites = () => {
 	const navigate = useNavigate();
 	const [snackbarOpen, setSnackbarOpen] = useState(false);
-	const { assets, isLoading } = useRecoilValue(assetsAtom);
+	const { data: assets, isLoading } = useUserAssets();
 	const { handleOnFavoritesToggle, handleOnUndo } = useFavorites();
 
 	const favoriteAssets = useMemo(() => {
+		if (!assets) {
+			return [];
+		}
+
 		return assets.filter(asset => asset.isFavorite);
 	}, [assets]);
 
 	const generateAssetPath = useMemo(
 		() => (assetId: number) => {
+			if (!assets) {
+				return '';
+			}
+
 			return getUrlPathToAsset(assetId, assets)
 				.map(asset => encodeURIComponent(asset.assetId))
 				.join('/');
@@ -37,6 +43,8 @@ export const Favorites = () => {
 		setSnackbarOpen(true);
 	};
 
+	const isLoaded = !!assets && !isLoading;
+
 	return (
 		<Main>
 			<Content>
@@ -45,7 +53,7 @@ export const Favorites = () => {
 			<Divider />
 			<Content>
 				<>
-					{isLoading ? (
+					{!isLoaded ? (
 						<TableLoader />
 					) : (
 						<AssetsList
