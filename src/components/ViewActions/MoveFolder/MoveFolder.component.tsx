@@ -1,11 +1,11 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { constants } from 'lib/constants';
 import { getTableAssets, replaceAsset } from 'lib/functions';
 import { useUserAssets } from 'lib/hooks';
-import { assetsSelector, tableStateAtom } from 'lib/recoil';
+import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
@@ -16,17 +16,14 @@ import { MoveFolderBreadcrumbs } from './Breadcrumbs.component';
 export const MoveAssets = () => {
 	const queryClient = useQueryClient();
 	const [moveFolderDialogOpen, setMoveFolderDialogOpen] = useState(false);
-	// State for the current folder (asset) to move to assets in
+	// State for folder's assetId where the selected items will be moved to
 	const [selectedFolderAssetId, setSelectedFolderAssetId] = useState<number>(0);
-	// State for showing only children of the selected parentAssetId
+	// State for showing children of the selected folder
 	const [parentAssetId, setParentAssetId] = useState<number>(0);
 	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
-	const { data: assets } = useUserAssets();
+	const { data: assets, getChildAssets, getParentId, getRootParent } = useUserAssets();
 
-	// const [{ assets }, setAssets] = useRecoilState(assetsAtom);
 	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
-	// TODO: make custom hook of this, using the useUserAssets
-	const { getChildAssets, getParentId, getRootParent } = useRecoilValue(assetsSelector);
 
 	const folderAssets = useMemo(() => {
 		if (!assets) {
@@ -44,7 +41,7 @@ export const MoveAssets = () => {
 	// Filter out assets who cannot be moved to the same folder or if the folder asset is being moved to a child
 	const assetsToMove = useMemo(() => {
 		return selectedRows.filter(asset => {
-			const parentId = getParentId(asset);
+			const parentId = getParentId(asset.assetId);
 
 			// Asset's parentId cannot be the same as the selected folder's assetId
 			// This means that an asset cannot be moved to the current position of the tree, because

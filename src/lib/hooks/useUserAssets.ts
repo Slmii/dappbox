@@ -108,8 +108,72 @@ export const dummyRows: Asset[] = [
 export const useUserAssets = () => {
 	const { isAuthenticated } = useContext(AuthContext);
 
-	return useQuery([constants.QUERY_KEYS.USER_ASSETS], {
+	const data = useQuery([constants.QUERY_KEYS.USER_ASSETS], {
 		queryFn: () => Promise.resolve(dummyRows),
 		enabled: isAuthenticated
 	});
+
+	const getChildAssets = (assetId: number) => {
+		if (!data.data) {
+			return [];
+		}
+
+		return data.data.filter(asset => typeof asset.parentId !== 'undefined' && asset.parentId === assetId);
+	};
+
+	const getParentAsset = (assetId: number) => {
+		return data.data?.find(asset => asset.assetId === assetId);
+	};
+
+	const getParentId = (assetId: number) => {
+		const asset = data.data?.find(asset => asset.assetId === assetId);
+
+		if (asset?.parentId) {
+			return asset.parentId;
+		}
+
+		return undefined;
+	};
+
+	const getRootParent = (assetId: number): Asset | undefined => {
+		const asset = data.data?.find(asset => asset.assetId === assetId);
+
+		if (asset?.parentId) {
+			return getRootParent(asset.parentId);
+		}
+
+		return asset;
+	};
+
+	return {
+		...data,
+		getChildAssets,
+		getParentAsset,
+		getRootParent,
+		getParentId
+	};
 };
+
+// export const useUserAsset = (assetId: number) =>
+// 	useUserAssets<Asset | undefined>(assets => assets.find(asset => asset.assetId === assetId));
+
+// 	export const useChildAssets = (assetId: number) =>
+// 	useUserAssets<Asset[]>(assets => assets.filter(asset => asset.parentId === assetId));
+
+// export const useParentAsset = (assetId: number) =>
+// 	useUserAssets<Asset | undefined>(assets => assets.find(asset => asset.assetId === assetId));
+
+// export const useRootParent = (assetId: number) =>
+// 	useUserAssets<Asset | undefined>(assets => {
+// 		const getRootParent = (assetId: number): Asset | undefined => {
+// 			const asset = assets.find(asset => asset.assetId === assetId);
+
+// 			if (asset?.parentId) {
+// 				return getRootParent(asset.parentId);
+// 			}
+
+// 			return asset;
+// 		};
+
+// 		return getRootParent(assetId);
+// 	});
