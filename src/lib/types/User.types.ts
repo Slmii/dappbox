@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 
 export interface User {
-	userId: Principal;
+	id: Principal;
 	username?: string;
 	createdAt: Date;
 }

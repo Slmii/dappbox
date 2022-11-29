@@ -13,19 +13,19 @@ export const AssetsList = ({ assets }: AssetsListProps) => {
 		<List>
 			{assets.map(asset => (
 				<ListItem
-					key={asset.assetId}
+					key={asset.id}
 					disablePadding
 					secondaryAction={
 						asset.secondaryAction ? (
 							<IconButton
 								icon={asset.secondaryAction.icon}
 								label={asset.secondaryAction.label}
-								onClick={() => asset?.secondaryAction?.onClick(asset.assetId)}
+								onClick={() => asset?.secondaryAction?.onClick(asset.id)}
 							/>
 						) : undefined
 					}
 				>
-					<ListItemButton onClick={() => asset.onClick?.(asset.assetId)} selected={asset.isSelected}>
+					<ListItemButton onClick={() => asset.onClick?.(asset.id)} selected={asset.isSelected}>
 						{asset.icon ? (
 							<ListItemIcon>
 								<Icon icon={asset.icon} color='info' spacingRight />

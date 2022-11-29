@@ -1,11 +1,13 @@
 import { useRecoilValue } from 'recoil';
 
-import { constants } from 'lib/constants';
 import { tableStateAtom } from 'lib/recoil';
-import { Box } from 'ui-components/Box';
-import { Button } from 'ui-components/Button';
+import { Box, Column } from 'ui-components/Box';
 import { Caption } from 'ui-components/Typography';
+import { AddFolder } from './AddFolder';
+import { Delete } from './Delete';
+import { Download } from './Download';
 import { MoveAssets } from './MoveFolder';
+import { Preview } from './Preview';
 import { RenameFolder } from './RenameFolder';
 
 export const ViewActions = () => {
@@ -13,42 +15,13 @@ export const ViewActions = () => {
 
 	return (
 		<>
-			<Box
-				sx={{
-					display: 'flex',
-					alignItems: 'center',
-					width: '100%',
-					'& > *:not(:last-child)': {
-						marginRight: constants.SPACING
-					}
-				}}
-			>
-				{/* // TODO: move to own component */}
-				<Button
-					label='Add folder'
-					startIcon='addFolderOutlined'
-					variant='contained'
-					color='inherit'
-					sx={{
-						color: 'black'
-					}}
-				/>
-				{selectedRows.length ? (
-					<>
-						<RenameFolder />
-						{selectedRows.some(row => row.assetType === 'file') ? (
-							<>
-								{/* // TODO: move to own component */}
-								<Button label='Preview' startIcon='view' variant='outlined' color='inherit' />
-							</>
-						) : null}
-						{/* // TODO: move to own component */}
-						<Button label='Download' startIcon='download' variant='outlined' color='inherit' />
-						<MoveAssets />
-						{/* // TODO: move to own component */}
-						<Button label='Delete' startIcon='delete' color='error' />
-					</>
-				) : null}
+			<Column>
+				<AddFolder />
+				<RenameFolder />
+				<Preview />
+				<Download />
+				<MoveAssets />
+				<Delete />
 				<Box
 					sx={{
 						marginLeft: 'auto'
@@ -56,7 +29,7 @@ export const ViewActions = () => {
 				>
 					<Caption title={`${selectedRows.length} selected`} />
 				</Box>
-			</Box>
+			</Column>
 		</>
 	);
 };

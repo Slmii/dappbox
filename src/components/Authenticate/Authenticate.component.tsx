@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { AuthContext } from 'lib/context';
-import { Box, RowBox } from 'ui-components/Box';
+import { Box, Row } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Divider } from 'ui-components/Divider';
 import { PageTitle } from 'ui-components/Typography';
@@ -25,7 +25,7 @@ export const Authenticate = () => {
 				textAlign: 'center'
 			}}
 		>
-			<RowBox>
+			<Row>
 				<PageTitle title='DappBox' />
 				<Divider />
 				<Button
@@ -37,7 +37,7 @@ export const Authenticate = () => {
 					startImage='/assets/dfn.svg'
 					size='large'
 				/>
-			</RowBox>
+			</Row>
 		</Box>
 	);
 };

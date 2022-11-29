@@ -18,10 +18,10 @@ export const Breadcrumbs = () => {
 
 	const breadcrumbs = useMemo(() => {
 		const breadcrumbs = params.map(param => {
-			const asset = assets?.find(asset => asset.assetId === Number(param));
+			const asset = assets?.find(asset => asset.id === Number(param));
 			return {
 				name: asset?.name ?? '',
-				assetId: asset?.assetId ?? 0
+				id: asset?.id ?? 0
 			};
 		});
 
@@ -34,7 +34,7 @@ export const Breadcrumbs = () => {
 		}
 
 		return getUrlPathToAsset(assetId, assets)
-			.map(asset => encodeURIComponent(asset.assetId))
+			.map(asset => encodeURIComponent(asset.id))
 			.join('/');
 	};
 
@@ -51,7 +51,7 @@ export const Breadcrumbs = () => {
 			{breadcrumbs.map((breadcrumb, idx) => {
 				if (breadcrumbs.length === idx + 1) {
 					return (
-						<Typography key={breadcrumb.assetId} color='text.primary'>
+						<Typography key={breadcrumb.id} color='text.primary'>
 							{breadcrumb.name}
 						</Typography>
 					);
@@ -59,11 +59,11 @@ export const Breadcrumbs = () => {
 
 				return (
 					<MuiLink
-						key={breadcrumb.assetId}
+						key={breadcrumb.id}
 						component={Link}
 						underline='hover'
 						color='inherit'
-						to={generateBreadcrumbPath(breadcrumb.assetId)}
+						to={generateBreadcrumbPath(breadcrumb.id)}
 					>
 						{breadcrumb.name}
 					</MuiLink>

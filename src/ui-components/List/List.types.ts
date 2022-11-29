@@ -5,7 +5,7 @@ export interface AssetsListProps {
 }
 
 interface Asset {
-	assetId: number;
+	id: number;
 	name: string;
 	icon?: Icons;
 	isSelected?: boolean;

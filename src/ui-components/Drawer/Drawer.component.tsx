@@ -31,7 +31,7 @@ export const Drawer = () => {
 			return [];
 		}
 
-		return assets.filter(asset => asset.assetType === 'folder');
+		return assets.filter(asset => asset.type === 'folder');
 	}, [assets]);
 
 	const handleClick = () => {
@@ -45,7 +45,7 @@ export const Drawer = () => {
 			}
 
 			return getUrlPathToAsset(assetId, assets)
-				.map(asset => encodeURIComponent(asset.assetId))
+				.map(asset => encodeURIComponent(asset.id))
 				.join('/');
 		},
 		[assets]
@@ -119,7 +119,7 @@ export const Drawer = () => {
 									}}
 								>
 									{folders.map(folder => (
-										<Link key={folder.assetId} href={generateAssetPath(folder.assetId)}>
+										<Link key={folder.id} href={generateAssetPath(folder.id)}>
 											<ListItem button sx={{ pl: 2 }}>
 												<ListItemIcon>
 													<Icon icon='folder' fontSize='small' color='info' />

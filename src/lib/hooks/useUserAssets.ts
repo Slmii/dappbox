@@ -8,10 +8,10 @@ import { Asset } from 'lib/types/Asset.types';
 
 export const dummyRows: Asset[] = [
 	{
-		assetId: 3,
+		id: 3,
 		userId: Principal.fromText('2vxsx-fae'),
 		parentId: undefined,
-		assetType: 'file',
+		type: 'file',
 		name: 'Test file A',
 		extension: 'txt',
 		mimeType: 'txt',
@@ -20,10 +20,10 @@ export const dummyRows: Asset[] = [
 		createdAt: new Date()
 	},
 	{
-		assetId: 6,
+		id: 6,
 		userId: Principal.fromText('2vxsx-fae'),
 		parentId: 4,
-		assetType: 'file',
+		type: 'file',
 		name: 'Test file B-1-B',
 		extension: 'png',
 		mimeType: 'png',
@@ -32,10 +32,10 @@ export const dummyRows: Asset[] = [
 		createdAt: new Date()
 	},
 	{
-		assetId: 1,
+		id: 1,
 		userId: Principal.fromText('2vxsx-fae'),
 		parentId: undefined,
-		assetType: 'folder',
+		type: 'folder',
 		name: 'Test folder A',
 		extension: undefined,
 		mimeType: undefined,
@@ -44,10 +44,10 @@ export const dummyRows: Asset[] = [
 		createdAt: new Date()
 	},
 	{
-		assetId: 2,
+		id: 2,
 		userId: Principal.fromText('2vxsx-fae'),
 		parentId: undefined,
-		assetType: 'folder',
+		type: 'folder',
 		name: 'Test folder B',
 		extension: undefined,
 		mimeType: undefined,
@@ -56,10 +56,10 @@ export const dummyRows: Asset[] = [
 		createdAt: new Date()
 	},
 	{
-		assetId: 4,
+		id: 4,
 		userId: Principal.fromText('2vxsx-fae'),
 		parentId: 2,
-		assetType: 'folder',
+		type: 'folder',
 		name: 'Test folder B-1',
 		extension: undefined,
 		mimeType: undefined,
@@ -68,10 +68,10 @@ export const dummyRows: Asset[] = [
 		createdAt: new Date()
 	},
 	{
-		assetId: 7,
+		id: 7,
 		userId: Principal.fromText('2vxsx-fae'),
 		parentId: undefined,
-		assetType: 'file',
+		type: 'file',
 		name: 'Test file B',
 		extension: 'pdf',
 		mimeType: 'pdf',
@@ -80,10 +80,10 @@ export const dummyRows: Asset[] = [
 		createdAt: new Date()
 	},
 	{
-		assetId: 8,
+		id: 8,
 		userId: Principal.fromText('2vxsx-fae'),
 		parentId: 2,
-		assetType: 'file',
+		type: 'file',
 		name: 'Test file C',
 		extension: 'pdf',
 		mimeType: 'pdf',
@@ -92,10 +92,10 @@ export const dummyRows: Asset[] = [
 		createdAt: new Date()
 	},
 	{
-		assetId: 5,
+		id: 5,
 		userId: Principal.fromText('2vxsx-fae'),
 		parentId: 4,
-		assetType: 'folder',
+		type: 'folder',
 		name: 'Test folder B-1-A',
 		extension: undefined,
 		mimeType: undefined,
@@ -121,12 +121,28 @@ export const useUserAssets = () => {
 		return data.data.filter(asset => typeof asset.parentId !== 'undefined' && asset.parentId === assetId);
 	};
 
+	const getNestedChildAssets = (assetId: number): Asset[] => {
+		const childAssets = getChildAssets(assetId);
+
+		const assets: Asset[] = [];
+
+		for (const childAsset of childAssets) {
+			if (childAsset.type === 'folder') {
+				assets.push(...getNestedChildAssets(childAsset.id));
+			}
+
+			assets.push(childAsset);
+		}
+
+		return assets;
+	};
+
 	const getParentAsset = (assetId: number) => {
-		return data.data?.find(asset => asset.assetId === assetId);
+		return data.data?.find(asset => asset.id === assetId);
 	};
 
 	const getParentId = (assetId: number) => {
-		const asset = data.data?.find(asset => asset.assetId === assetId);
+		const asset = data.data?.find(asset => asset.id === assetId);
 
 		if (asset?.parentId) {
 			return asset.parentId;
@@ -136,7 +152,7 @@ export const useUserAssets = () => {
 	};
 
 	const getRootParent = (assetId: number): Asset | undefined => {
-		const asset = data.data?.find(asset => asset.assetId === assetId);
+		const asset = data.data?.find(asset => asset.id === assetId);
 
 		if (asset?.parentId) {
 			return getRootParent(asset.parentId);
@@ -148,6 +164,7 @@ export const useUserAssets = () => {
 	return {
 		...data,
 		getChildAssets,
+		getNestedChildAssets,
 		getParentAsset,
 		getRootParent,
 		getParentId
@@ -155,18 +172,18 @@ export const useUserAssets = () => {
 };
 
 // export const useUserAsset = (assetId: number) =>
-// 	useUserAssets<Asset | undefined>(assets => assets.find(asset => asset.assetId === assetId));
+// 	useUserAssets<Asset | undefined>(assets => assets.find(asset => asset.id === assetId));
 
 // 	export const useChildAssets = (assetId: number) =>
 // 	useUserAssets<Asset[]>(assets => assets.filter(asset => asset.parentId === assetId));
 
 // export const useParentAsset = (assetId: number) =>
-// 	useUserAssets<Asset | undefined>(assets => assets.find(asset => asset.assetId === assetId));
+// 	useUserAssets<Asset | undefined>(assets => assets.find(asset => asset.id === assetId));
 
 // export const useRootParent = (assetId: number) =>
 // 	useUserAssets<Asset | undefined>(assets => {
 // 		const getRootParent = (assetId: number): Asset | undefined => {
-// 			const asset = assets.find(asset => asset.assetId === assetId);
+// 			const asset = assets.find(asset => asset.id === assetId);
 
 // 			if (asset?.parentId) {
 // 				return getRootParent(asset.parentId);

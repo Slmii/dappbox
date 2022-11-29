@@ -38,7 +38,7 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 						icon={value ? column.icon : column.iconAlt}
 						onClick={e => {
 							e.stopPropagation();
-							onFavoriteToggle(row.assetId);
+							onFavoriteToggle(row.id);
 						}}
 						label={value ? 'Remove from favorites' : 'Add to favorites'}
 					/>
@@ -46,18 +46,16 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 			}
 		}
 
-		if (row.assetType === 'folder') {
+		if (row.type === 'folder') {
 			return (
 				<Link
-					href={`${pathname.split('/').filter(Boolean).join('/')}/${encodeURIComponent(
-						row.assetId.toString()
-					)}`}
+					href={`${pathname.split('/').filter(Boolean).join('/')}/${encodeURIComponent(row.id.toString())}`}
 					onClick={e => e.stopPropagation()}
 				>
 					{value.toString()}
 				</Link>
 			);
-		} else if (row.assetType === 'file') {
+		} else if (row.type === 'file') {
 			return (
 				<Box
 					sx={{
@@ -75,7 +73,7 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 	};
 
 	return (
-		<MuiTableCell key={`${columnId}${row.assetId}`} align={column.alignment}>
+		<MuiTableCell key={`${columnId}${row.id}`} align={column.alignment}>
 			<Box
 				sx={{
 					display: '-webkit-box',
@@ -92,7 +90,7 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 					}}
 				>
 					{columnId === 'name' ? (
-						<Icon icon={row.assetType === 'folder' ? 'folder' : 'download'} color='info' spacingRight />
+						<Icon icon={row.type === 'folder' ? 'folder' : 'download'} color='info' spacingRight />
 					) : null}
 					{renderValue()}
 				</Box>
@@ -193,7 +191,7 @@ export const Table = ({
 	};
 
 	const handleClick = (_event: React.MouseEvent<unknown>, asset: Asset) => {
-		const selectedIndex = selectedRows.findIndex(row => row.assetId === asset.assetId);
+		const selectedIndex = selectedRows.findIndex(row => row.id === asset.id);
 		let newSelected: Asset[] = [];
 
 		if (selectedIndex === -1) {
@@ -212,7 +210,7 @@ export const Table = ({
 		setSelectedRows(newSelected);
 	};
 
-	const isSelected = (assetId: number) => selectedRows.findIndex(row => row.assetId === assetId) !== -1;
+	const isSelected = (assetId: number) => selectedRows.findIndex(row => row.id === assetId) !== -1;
 
 	return (
 		<TableContainer
@@ -233,7 +231,7 @@ export const Table = ({
 				/>
 				<TableBody>
 					{rows.map((row, index) => {
-						const isItemSelected = isSelected(row.assetId);
+						const isItemSelected = isSelected(row.id);
 						const labelId = `enhanced-table-checkbox-${index}`;
 
 						return (
@@ -258,7 +256,7 @@ export const Table = ({
 								</MuiTableCell>
 								{Object.entries(columns).map(([columnId, column]) => (
 									<TableCell
-										key={`${columnId}${row.assetId}`}
+										key={`${columnId}${row.id}`}
 										row={row}
 										columnId={columnId as keyof Column}
 										column={column}

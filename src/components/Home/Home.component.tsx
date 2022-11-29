@@ -2,7 +2,7 @@ import { ViewActions } from 'components/ViewActions';
 import { ViewAssets } from 'components/ViewAssets';
 import { ViewMode } from 'components/ViewMode';
 import { useUserAssets } from 'lib/hooks';
-import { Box, RowBox } from 'ui-components/Box';
+import { Box, Row } from 'ui-components/Box';
 import { Breadcrumbs } from 'ui-components/Breadcrumbs';
 import { Content, FilesContainer, Main } from 'ui-components/Container';
 import { Divider } from 'ui-components/Divider';
@@ -29,10 +29,10 @@ export const Home = () => {
 			</Content>
 			<Divider />
 			<Content>
-				<RowBox>
+				<Row>
 					{isLoaded && <ViewActions />}
 					<FilesContainer>{!isLoaded ? <TableLoader /> : <ViewAssets assets={assets} />}</FilesContainer>
-				</RowBox>
+				</Row>
 			</Content>
 		</Main>
 	);

@@ -1,10 +1,10 @@
 import { Principal } from '@dfinity/principal';
 
 export interface Asset {
-	assetId: number;
+	id: number;
 	userId: Principal;
 	parentId?: number;
-	assetType: 'folder' | 'file';
+	type: 'folder' | 'file';
 	name: string;
 	size?: number;
 	mimeType?: string;

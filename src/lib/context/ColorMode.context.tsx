@@ -61,7 +61,16 @@ export const ColorModeProvider = ({ children }: PropsWithChildren) => {
 			shape: {
 				borderRadius: 4
 			},
-			spacing: 16
+			spacing: 16,
+			components: {
+				MuiButton: {
+					styleOverrides: {
+						root: {
+							textTransform: 'none'
+						}
+					}
+				}
+			}
 		});
 
 		theme = responsiveFontSizes(theme);

@@ -16,13 +16,13 @@ import { MoveFolderBreadcrumbs } from './Breadcrumbs.component';
 export const MoveAssets = () => {
 	const queryClient = useQueryClient();
 	const [moveFolderDialogOpen, setMoveFolderDialogOpen] = useState(false);
-	// State for folder's assetId where the selected items will be moved to
+	// State of the selected folder for the items to move
 	const [selectedFolderAssetId, setSelectedFolderAssetId] = useState<number>(0);
 	// State for showing children of the selected folder
 	const [parentAssetId, setParentAssetId] = useState<number>(0);
 	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
-	const { data: assets, getChildAssets, getParentId, getRootParent } = useUserAssets();
 
+	const { data: assets, getChildAssets, getParentId, getRootParent } = useUserAssets();
 	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
 
 	const folderAssets = useMemo(() => {
@@ -35,13 +35,13 @@ export const MoveAssets = () => {
 			order: 'asc',
 			orderBy: 'name',
 			assetId: parentAssetId
-		}).filter(asset => asset.assetType === 'folder');
+		}).filter(asset => asset.type === 'folder');
 	}, [assets, parentAssetId]);
 
 	// Filter out assets who cannot be moved to the same folder or if the folder asset is being moved to a child
 	const assetsToMove = useMemo(() => {
 		return selectedRows.filter(asset => {
-			const parentId = getParentId(asset.assetId);
+			const parentId = getParentId(asset.id);
 
 			// Asset's parentId cannot be the same as the selected folder's assetId
 			// This means that an asset cannot be moved to the current position of the tree, because
@@ -52,19 +52,19 @@ export const MoveAssets = () => {
 
 			// Asset's Id cannot be the same as the selected folder's assetId
 			// This means that an asset cannot be moved to its own position in the tree
-			if (asset.assetId === selectedFolderAssetId) {
+			if (asset.id === selectedFolderAssetId) {
 				return false;
 			}
 
-			if (asset.assetType === 'folder') {
-				const rootAsset = getRootParent(asset.assetId);
+			if (asset.type === 'folder') {
+				const rootAsset = getRootParent(asset.id);
 
 				// If root (meaning the asset has no parentId)
 				if (rootAsset) {
 					// If the root's assetId is equal to the selected folder asset id, then
 					// it's not allowed to move, because it's unnecessary to move an asset
 					// to its own location in the tree
-					if (rootAsset.assetId !== selectedFolderAssetId) {
+					if (rootAsset.id !== selectedFolderAssetId) {
 						// Get root asset of the selected folder
 						const rootAssetOfSelectedFolder = getRootParent(selectedFolderAssetId);
 
@@ -72,7 +72,7 @@ export const MoveAssets = () => {
 						// assetId of the root asset to be moved.
 						// If this is the case, it means that the user is trying to move
 						// the root asset to one of its children in the tree
-						return rootAssetOfSelectedFolder?.assetId === rootAsset.assetId ? false : true;
+						return rootAssetOfSelectedFolder?.id === rootAsset.id ? false : true;
 					}
 
 					// Root by default is always allowed to move
@@ -83,7 +83,7 @@ export const MoveAssets = () => {
 				// Example:
 				// A1 > A2 > A3
 				// Moving A1 to a lower position is not allowed, same as moving A2 to A3 is not allowed (only for folders)
-				return getChildAssets(asset.assetId).length > 0 ? false : true;
+				return getChildAssets(asset.id).length > 0 ? false : true;
 			}
 
 			return true;
@@ -116,9 +116,9 @@ export const MoveAssets = () => {
 		for (const assetToMove of assetsToMove) {
 			// Find the index of the asset to move
 			// Here we need to loop through all available assets to find the correct index
-			const index = (assets ?? []).findIndex(asset => asset.assetId === assetToMove.assetId);
+			const index = (assets ?? []).findIndex(asset => asset.id === assetToMove.id);
 
-			// Overwrite assets including the asset that's been replaced
+			// Overwrite assets
 			replacingAssets = replaceAsset({
 				assets: replacingAssets,
 				value: {
@@ -147,7 +147,7 @@ export const MoveAssets = () => {
 
 	return (
 		<>
-			{selectedRows.length > 0 ? (
+			{selectedRows.length ? (
 				<>
 					<Button
 						label='Move'
@@ -171,14 +171,13 @@ export const MoveAssets = () => {
 						/>
 						<AssetsList
 							assets={folderAssets.map(asset => ({
-								assetId: asset.assetId,
-								isSelected: asset.assetId === selectedFolderAssetId,
+								id: asset.id,
+								isSelected: asset.id === selectedFolderAssetId,
 								name: asset.name,
 								icon: 'folder',
 								onClick: setSelectedFolderAssetId,
-								secondaryAction: getChildAssets(asset.assetId).filter(
-									asset => asset.assetType === 'folder'
-								).length
+								secondaryAction: getChildAssets(asset.id).filter(asset => asset.type === 'folder')
+									.length
 									? {
 											icon: 'next',
 											label: 'Go to folder',
@@ -190,6 +189,7 @@ export const MoveAssets = () => {
 					</Dialog>
 				</>
 			) : null}
+
 			<Snackbar
 				open={!!undoAssets.length}
 				message='Asset(s) moved successfully'

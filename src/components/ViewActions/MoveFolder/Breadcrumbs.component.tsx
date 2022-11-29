@@ -66,12 +66,12 @@ export const MoveFolderBreadcrumbs = ({
 			</Box>
 			{breadcrumbs.map((breadcrumb, index) => (
 				<Box
-					key={breadcrumb.assetId}
+					key={breadcrumb.id}
 					sx={{
 						display: 'flex',
 						alignItems: 'center'
 					}}
-					onClick={() => onBreadcrumbClick(breadcrumb.assetId)}
+					onClick={() => onBreadcrumbClick(breadcrumb.id)}
 				>
 					<Caption title={breadcrumb.name} />
 					{breadcrumbs.length !== index + 1 && (

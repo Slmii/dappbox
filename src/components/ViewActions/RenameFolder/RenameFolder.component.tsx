@@ -35,7 +35,7 @@ export const RenameFolder = () => {
 
 			// There should always be only 1 asset selected
 			// for the rename functionality
-			const index = assets.findIndex(asset => asset.assetId === selectedRows[0].assetId);
+			const index = assets.findIndex(asset => asset.id === selectedRows[0].id);
 
 			// Store assets in the state before the renaming happens
 			// This will be used to undo the renaming

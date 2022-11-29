@@ -52,7 +52,6 @@ module.exports = {
 		plugins: [
 			new webpack.EnvironmentPlugin({
 				DFX_NETWORK: network,
-				DAPPBOX_CANISTER_ID: 'fqd3w-cqaaa-aaaao-aaxyq-cai',
 				NODE_ENV: isDevelopment
 			})
 		],

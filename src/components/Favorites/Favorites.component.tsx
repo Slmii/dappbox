@@ -31,7 +31,7 @@ export const Favorites = () => {
 			}
 
 			return getUrlPathToAsset(assetId, assets)
-				.map(asset => encodeURIComponent(asset.assetId))
+				.map(asset => encodeURIComponent(asset.id))
 				.join('/');
 		},
 
@@ -58,12 +58,12 @@ export const Favorites = () => {
 					) : (
 						<AssetsList
 							assets={favoriteAssets.map(asset => ({
-								assetId: asset.assetId,
+								id: asset.id,
 								name: asset.name,
-								icon: asset.assetType === 'folder' ? 'folder' : 'download',
+								icon: asset.type === 'folder' ? 'folder' : 'download',
 								onClick:
-									asset.assetType === 'folder'
-										? () => navigate(`/${generateAssetPath(asset.assetId)}`)
+									asset.type === 'folder'
+										? () => navigate(`/${generateAssetPath(asset.id)}`)
 										: () => alert('TODO: preview'),
 								secondaryAction: {
 									icon: 'favorite',

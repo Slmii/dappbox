@@ -1,10 +1,9 @@
 import { useTheme } from '@mui/material/styles';
 import { useCallback, useContext, useMemo, useState } from 'react';
 
-import { constants } from 'lib/constants';
 import { AuthContext, ColorModeContext } from 'lib/context';
 import { Appbar } from 'ui-components/AppBar';
-import { Box } from 'ui-components/Box';
+import { Box, Column } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { IconButton } from 'ui-components/IconButton';
 import { Link } from 'ui-components/Link';
@@ -38,18 +37,14 @@ export const Header = () => {
 	return (
 		<Appbar>
 			<Box sx={{ flexGrow: 1 }}>{isAuthenticated ? <Link href='/'>LOGO</Link> : 'LOGO'}</Box>
-			<Box
-				sx={{
-					display: 'flex',
-					alignItems: 'center',
-					'& > *:not(:last-child)': {
-						marginRight: constants.SPACING
-					}
-				}}
-			>
+			<Column>
 				<>
 					{isAuthenticated ? (
-						<Button label={renderPrincipalId} onClick={handleOnAddressCopy} tooltip='Copy principal' />
+						<Button
+							label={renderPrincipalId.toUpperCase()}
+							onClick={handleOnAddressCopy}
+							tooltip='Copy principal'
+						/>
 					) : null}
 				</>
 				<IconButton
@@ -58,7 +53,7 @@ export const Header = () => {
 					onClick={toggleColorMode}
 				/>
 				{isAuthenticated ? <IconButton icon='signOUt' label='Sign out' onClick={signOut} /> : null}
-			</Box>
+			</Column>
 			<Snackbar open={isAddressCopied} message='Copied' onClose={() => setIsAddressCopied(false)} />
 		</Appbar>
 	);

@@ -15,14 +15,14 @@ export const useFavorites = () => {
 			return;
 		}
 
-		const index = assets.findIndex(asset => asset.assetId === assetId);
+		const index = assets.findIndex(asset => asset.id === assetId);
 
 		if (index !== -1) {
 			const asset = assets[index];
 
 			// Keep track of the assetId in case
 			// the user is making use of the `Undo` button
-			setOnUndoAssetId(asset.assetId);
+			setOnUndoAssetId(asset.id);
 
 			// TODO: mutate canister
 			// TODO: update cache in react query or invalidate query after udpdate

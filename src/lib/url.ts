@@ -10,7 +10,7 @@ export const getPageTitle = (pathname: string, rows: Asset[]) => {
 		return '';
 	}
 
-	const pageTitle = rows.find(row => row.assetId === Number(param))?.name ?? '';
+	const pageTitle = rows.find(row => row.id === Number(param))?.name ?? '';
 	return decodeURIComponent(pageTitle);
 };
 
@@ -20,7 +20,7 @@ export const getPageTitle = (pathname: string, rows: Asset[]) => {
 export const getUrlPathToAsset = (assetId: number, assets: Asset[]) => {
 	const paths: Asset[] = [];
 
-	const asset = assets.find(row => row.assetId === assetId);
+	const asset = assets.find(row => row.id === assetId);
 	if (asset) {
 		// Put at the front of the array for the correct order
 		paths.unshift(asset);

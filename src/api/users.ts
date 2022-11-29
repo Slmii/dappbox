@@ -33,7 +33,7 @@ export abstract class User {
 
 const mapToCustomerInterface = (user: ControllerUser): IUser => {
 	return {
-		userId: user.user_id,
+		id: user.user_id,
 		username: user.username.length ? user.username[0] : undefined,
 		createdAt: dateFromBigInt(user.created_at)
 	};

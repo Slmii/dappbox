@@ -1,4 +1,5 @@
 import Typography from '@mui/material/Typography';
+import { PropsWithChildren } from 'react';
 
 export const Caption = ({ title }: { title: string }) => {
 	return (
@@ -16,10 +17,10 @@ export const PageTitle = ({ title, gutterBottom }: { title: string; gutterBottom
 	);
 };
 
-export const Body = ({ title, gutterBottom }: { title: string; gutterBottom?: boolean }) => {
+export const Body = ({ children, gutterBottom }: PropsWithChildren<{ gutterBottom?: boolean }>) => {
 	return (
 		<Typography variant='body2' gutterBottom={gutterBottom}>
-			{title}
+			{children}
 		</Typography>
 	);
 };
