@@ -37,12 +37,9 @@ const asset_entry = path.join('src', 'assets', 'src', 'index.html');
 module.exports = {
 	mode: 'development',
 	eslint: {
-		enable: false
+		enable: true
 	},
 	css: {
-		// loaderOptions: {
-		// 	/* Any css-loader configuration options: https://github.com/webpack-contrib/css-loader. */
-		// },
 		loaderOptions: (cssLoaderOptions, { env, paths }) => {
 			return cssLoaderOptions;
 		}
@@ -55,9 +52,6 @@ module.exports = {
 				NODE_ENV: isDevelopment
 			})
 		],
-		// configure: {
-		// 	/* Any webpack configuration options: https://webpack.js.org/configuration */
-		// },
 		configure: (webpackConfig, { env, paths }) => {
 			return webpackConfig;
 		}
