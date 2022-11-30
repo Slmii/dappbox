@@ -105,6 +105,12 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 				setIsAuthenticated(true);
 				navigate((state as Record<string, string>)?.path ?? '/');
 			},
+			onError: async error => {
+				console.error('Failed to II Login', error);
+
+				await signOut();
+				navigate('/authenticate');
+			},
 			// 7 days
 			maxTimeToLive: BigInt(Date.now() + 7 * 86400000),
 			identityProvider: 'https://identity.ic0.app/#authorize'
