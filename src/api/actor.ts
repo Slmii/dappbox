@@ -1,12 +1,17 @@
 import { Actor as DfinityActor, ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
+import { IDL } from '@dfinity/candid';
 
-import { idlFactory } from 'declarations/users';
+import { idlFactory as idlFactoryAssets } from 'declarations/assets';
+import { idlFactory as idlFactoryUsers } from 'declarations/users';
+import { constants } from 'lib/constants';
 import canisters from './canister_ids.json';
 
 type Controller = keyof typeof canisters;
-const environment = process.env.REACT_APP_ENV ?? 'local';
-const isLocal = environment === 'local';
+const idlFactoryMapping: Record<Controller, IDL.InterfaceFactory> = {
+	assets: idlFactoryAssets,
+	users: idlFactoryUsers
+};
 
 export abstract class Actor {
 	static authClient: AuthClient | undefined = undefined;
@@ -32,14 +37,14 @@ export abstract class Actor {
 		const authClient = await this.getAuthClient();
 
 		const canisterEnv = canisters[controller];
-		const canisterId = canisterEnv[environment as keyof typeof canisterEnv];
+		const canisterId = canisterEnv[constants.ENVIRONMENT as keyof typeof canisterEnv];
 
-		const actor = DfinityActor.createActor<T>(idlFactory, {
+		const actor = DfinityActor.createActor<T>(idlFactoryMapping[controller], {
 			agent: new HttpAgent({
-				host: isLocal ? 'http://localhost:8000' : 'https://ic0.app',
+				host: constants.IS_LOCAL ? 'http://localhost:8000' : 'https://ic0.app',
 				identity: authClient.getIdentity()
 			}),
-			canisterId: canisterId
+			canisterId
 		});
 
 		this.actor[controller] = actor;

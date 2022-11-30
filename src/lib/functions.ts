@@ -1,3 +1,4 @@
+import { ApiError } from 'declarations/users/users.did';
 import { Asset } from 'lib/types/Asset.types';
 import { Order } from 'ui-components/Table';
 
@@ -60,4 +61,26 @@ export const descendingComparator = <T>(a: T, b: T, orderBy: keyof T) => {
 
 export const replaceAsset = ({ assets, index, value }: { assets: Asset[]; index: number; value: Asset }) => {
 	return [...assets.slice(0, index), value, ...assets.slice(index + 1)];
+};
+
+export const getImage = async (file: File) => {
+	const buffer = await file.arrayBuffer();
+	const uint8Array = new Uint8Array(buffer);
+	const asset = new Blob([uint8Array]);
+	const url = URL.createObjectURL(asset);
+
+	return {
+		preview: url,
+		payload: Array.from(uint8Array)
+	};
+};
+
+export const unwrap = <T>(result: { Ok: T } | { Err: ApiError }): Promise<T> => {
+	return new Promise((resolve: (value: T) => void, reject: (error: ApiError) => void) => {
+		if ('Ok' in result) {
+			resolve(result.Ok);
+		} else {
+			reject(result.Err);
+		}
+	});
 };
