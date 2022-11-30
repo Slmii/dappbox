@@ -3,7 +3,11 @@ import { Principal } from '@dfinity/principal';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { Actor } from 'api/actor';
 import { api } from 'api/index';
+import { mapToUserInterface } from 'api/users';
+import { _SERVICE } from 'declarations/users/users.did';
+import { unwrap } from 'lib/functions';
 import { User } from 'lib/types/User.types';
 import { Snackbar } from 'ui-components/Snackbar';
 
@@ -67,11 +71,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
 			await validateSession({
 				onSuccess: async authClient => {
+					const actor = await Actor.getActor<_SERVICE>('users');
+
 					try {
 						await initAuthClient(authClient);
 
-						const user = await api.User.getUser();
-						setUser(user);
+						const response = await actor.get_user();
+						const user = await unwrap(response);
+						setUser(mapToUserInterface(user));
 
 						setIsAuthenticated(true);
 						setIsLoading(false);
@@ -100,7 +107,12 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 		await authClient.login({
 			onSuccess: async () => {
 				await initAuthClient(authClient);
-				await initUser();
+				const isSuccess = await initUser();
+
+				if (!isSuccess) {
+					await signOut();
+					return;
+				}
 
 				setIsAuthenticated(true);
 				navigate((state as Record<string, string>)?.path ?? '/');
@@ -123,15 +135,26 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const initUser = async () => {
+		const actor = await Actor.getActor<_SERVICE>('users');
+
 		try {
-			const user = await api.User.getUser();
-			setUser(user);
+			const response = await actor.get_user();
+			const user = await unwrap(response);
+
+			setUser(mapToUserInterface(user));
+
+			return true;
 		} catch (error) {
 			try {
-				const user = await api.User.createUser();
-				setUser(user);
+				const response = await actor.create_user([]);
+				const user = await unwrap(response);
+
+				setUser(mapToUserInterface(user));
+				return true;
 			} catch (error) {
+				console.log('Failed to create account', error);
 				setErrorSnackarOpen(true);
+				return false;
 			}
 		}
 	};
