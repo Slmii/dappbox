@@ -1,5 +1,6 @@
 import { _SERVICE, Asset as ControllerAsset, PostAsset as ControllerPostAsset } from 'declarations/assets/assets.did';
 import { dateFromBigInt } from 'lib/dates';
+import { resolve } from 'lib/functions';
 import { Asset as IAsset, AssetType, PostAsset } from 'lib/types/Asset.types';
 import { Actor } from './actor';
 
@@ -7,12 +8,14 @@ export abstract class Asset {
 	static async addAsset(asset: PostAsset) {
 		const actor = await Actor.getActor<_SERVICE>('assets');
 
-		const response = await actor.add_asset(mapToCustomPostInterface(asset));
-		return mapToCustomAssetInterface(response);
+		return resolve(async () => {
+			const response = await actor.add_asset(mapToPostInterface(asset));
+			return mapToAssetInterface(response);
+		});
 	}
 }
 
-const mapToCustomAssetInterface = (asset: ControllerAsset): IAsset => {
+const mapToAssetInterface = (asset: ControllerAsset): IAsset => {
 	return {
 		id: asset.id,
 		type: asset.asset_type as AssetType,
@@ -27,7 +30,7 @@ const mapToCustomAssetInterface = (asset: ControllerAsset): IAsset => {
 	};
 };
 
-const mapToCustomPostInterface = (asset: PostAsset): ControllerPostAsset => {
+const mapToPostInterface = (asset: PostAsset): ControllerPostAsset => {
 	return {
 		asset_type: asset.type,
 		blobs: Uint8Array.from(asset.blobs),

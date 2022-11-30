@@ -76,11 +76,27 @@ export const getImage = async (file: File) => {
 };
 
 export const unwrap = <T>(result: { Ok: T } | { Err: ApiError }): Promise<T> => {
-	return new Promise((resolve: (value: T) => void, reject: (error: ApiError) => void) => {
+	return new Promise((resolve: (value: T) => void, reject: (error: { error: ApiError }) => void) => {
 		if ('Ok' in result) {
 			resolve(result.Ok);
 		} else {
-			reject(result.Err);
+			reject({
+				error: result.Err
+			});
 		}
 	});
+};
+
+export const resolve = async <T>(fn: () => Promise<T>): Promise<T> => {
+	return fn()
+		.then(response => response)
+		.catch(error => {
+			const typedError = error as Record<'error', ApiError> | Error;
+
+			if ('error' in typedError) {
+				throw new Error(Object.values(typedError.error)[0]);
+			} else {
+				throw new Error(typedError.message);
+			}
+		});
 };

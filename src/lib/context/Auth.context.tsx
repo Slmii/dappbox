@@ -77,8 +77,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 						setIsLoading(false);
 						navigate((state as Record<string, string>)?.path ?? '/');
 					} catch (error) {
-						console.log('Validation Session Error', error);
-
 						setIsLoading(false);
 						navigate('/authenticate');
 					}
@@ -114,12 +112,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const initAuthClient = async (authClient: AuthClient) => {
-		try {
-			api.Actor.setAuthClient(authClient);
-			setPrincipal(authClient.getIdentity().getPrincipal());
-		} catch (error) {
-			console.log('Init AuthClient Error', error);
-		}
+		api.Actor.setAuthClient(authClient);
+		setPrincipal(authClient.getIdentity().getPrincipal());
 	};
 
 	const initUser = async () => {
@@ -127,13 +121,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 			const user = await api.User.getUser();
 			setUser(user);
 		} catch (error) {
-			console.log('Init User Error', error);
-
 			try {
 				const user = await api.User.createUser();
 				setUser(user);
 			} catch (error) {
-				console.log('Create User Error', error);
 				setErrorSnackarOpen(true);
 			}
 		}

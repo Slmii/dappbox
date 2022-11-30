@@ -18,7 +18,7 @@ export const Upload = () => {
 	const queryClient = useQueryClient();
 	const { user } = useContext(AuthContext);
 
-	const { mutateAsync, isLoading, error } = useMutation({
+	const { mutateAsync, isLoading } = useMutation({
 		mutationFn: api.Asset.addAsset,
 		onSuccess: asset => {
 			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], (old: Asset[] | undefined) => {
@@ -47,8 +47,6 @@ export const Upload = () => {
 			blobs: payload
 		});
 	};
-
-	console.log({ error });
 
 	return (
 		<Box sx={{ padding: constants.SPACING }}>
