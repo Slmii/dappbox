@@ -1,15 +1,24 @@
-import { _SERVICE, Asset as ControllerAsset, PostAsset as ControllerPostAsset } from 'declarations/assets/assets.did';
+import { _SERVICE, Asset as ControllerAsset, PostAsset } from 'declarations/assets/assets.did';
 import { dateFromBigInt } from 'lib/dates';
 import { resolve } from 'lib/functions';
-import { Asset as IAsset, AssetType, PostAsset } from 'lib/types/Asset.types';
+import { Asset as IAsset, AssetType } from 'lib/types/Asset.types';
 import { Actor } from './actor';
 
 export abstract class Asset {
+	static async addChunk(chunk: Uint8Array) {
+		const actor = await Actor.getActor<_SERVICE>('assets');
+
+		return resolve(async () => {
+			const response = await actor.add_chunk(chunk);
+			return response;
+		});
+	}
+
 	static async addAsset(asset: PostAsset) {
 		const actor = await Actor.getActor<_SERVICE>('assets');
 
 		return resolve(async () => {
-			const response = await actor.add_asset(mapToPostInterface(asset));
+			const response = await actor.add_asset(asset);
 			return mapToAssetInterface(response);
 		});
 	}
@@ -18,8 +27,17 @@ export abstract class Asset {
 		const actor = await Actor.getActor<_SERVICE>('assets');
 
 		return resolve(async () => {
-			const userAssets = await actor.get_user_assets();
-			return userAssets.map(asset => mapToAssetInterface(asset));
+			const response = await actor.get_user_assets();
+			return response.map(asset => mapToAssetInterface(asset));
+		});
+	}
+
+	static async getChunksByChunkId(chunkId: number) {
+		const actor = await Actor.getActor<_SERVICE>('assets');
+
+		return resolve(async () => {
+			const response = await actor.get_chunks_by_chunk_id(chunkId);
+			return response;
 		});
 	}
 }
@@ -35,18 +53,7 @@ const mapToAssetInterface = (asset: ControllerAsset): IAsset => {
 		mimeType: asset.mime_type,
 		parentId: asset.parent_id.length ? asset.parent_id[0] : undefined,
 		size: Number(asset.size),
+		chunks: asset.chunks,
 		createdAt: dateFromBigInt(asset.created_at)
-	};
-};
-
-const mapToPostInterface = (asset: PostAsset): ControllerPostAsset => {
-	return {
-		asset_type: asset.type,
-		blobs: Uint8Array.from(asset.blobs),
-		extension: asset.extension,
-		mime_type: asset.mimeType,
-		name: asset.name,
-		parent_id: asset.parentId ? [asset.parentId] : [],
-		user_id: asset.userId
 	};
 };

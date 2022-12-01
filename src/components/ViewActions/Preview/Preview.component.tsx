@@ -9,7 +9,7 @@ export const Preview = () => {
 	return (
 		<>
 			{selectedRows.some(row => row.type === 'file') ? (
-				<Button label='Preview' startIcon='view' variant='outlined' color='inherit' />
+				<Button label='Preview (Soon)' disabled startIcon='view' variant='outlined' color='inherit' />
 			) : null}
 		</>
 	);

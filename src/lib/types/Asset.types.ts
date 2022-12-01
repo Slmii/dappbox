@@ -1,5 +1,7 @@
 import { Principal } from '@dfinity/principal';
 
+import { Chunk } from 'declarations/assets/assets.did';
+
 export interface Asset {
 	id: number;
 	userId: Principal;
@@ -10,17 +12,8 @@ export interface Asset {
 	mimeType?: string;
 	extension?: string;
 	isFavorite: boolean;
+	chunks: Chunk[];
 	createdAt: Date;
 }
 
 export type AssetType = 'folder' | 'file';
-
-export interface PostAsset {
-	type: AssetType;
-	name: string;
-	mimeType: string;
-	userId: Principal;
-	parentId?: number;
-	blobs: number[];
-	extension: string;
-}

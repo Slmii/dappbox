@@ -18,7 +18,8 @@ export const dummyRows: Asset[] = [
 		mimeType: 'txt',
 		size: 5,
 		isFavorite: false,
-		createdAt: new Date()
+		createdAt: new Date(),
+		chunks: []
 	},
 	{
 		id: 6,
@@ -30,7 +31,8 @@ export const dummyRows: Asset[] = [
 		mimeType: 'png',
 		size: 200,
 		isFavorite: true,
-		createdAt: new Date()
+		createdAt: new Date(),
+		chunks: []
 	},
 	{
 		id: 1,
@@ -42,7 +44,8 @@ export const dummyRows: Asset[] = [
 		mimeType: undefined,
 		size: undefined,
 		isFavorite: false,
-		createdAt: new Date()
+		createdAt: new Date(),
+		chunks: []
 	},
 	{
 		id: 2,
@@ -54,7 +57,8 @@ export const dummyRows: Asset[] = [
 		mimeType: undefined,
 		size: undefined,
 		isFavorite: true,
-		createdAt: new Date()
+		createdAt: new Date(),
+		chunks: []
 	},
 	{
 		id: 4,
@@ -66,7 +70,8 @@ export const dummyRows: Asset[] = [
 		mimeType: undefined,
 		size: undefined,
 		isFavorite: false,
-		createdAt: new Date()
+		createdAt: new Date(),
+		chunks: []
 	},
 	{
 		id: 7,
@@ -78,7 +83,8 @@ export const dummyRows: Asset[] = [
 		mimeType: 'pdf',
 		size: 557,
 		isFavorite: false,
-		createdAt: new Date()
+		createdAt: new Date(),
+		chunks: []
 	},
 	{
 		id: 8,
@@ -90,7 +96,8 @@ export const dummyRows: Asset[] = [
 		mimeType: 'pdf',
 		size: 557,
 		isFavorite: false,
-		createdAt: new Date()
+		createdAt: new Date(),
+		chunks: []
 	},
 	{
 		id: 5,
@@ -102,7 +109,8 @@ export const dummyRows: Asset[] = [
 		mimeType: undefined,
 		size: undefined,
 		isFavorite: true,
-		createdAt: new Date()
+		createdAt: new Date(),
+		chunks: []
 	}
 ];
 

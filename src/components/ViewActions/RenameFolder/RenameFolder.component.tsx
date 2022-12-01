@@ -70,7 +70,8 @@ export const RenameFolder = () => {
 			{selectedRows.length === 1 ? (
 				<>
 					<Button
-						label='Rename'
+						label='Rename (Soon)'
+						disabled
 						startIcon='edit'
 						variant='outlined'
 						color='inherit'

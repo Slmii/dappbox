@@ -11,6 +11,7 @@ import { visuallyHidden } from '@mui/utils';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { formatBytes } from 'lib/functions';
 import { Asset } from 'lib/types/Asset.types';
 import { Icon } from 'ui-components/Icon';
 import { IconButton } from 'ui-components/IconButton';
@@ -55,21 +56,26 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 					{value.toString()}
 				</Link>
 			);
-		} else if (row.type === 'file') {
+		} else {
+			if (columnId === 'size') {
+				return formatBytes(value as number);
+			}
+
 			return (
 				<Box
 					sx={{
 						cursor: 'pointer'
 					}}
 					// TODO: open full dialog with preview
-					onClick={e => e.stopPropagation()}
+					onClick={e => {
+						e.stopPropagation();
+						alert('Open Preview');
+					}}
 				>
 					{value.toString()}
 				</Box>
 			);
 		}
-
-		return `${value.toString()}`;
 	};
 
 	return (
@@ -241,7 +247,7 @@ export const Table = ({
 								role='checkbox'
 								aria-checked={isItemSelected}
 								tabIndex={-1}
-								key={row.name}
+								key={row.id}
 								selected={isItemSelected}
 							>
 								<MuiTableCell padding='checkbox'>

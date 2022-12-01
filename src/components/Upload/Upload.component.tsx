@@ -1,12 +1,15 @@
 import { styled } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { api } from 'api';
+import { Chunk } from 'declarations/assets/assets.did';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
 import { getImage } from 'lib/functions';
 import { Asset } from 'lib/types/Asset.types';
+import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 
@@ -15,16 +18,21 @@ const Input = styled('input')({
 });
 
 export const Upload = () => {
+	const { pathname } = useLocation();
 	const queryClient = useQueryClient();
 	const { user } = useContext(AuthContext);
 
-	const { mutateAsync, isLoading } = useMutation({
+	const { mutateAsync: addAssetMutate, isLoading: addAssetIsLoading } = useMutation({
 		mutationFn: api.Asset.addAsset,
 		onSuccess: asset => {
 			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], (old: Asset[] | undefined) => {
-				return [...(old ?? []), asset];
+				return [asset, ...(old ?? [])];
 			});
 		}
+	});
+
+	const { mutateAsync: addChunkMutate, isLoading: addChunkIsLoading } = useMutation({
+		mutationFn: api.Asset.addChunk
 	});
 
 	const handleOnUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,23 +43,34 @@ export const Upload = () => {
 		}
 
 		const file = files[0];
-		const { payload } = await getImage(file);
+		const { blobs } = await getImage(file);
 
-		await mutateAsync({
-			type: 'file',
+		// Upload each blob seperatly
+		const chunks: Chunk[] = [];
+		for (const blob of blobs) {
+			const chunk = await addChunkMutate(blob);
+			chunks.push(chunk);
+		}
+
+		const parentId = getAssetId(pathname);
+		await addAssetMutate({
+			asset_type: 'file',
 			extension: file.name.split('.').pop() ?? '',
 			name: file.name,
-			parentId: undefined,
-			userId: user.id,
-			mimeType: file.type,
-			blobs: payload
+			parent_id: !!parentId ? [Number(parentId)] : [],
+			user_id: user.id,
+			mime_type: file.type,
+			chunks,
+			size: file.size
 		});
 	};
+
+	const isLoading = addAssetIsLoading || addChunkIsLoading;
 
 	return (
 		<Box sx={{ padding: constants.SPACING }}>
 			<label htmlFor='upload-file'>
-				<Input id='upload-file' multiple type='file' onChange={handleOnUpload} />
+				<Input id='upload-file' /*multiple*/ type='file' onChange={handleOnUpload} />
 				<Button
 					startIcon='addOutlined'
 					label={isLoading ? 'Uploading...' : 'Upload'}

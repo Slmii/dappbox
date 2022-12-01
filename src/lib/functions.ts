@@ -64,14 +64,27 @@ export const replaceAsset = ({ assets, index, value }: { assets: Asset[]; index:
 };
 
 export const getImage = async (file: File) => {
-	const buffer = await file.arrayBuffer();
-	const uint8Array = new Uint8Array(buffer);
-	const asset = new Blob([uint8Array]);
-	const url = URL.createObjectURL(asset);
+	const createChunks = (file: File, cSize: number /* cSize should be byte 1024*1 = 1KB */) => {
+		let startPointer = 0;
+		let endPointer = file.size;
+		let chunks = [];
+
+		while (startPointer < endPointer) {
+			let newStartPointer = startPointer + 1024 * cSize;
+			chunks.push(file.slice(startPointer, newStartPointer));
+			startPointer = newStartPointer;
+		}
+
+		return chunks;
+	};
+
+	const arrayBuffers = await Promise.all(createChunks(file, 500).map(blob => blob.arrayBuffer()));
+	const blob = new Blob(arrayBuffers);
+	const preview = URL.createObjectURL(blob);
 
 	return {
-		preview: url,
-		payload: Array.from(uint8Array)
+		preview,
+		blobs: arrayBuffers.map(chunk => new Uint8Array(chunk))
 	};
 };
 
@@ -100,4 +113,16 @@ export const resolve = async <T>(fn: () => Promise<T>): Promise<T> => {
 				throw new Error(typedError.message);
 			}
 		});
+};
+
+export const formatBytes = (bytes: number, decimals = 2) => {
+	if (!+bytes) return '0 Bytes';
+
+	const k = 1024;
+	const dm = decimals < 0 ? 0 : decimals;
+	const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 };
