@@ -56,13 +56,7 @@ export const Delete = () => {
 		<>
 			{selectedRows.length ? (
 				<>
-					<Button
-						label='Delete (Soon)'
-						disabled
-						startIcon='delete'
-						color='error'
-						onClick={() => setDeleteOpenDialog(true)}
-					/>
+					<Button label='Delete' startIcon='delete' color='error' onClick={() => setDeleteOpenDialog(true)} />
 					<Dialog
 						title='Delete assets?'
 						onClose={() => setDeleteOpenDialog(false)}

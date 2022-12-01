@@ -150,8 +150,7 @@ export const MoveAssets = () => {
 			{selectedRows.length ? (
 				<>
 					<Button
-						label='Move (Soon)'
-						disabled
+						label='Move'
 						variant='outlined'
 						startIcon='folderMove'
 						color='inherit'
