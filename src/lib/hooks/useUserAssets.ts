@@ -2,6 +2,7 @@ import { Principal } from '@dfinity/principal';
 import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 
+import { api } from 'api';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
 import { Asset } from 'lib/types/Asset.types';
@@ -109,7 +110,7 @@ export const useUserAssets = () => {
 	const { isAuthenticated } = useContext(AuthContext);
 
 	const data = useQuery([constants.QUERY_KEYS.USER_ASSETS], {
-		queryFn: () => Promise.resolve(dummyRows),
+		queryFn: api.Asset.getUserAssets,
 		enabled: isAuthenticated
 	});
 

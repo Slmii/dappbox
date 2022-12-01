@@ -4,7 +4,6 @@ import { Navigate } from 'react-router-dom';
 import { AuthContext } from 'lib/context';
 import { Box, Row } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
-import { Divider } from 'ui-components/Divider';
 import { PageTitle } from 'ui-components/Typography';
 
 export const Authenticate = () => {
@@ -27,9 +26,8 @@ export const Authenticate = () => {
 		>
 			<Row>
 				<PageTitle title='DappBox' />
-				<Divider />
 				<Button
-					label='Authenticate with II'
+					label='Login with Internet Identity'
 					color='primary'
 					variant='contained'
 					loading={isLoading}

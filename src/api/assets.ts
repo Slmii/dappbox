@@ -13,6 +13,15 @@ export abstract class Asset {
 			return mapToAssetInterface(response);
 		});
 	}
+
+	static async getUserAssets() {
+		const actor = await Actor.getActor<_SERVICE>('assets');
+
+		return resolve(async () => {
+			const userAssets = await actor.get_user_assets();
+			return userAssets.map(asset => mapToAssetInterface(asset));
+		});
+	}
 }
 
 const mapToAssetInterface = (asset: ControllerAsset): IAsset => {
