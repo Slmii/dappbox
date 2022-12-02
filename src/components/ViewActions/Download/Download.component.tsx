@@ -22,10 +22,10 @@ export const Download = () => {
 
 			const blob = new Blob(assetsToDownload);
 
-			const csvURL = window.URL.createObjectURL(blob);
+			const url = window.URL.createObjectURL(blob);
 			const tempLink = document.createElement('a');
-			tempLink.href = csvURL;
-			tempLink.setAttribute('download', `${asset.name}.${asset.extension}`);
+			tempLink.href = url;
+			tempLink.setAttribute('download', asset.name);
 			tempLink.click();
 		}
 	};

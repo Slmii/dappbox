@@ -44,16 +44,27 @@ export const Upload = () => {
 
 		const file = files[0];
 		const { blobs } = await getImage(file);
+		let counter = 1;
+
+		console.log('Total chunks to upload', blobs.length);
+		console.log('============');
 
 		// Upload each blob seperatly
 		const chunks: Chunk[] = [];
 		for (const blob of blobs) {
+			console.log(`Uploading chunk ${counter}/${blobs.length}`);
+
 			const chunk = await addChunkMutate(blob);
 			chunks.push(chunk);
+
+			console.log(`Chunk ${counter} uploaded`, chunk);
+			counter++;
 		}
 
+		console.log('Uploading Asset...');
+
 		const parentId = getAssetId(pathname);
-		await addAssetMutate({
+		const asset = await addAssetMutate({
 			asset_type: 'file',
 			extension: file.name.split('.').pop() ?? '',
 			name: file.name,
@@ -63,6 +74,8 @@ export const Upload = () => {
 			chunks,
 			size: file.size
 		});
+
+		console.log('Done', asset);
 	};
 
 	const isLoading = addAssetIsLoading || addChunkIsLoading;
