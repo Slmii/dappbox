@@ -1,5 +1,9 @@
 export const idlFactory = ({ IDL }) => {
-  const Chunk = IDL.Record({ 'id' : IDL.Nat32, 'canister' : IDL.Principal });
+  const Chunk = IDL.Record({
+    'id' : IDL.Nat32,
+    'canister' : IDL.Principal,
+    'index' : IDL.Nat32,
+  });
   const PostAsset = IDL.Record({
     'asset_type' : IDL.Text,
     'name' : IDL.Text,
@@ -23,9 +27,13 @@ export const idlFactory = ({ IDL }) => {
     'chunks' : IDL.Vec(Chunk),
     'extension' : IDL.Text,
   });
+  const PostChunk = IDL.Record({
+    'blob' : IDL.Vec(IDL.Nat8),
+    'index' : IDL.Nat32,
+  });
   return IDL.Service({
     'add_asset' : IDL.Func([PostAsset], [Asset], []),
-    'add_chunk' : IDL.Func([IDL.Vec(IDL.Nat8)], [Chunk], []),
+    'add_chunk' : IDL.Func([PostChunk], [Chunk], []),
     'get_chunks_by_chunk_id' : IDL.Func(
         [IDL.Nat32],
         [IDL.Vec(IDL.Nat8)],

@@ -29,7 +29,14 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 		}
 
 		if (value instanceof Date) {
-			return new Intl.DateTimeFormat('nl-NL').format(value);
+			return new Intl.DateTimeFormat('nl-NL', {
+				day: '2-digit',
+				month: 'numeric',
+				year: 'numeric',
+				hour: '2-digit',
+				minute: '2-digit',
+				hourCycle: 'h24'
+			}).format(value);
 		}
 
 		if (typeof value === 'boolean') {
@@ -64,7 +71,12 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 			return (
 				<Box
 					sx={{
-						cursor: 'pointer'
+						cursor: 'pointer',
+						display: '-webkit-box',
+						overflow: 'hidden',
+						textOverflow: 'ellipsis',
+						WebkitLineClamp: 1,
+						WebkitBoxOrient: 'vertical'
 					}}
 					// TODO: open full dialog with preview
 					onClick={e => {
@@ -82,24 +94,14 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 		<MuiTableCell key={`${columnId}${row.id}`} align={column.alignment}>
 			<Box
 				sx={{
-					display: '-webkit-box',
-					overflow: 'hidden',
-					textOverflow: 'ellipsis',
-					WebkitLineClamp: 1,
-					WebkitBoxOrient: 'vertical'
+					display: 'flex',
+					alignItems: 'center'
 				}}
 			>
-				<Box
-					sx={{
-						display: 'flex',
-						alignItems: 'center'
-					}}
-				>
-					{columnId === 'name' ? (
-						<Icon icon={row.type === 'folder' ? 'folder' : 'download'} color='info' spacingRight />
-					) : null}
-					{renderValue()}
-				</Box>
+				{columnId === 'name' ? (
+					<Icon icon={row.type === 'folder' ? 'folder' : 'download'} color='info' spacingRight />
+				) : null}
+				{renderValue()}
 			</Box>
 		</MuiTableCell>
 	);

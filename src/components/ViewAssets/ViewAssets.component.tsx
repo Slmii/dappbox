@@ -36,6 +36,12 @@ const columns: Column = {
 		label: 'Size',
 		sortable: true,
 		type: 'bigint'
+	},
+	createdAt: {
+		alignment: 'left',
+		label: 'Modifed',
+		sortable: true,
+		type: 'date'
 	}
 };
 

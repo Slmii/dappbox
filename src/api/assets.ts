@@ -1,11 +1,11 @@
-import { _SERVICE, Asset as ControllerAsset, PostAsset } from 'declarations/assets/assets.did';
+import { _SERVICE, Asset as ControllerAsset, PostAsset, PostChunk } from 'declarations/assets/assets.did';
 import { dateFromBigInt } from 'lib/dates';
 import { resolve } from 'lib/functions';
 import { Asset as IAsset, AssetType } from 'lib/types/Asset.types';
 import { Actor } from './actor';
 
 export abstract class Asset {
-	static async addChunk(chunk: Uint8Array) {
+	static async addChunk(chunk: PostChunk) {
 		const actor = await Actor.getActor<_SERVICE>('assets');
 
 		return resolve(async () => {

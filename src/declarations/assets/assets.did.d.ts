@@ -14,7 +14,11 @@ export interface Asset {
   'chunks' : Array<Chunk>,
   'extension' : string,
 }
-export interface Chunk { 'id' : number, 'canister' : Principal }
+export interface Chunk {
+  'id' : number,
+  'canister' : Principal,
+  'index' : number,
+}
 export interface PostAsset {
   'asset_type' : string,
   'name' : string,
@@ -25,9 +29,10 @@ export interface PostAsset {
   'chunks' : Array<Chunk>,
   'extension' : string,
 }
+export interface PostChunk { 'blob' : Uint8Array, 'index' : number }
 export interface _SERVICE {
   'add_asset' : ActorMethod<[PostAsset], Asset>,
-  'add_chunk' : ActorMethod<[Uint8Array], Chunk>,
+  'add_chunk' : ActorMethod<[PostChunk], Chunk>,
   'get_chunks_by_chunk_id' : ActorMethod<[number], Uint8Array>,
   'get_user_assets' : ActorMethod<[], Array<Asset>>,
 }

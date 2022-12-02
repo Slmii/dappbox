@@ -152,7 +152,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 				setUser(mapToUserInterface(user));
 				return true;
 			} catch (error) {
-				console.log('Failed to create account', error);
 				setErrorSnackarOpen(true);
 				return false;
 			}

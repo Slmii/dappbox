@@ -78,7 +78,7 @@ export const getImage = async (file: File) => {
 		return chunks;
 	};
 
-	const arrayBuffers = await Promise.all(createChunks(file, 500).map(blob => blob.arrayBuffer()));
+	const arrayBuffers = await Promise.all(createChunks(file, 1500).map(blob => blob.arrayBuffer()));
 	const blob = new Blob(arrayBuffers);
 	const preview = URL.createObjectURL(blob);
 

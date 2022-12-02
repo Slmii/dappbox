@@ -51,10 +51,13 @@ export const Upload = () => {
 
 		// Upload each blob seperatly
 		const chunks: Chunk[] = [];
-		for (const blob of blobs) {
+		for (const [index, blob] of blobs.entries()) {
 			console.log(`Uploading chunk ${counter}/${blobs.length}`);
 
-			const chunk = await addChunkMutate(blob);
+			const chunk = await addChunkMutate({
+				blob,
+				index
+			});
 			chunks.push(chunk);
 
 			console.log(`Chunk ${counter} uploaded`, chunk);
