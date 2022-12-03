@@ -1,9 +1,10 @@
 import Slide, { SlideProps } from '@mui/material/Slide';
 import MuiSnackbar from '@mui/material/Snackbar';
-import React from 'react';
 
+import { constants } from 'lib/constants';
 import { Button } from 'ui-components/Button';
 import { IconButton } from 'ui-components/IconButton';
+import { CircularProgress } from 'ui-components/Progress';
 import { SnackbarProps } from './Snackbar.types';
 
 const autoHideDuration = 5000;
@@ -14,7 +15,15 @@ function Transition(props: TransitionProps) {
 	return <Slide {...props} direction='right' />;
 }
 
-export const Snackbar = ({ open, message, persist = false, onClose, onUndo, isOnUndoLoading }: SnackbarProps) => {
+export const Snackbar = ({
+	open,
+	message,
+	persist = false,
+	onClose,
+	onUndo,
+	isOnUndoLoading,
+	loader
+}: SnackbarProps) => {
 	return (
 		<MuiSnackbar
 			TransitionComponent={Transition}
@@ -51,6 +60,13 @@ export const Snackbar = ({ open, message, persist = false, onClose, onUndo, isOn
 					{onClose && (
 						<IconButton icon='close' label='Close' color='inherit' size='small' onClick={onClose} />
 					)}
+					{loader ? (
+						<CircularProgress
+							sx={{
+								marginRight: constants.SPACING
+							}}
+						/>
+					) : null}
 				</>
 			}
 		/>

@@ -11,14 +11,12 @@ import { tableStateAtom } from 'lib/recoil';
 import { createFolderSchema } from 'lib/schemas';
 import { Asset } from 'lib/types/Asset.types';
 import { getAssetId } from 'lib/url';
-import { Box, Column } from 'ui-components/Box';
+import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { Field } from 'ui-components/Field';
 import { Form } from 'ui-components/Form';
-import { CircularProgress } from 'ui-components/Progress';
 import { Snackbar } from 'ui-components/Snackbar';
-import { Body } from 'ui-components/Typography';
 import { CreateFolderFormData } from '../ViewActions.types';
 
 export const CreateFolder = () => {
@@ -116,15 +114,7 @@ export const CreateFolder = () => {
 					</Form>
 				</Box>
 			</Dialog>
-			<Snackbar
-				open={addAssetIsLoading}
-				message={
-					<Column>
-						<Body>Creating folder</Body>
-						<CircularProgress />
-					</Column>
-				}
-			/>
+			<Snackbar open={addAssetIsLoading} message='Creating folder' loader />
 		</>
 	);
 };

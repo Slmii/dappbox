@@ -5,4 +5,5 @@ export interface SnackbarProps {
 	onClose?: () => void;
 	onUndo?: () => void | Promise<void>;
 	isOnUndoLoading?: boolean;
+	loader?: boolean;
 }

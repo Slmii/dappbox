@@ -27,6 +27,7 @@ export const Column = ({ children }: PropsWithChildren) => {
 			sx={{
 				display: 'flex',
 				flexDirection: 'row',
+				alignItems: 'center',
 				columnGap: constants.SPACING
 			}}
 		>

@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { api } from 'api';
@@ -12,6 +12,8 @@ import { Asset } from 'lib/types/Asset.types';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
+import { Snackbar } from 'ui-components/Snackbar';
+import { Body } from 'ui-components/Typography';
 
 const Input = styled('input')({
 	display: 'none'
@@ -21,6 +23,8 @@ export const Upload = () => {
 	const { pathname } = useLocation();
 	const queryClient = useQueryClient();
 	const { user } = useContext(AuthContext);
+	const [totalChunks, setTotalChunks] = useState(0);
+	const [currentChunk, setCurrentChunk] = useState(0);
 
 	const { mutateAsync: addAssetMutate, isLoading: addAssetIsLoading } = useMutation({
 		mutationFn: api.Asset.addAsset,
@@ -44,15 +48,24 @@ export const Upload = () => {
 
 		const file = files[0];
 		const { blobs } = await getImage(file);
+
+		const blobsLength = blobs.length;
+		if (!blobsLength) {
+			return;
+		}
+
 		let counter = 1;
 
-		console.log('Total chunks to upload', blobs.length);
+		setTotalChunks(blobsLength);
+		console.log('Total chunks to upload', blobsLength);
 		console.log('============');
 
 		// Upload each blob seperatly
 		const chunks: Chunk[] = [];
 		for (const [index, blob] of blobs.entries()) {
-			console.log(`Uploading chunk ${counter}/${blobs.length}`);
+			console.log(`Uploading chunk ${counter}/${blobsLength}`);
+
+			setCurrentChunk(counter);
 
 			const chunk = await addChunkMutate({
 				blob,
@@ -86,24 +99,34 @@ export const Upload = () => {
 	const isLoading = addAssetIsLoading || addChunkIsLoading;
 
 	return (
-		<Box sx={{ padding: constants.SPACING }}>
-			<label htmlFor='upload-file'>
-				<Input id='upload-file' /*multiple*/ type='file' onChange={handleOnUpload} />
-				<Button
-					startIcon='addOutlined'
-					label={isLoading ? 'Uploading...' : 'Upload'}
-					variant='contained'
-					color='primary'
-					size='large'
-					fullWidth
-					// @ts-ignore
-					component='span'
-					sx={{
-						borderRadius: 50
-					}}
-					loading={isLoading}
-				/>
-			</label>
-		</Box>
+		<>
+			<Box sx={{ padding: constants.SPACING }}>
+				<label htmlFor='upload-file'>
+					<Input id='upload-file' /*multiple*/ type='file' onChange={handleOnUpload} />
+					<Button
+						startIcon='addOutlined'
+						label='Upload'
+						variant='contained'
+						color='primary'
+						size='large'
+						fullWidth
+						// @ts-ignore
+						component='span'
+						sx={{
+							borderRadius: 50
+						}}
+					/>
+				</label>
+			</Box>
+			<Snackbar
+				open={isLoading}
+				loader
+				message={
+					<Body>
+						Uploading chunks {currentChunk}/{totalChunks}
+					</Body>
+				}
+			/>
+		</>
 	);
 };

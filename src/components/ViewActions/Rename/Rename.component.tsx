@@ -9,14 +9,12 @@ import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
 import { Asset } from 'lib/types/Asset.types';
-import { Box, Column } from 'ui-components/Box';
+import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { Field } from 'ui-components/Field';
 import { Form } from 'ui-components/Form';
-import { CircularProgress } from 'ui-components/Progress';
 import { Snackbar } from 'ui-components/Snackbar';
-import { Body } from 'ui-components/Typography';
 import { RenameAssetFormData } from '../ViewActions.types';
 
 export const Rename = () => {
@@ -132,15 +130,7 @@ export const Rename = () => {
 					</Dialog>
 				</>
 			) : null}
-			<Snackbar
-				open={editAssetIsLoading}
-				message={
-					<Column>
-						<Body>Renaming asset</Body>
-						<CircularProgress />
-					</Column>
-				}
-			/>
+			<Snackbar open={editAssetIsLoading} message='Renaming asset' loader />
 			<Snackbar
 				open={editAssetIsSuccess}
 				message='Asset renamed successfully'
