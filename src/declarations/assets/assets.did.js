@@ -30,10 +30,10 @@ export const idlFactory = ({ IDL }) => {
     'extension' : IDL.Text,
   });
   const EditAsset = IDL.Record({
+    'id' : IDL.Nat32,
     'name' : IDL.Opt(IDL.Text),
     'is_favorite' : IDL.Opt(IDL.Bool),
     'parent_id' : IDL.Opt(IDL.Nat32),
-    'asset_id' : IDL.Nat32,
     'extension' : IDL.Opt(IDL.Text),
   });
   const ApiError = IDL.Variant({
@@ -42,10 +42,16 @@ export const idlFactory = ({ IDL }) => {
     'AlreadyExists' : IDL.Text,
   });
   const Result = IDL.Variant({ 'Ok' : Asset, 'Err' : ApiError });
+  const MoveAsset = IDL.Record({
+    'id' : IDL.Nat32,
+    'parent_id' : IDL.Opt(IDL.Nat32),
+  });
+  const Result_1 = IDL.Variant({ 'Ok' : IDL.Vec(Asset), 'Err' : ApiError });
   return IDL.Service({
     'add_asset' : IDL.Func([PostAsset], [Asset], []),
     'edit_asset' : IDL.Func([EditAsset], [Result], []),
     'get_user_assets' : IDL.Func([], [IDL.Vec(Asset)], ['query']),
+    'move_assets' : IDL.Func([IDL.Vec(MoveAsset)], [Result_1], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

@@ -39,11 +39,13 @@ export const Rename = () => {
 					return [];
 				}
 
+				// Find the index of the renamed asset in the current cache
 				const index = old.findIndex(oldAsset => oldAsset.id === asset.id);
 				if (index === -1) {
 					return old;
 				}
 
+				// Replace the renamed asset in the currence cache
 				const updatedAssets = replaceArrayAtIndex(old, index, asset);
 
 				// Update selected rows
@@ -75,7 +77,7 @@ export const Rename = () => {
 			setUndoAsset(asset);
 
 			await editAssetMutate({
-				asset_id: asset.id,
+				id: asset.id,
 				name: [data.folderName],
 				extension: asset.type === 'file' ? [getExtension(data.folderName)] : [],
 				is_favorite: [asset.isFavorite],
@@ -141,7 +143,7 @@ export const Rename = () => {
 
 					// Apply `undo` assets
 					await editAssetMutate({
-						asset_id: undoAsset.id,
+						id: undoAsset.id,
 						name: [undoAsset.name],
 						extension: [getExtension(undoAsset.name)],
 						is_favorite: [undoAsset.isFavorite],

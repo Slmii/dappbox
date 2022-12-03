@@ -26,12 +26,13 @@ export interface Chunk {
   'index' : number,
 }
 export interface EditAsset {
+  'id' : number,
   'name' : [] | [string],
   'is_favorite' : [] | [boolean],
   'parent_id' : [] | [number],
-  'asset_id' : number,
   'extension' : [] | [string],
 }
+export interface MoveAsset { 'id' : number, 'parent_id' : [] | [number] }
 export interface PostAsset {
   'asset_type' : AssetType,
   'name' : string,
@@ -44,8 +45,11 @@ export interface PostAsset {
 }
 export type Result = { 'Ok' : Asset } |
   { 'Err' : ApiError };
+export type Result_1 = { 'Ok' : Array<Asset> } |
+  { 'Err' : ApiError };
 export interface _SERVICE {
   'add_asset' : ActorMethod<[PostAsset], Asset>,
   'edit_asset' : ActorMethod<[EditAsset], Result>,
   'get_user_assets' : ActorMethod<[], Array<Asset>>,
+  'move_assets' : ActorMethod<[Array<MoveAsset>], Result_1>,
 }

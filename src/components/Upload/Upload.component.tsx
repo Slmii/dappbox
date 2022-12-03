@@ -2,12 +2,14 @@ import { styled } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 
 import { api } from 'api';
 import { Chunk } from 'declarations/assets/assets.did';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
-import { getExtension, getImage } from 'lib/functions';
+import { getExtension, getImage, getTableAssets } from 'lib/functions';
+import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
@@ -26,6 +28,8 @@ export const Upload = () => {
 	const [totalChunks, setTotalChunks] = useState(0);
 	const [currentChunk, setCurrentChunk] = useState(0);
 
+	const { order, orderBy } = useRecoilValue(tableStateAtom);
+
 	const {
 		mutateAsync: addAssetMutate,
 		isLoading: addAssetIsLoading,
@@ -35,7 +39,18 @@ export const Upload = () => {
 		mutationFn: api.Asset.addAsset,
 		onSuccess: asset => {
 			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], (old: Asset[] | undefined) => {
-				return [asset, ...(old ?? [])];
+				if (!old) {
+					return [];
+				}
+
+				const newAssets = [asset, ...(old ?? [])];
+
+				return getTableAssets({
+					assets: newAssets,
+					order,
+					orderBy,
+					assetId: getAssetId(pathname)
+				});
 			});
 		}
 	});

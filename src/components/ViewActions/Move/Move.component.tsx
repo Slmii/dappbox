@@ -1,7 +1,8 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
+import { api } from 'api';
 import { constants } from 'lib/constants';
 import { getTableAssets, replaceArrayAtIndex } from 'lib/functions';
 import { useUserAssets } from 'lib/hooks';
@@ -22,8 +23,41 @@ export const Move = () => {
 	const [parentAssetId, setParentAssetId] = useState<number>(0);
 	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
 
-	const { data: assets, getChildAssets, getParentId, getRootParent } = useUserAssets();
+	const { data: assets, getChildAssets, getParentId } = useUserAssets();
 	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
+
+	const {
+		mutateAsync: moveAssetMutate,
+		isLoading: moveAssetsIsLoading,
+		isSuccess: moveAssetsIsSuccess,
+		reset: moveAssetsReset
+	} = useMutation({
+		mutationFn: api.Asset.moveAssets,
+		onSuccess: movedAssets => {
+			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], (old: Asset[] | undefined) => {
+				if (!old) {
+					return [];
+				}
+
+				let updatedAssets = [...old];
+
+				for (const movedAsset of movedAssets) {
+					// Find the index of the moved asset in the current cache
+					const index = old.findIndex(oldAsset => oldAsset.id === movedAsset.id);
+
+					if (index !== -1) {
+						// Replace the moved asset in the currence cache
+						updatedAssets = replaceArrayAtIndex(updatedAssets, index, {
+							...updatedAssets[index],
+							parentId: movedAsset.parentId
+						});
+					}
+				}
+
+				return updatedAssets;
+			});
+		}
+	});
 
 	const folderAssets = useMemo(() => {
 		if (!assets) {
@@ -38,6 +72,7 @@ export const Move = () => {
 		}).filter(asset => asset.type === 'folder');
 	}, [assets, parentAssetId]);
 
+	// TODO: fix moving folders to other folders only when folders are selected
 	// Filter out assets who cannot be moved to the same folder or if the folder asset is being moved to a child
 	const assetsToMove = useMemo(() => {
 		return selectedRows.filter(asset => {
@@ -54,36 +89,6 @@ export const Move = () => {
 			// This means that an asset cannot be moved to its own position in the tree
 			if (asset.id === selectedFolderAssetId) {
 				return false;
-			}
-
-			if (asset.type === 'folder') {
-				const rootAsset = getRootParent(asset.id);
-
-				// If root (meaning the asset has no parentId)
-				if (rootAsset) {
-					// If the root's assetId is equal to the selected folder asset id, then
-					// it's not allowed to move, because it's unnecessary to move an asset
-					// to its own location in the tree
-					if (rootAsset.id !== selectedFolderAssetId) {
-						// Get root asset of the selected folder
-						const rootAssetOfSelectedFolder = getRootParent(selectedFolderAssetId);
-
-						// The root asset of the selected folder cannot be the same as the
-						// assetId of the root asset to be moved.
-						// If this is the case, it means that the user is trying to move
-						// the root asset to one of its children in the tree
-						return rootAssetOfSelectedFolder?.id === rootAsset.id ? false : true;
-					}
-
-					// Root by default is always allowed to move
-					return true;
-				}
-
-				// This check is required if you want to move a folder to a lower positon in the tree, within the same tree
-				// Example:
-				// A1 > A2 > A3
-				// Moving A1 to a lower position is not allowed, same as moving A2 to A3 is not allowed (only for folders)
-				return getChildAssets(asset.id).length > 0 ? false : true;
 			}
 
 			return true;
@@ -107,38 +112,27 @@ export const Move = () => {
 		setMoveFolderDialogOpen(false);
 	};
 
-	const handleOnConfirmMoveAssets = () => {
-		// Make a copy of the current assets
-		let replacingAssets = [...(assets ?? [])];
-
-		setUndoAssets(replacingAssets);
-
-		for (const assetToMove of assetsToMove) {
-			// Find the index of the asset to move
-			// Here we need to loop through all available assets to find the correct index
-			const index = (assets ?? []).findIndex(asset => asset.id === assetToMove.id);
-
-			// Overwrite assets
-			replacingAssets = replaceArrayAtIndex(replacingAssets, index, {
-				...replacingAssets[index],
-				parentId: selectedFolderAssetId
-			});
+	const handleOnConfirmMoveAssets = async () => {
+		if (!assetsToMove.length || !assets?.length) {
+			return;
 		}
 
-		// TODO: mutate canister
-		// TODO: update cache in react query or invalidate query after udpdate
-		// TODO: move to useMutation call
-		queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], () => {
-			return replacingAssets;
-		});
+		resetState();
+
+		setUndoAssets(assets);
+
+		await moveAssetMutate(
+			assetsToMove.map(asset => ({
+				id: asset.id,
+				parent_id: [selectedFolderAssetId]
+			}))
+		);
 
 		// Reset selected rows
 		setTableState(prevState => ({
 			...prevState,
 			selectedRows: []
 		}));
-
-		resetState();
 	};
 
 	return (
@@ -185,20 +179,29 @@ export const Move = () => {
 					</Dialog>
 				</>
 			) : null}
-
+			<Snackbar open={moveAssetsIsLoading} message='Moving assets' loader />
 			<Snackbar
-				open={!!undoAssets.length}
+				open={moveAssetsIsSuccess}
 				message='Asset(s) moved successfully'
-				onUndo={() => {
-					// TODO: mutate canister
-					// TODO: update cache in react query or invalidate query after udpdate
-					// TODO: move to useMutation call
-					queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], () => {
-						return undoAssets;
-					});
+				onUndo={async () => {
+					if (!undoAssets.length) {
+						return;
+					}
+
+					await moveAssetMutate(
+						undoAssets.map(asset => ({
+							id: asset.id,
+							parent_id: asset.parentId ? [asset.parentId] : []
+						}))
+					);
+
 					setUndoAssets([]);
+					moveAssetsReset();
 				}}
-				onClose={() => setUndoAssets([])}
+				onClose={() => {
+					setUndoAssets([]);
+					moveAssetsReset();
+				}}
 			/>
 		</>
 	);

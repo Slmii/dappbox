@@ -1,6 +1,6 @@
 import { ViewActions } from 'components/ViewActions';
 import { ViewAssets } from 'components/ViewAssets';
-import { ViewMode } from 'components/ViewMode';
+// import { ViewMode } from 'components/ViewMode';
 import { useUserAssets } from 'lib/hooks';
 import { Box, Row } from 'ui-components/Box';
 import { Breadcrumbs } from 'ui-components/Breadcrumbs';
@@ -24,7 +24,7 @@ export const Home = () => {
 					}}
 				>
 					<Breadcrumbs />
-					<ViewMode />
+					{/* <ViewMode /> */}
 				</Box>
 			</Content>
 			<Divider />

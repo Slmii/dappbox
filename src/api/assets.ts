@@ -1,4 +1,4 @@
-import { _SERVICE, Asset as ControllerAsset, EditAsset, PostAsset } from 'declarations/assets/assets.did';
+import { _SERVICE, Asset as ControllerAsset, EditAsset, MoveAsset, PostAsset } from 'declarations/assets/assets.did';
 import { dateFromBigInt } from 'lib/dates';
 import { resolve, unwrap } from 'lib/functions';
 import { Asset as IAsset, AssetType } from 'lib/types/Asset.types';
@@ -22,6 +22,17 @@ export abstract class Asset {
 			const unwrapped = await unwrap(response);
 
 			return mapToAssetInterface(unwrapped);
+		});
+	}
+
+	static async moveAssets(assets: MoveAsset[]) {
+		const actor = await Actor.getActor<_SERVICE>('assets');
+
+		return resolve(async () => {
+			const response = await actor.move_assets(assets);
+			const unwrapped = await unwrap(response);
+
+			return unwrapped.map(asset => mapToAssetInterface(asset));
 		});
 	}
 
