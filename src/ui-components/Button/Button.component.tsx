@@ -1,8 +1,9 @@
 import MuiButton from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip from '@mui/material/Tooltip';
 
+import { constants } from 'lib/constants';
 import { icons } from 'ui-components/icons';
+import { CircularProgress } from 'ui-components/Progress';
 import { CustomButtonProps } from './Button.types';
 
 export const Button = ({
@@ -43,9 +44,8 @@ export const Button = ({
 		>
 			{loading ? (
 				<CircularProgress
-					size={24}
 					sx={{
-						marginRight: label ? 1 : 0
+						marginRight: label ? constants.SPACING : 0
 					}}
 				/>
 			) : null}

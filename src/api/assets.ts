@@ -1,6 +1,6 @@
-import { _SERVICE, Asset as ControllerAsset, PostAsset, PostChunk } from 'declarations/assets/assets.did';
+import { _SERVICE, Asset as ControllerAsset, EditAsset, PostAsset, PostChunk } from 'declarations/assets/assets.did';
 import { dateFromBigInt } from 'lib/dates';
-import { resolve } from 'lib/functions';
+import { resolve, unwrap } from 'lib/functions';
 import { Asset as IAsset, AssetType } from 'lib/types/Asset.types';
 import { Actor } from './actor';
 
@@ -23,6 +23,17 @@ export abstract class Asset {
 		});
 	}
 
+	static async editAsset(asset: EditAsset) {
+		const actor = await Actor.getActor<_SERVICE>('assets');
+
+		return resolve(async () => {
+			const response = await actor.edit_asset(asset);
+			const unwrapped = await unwrap(response);
+
+			return mapToAssetInterface(unwrapped);
+		});
+	}
+
 	static async getUserAssets() {
 		const actor = await Actor.getActor<_SERVICE>('assets');
 
@@ -37,7 +48,7 @@ export abstract class Asset {
 
 		return resolve(async () => {
 			const response = await actor.get_chunks_by_chunk_id(chunkId);
-			return response;
+			return unwrap(response);
 		});
 	}
 }
@@ -54,6 +65,7 @@ const mapToAssetInterface = (asset: ControllerAsset): IAsset => {
 		parentId: asset.parent_id.length ? asset.parent_id[0] : undefined,
 		size: Number(asset.size),
 		chunks: asset.chunks,
-		createdAt: dateFromBigInt(asset.created_at)
+		createdAt: dateFromBigInt(asset.created_at),
+		updatedAt: dateFromBigInt(asset.created_at)
 	};
 };

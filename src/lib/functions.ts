@@ -59,10 +59,6 @@ export const descendingComparator = <T>(a: T, b: T, orderBy: keyof T) => {
 	return 0;
 };
 
-export const replaceAsset = ({ assets, index, value }: { assets: Asset[]; index: number; value: Asset }) => {
-	return [...assets.slice(0, index), value, ...assets.slice(index + 1)];
-};
-
 export const getImage = async (file: File) => {
 	const createChunks = (file: File, cSize: number /* cSize should be byte 1024*1 = 1KB */) => {
 		let startPointer = 0;
@@ -125,4 +121,10 @@ export const formatBytes = (bytes: number, decimals = 2) => {
 	const i = Math.floor(Math.log(bytes) / Math.log(k));
 
 	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+};
+
+export const replaceArrayAtIndex = <T>(array: T[], index: number, newValue: T): T[] => {
+	const copy = [...array];
+	copy[index] = newValue;
+	return copy;
 };

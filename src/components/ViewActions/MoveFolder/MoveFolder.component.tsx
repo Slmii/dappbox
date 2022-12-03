@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { constants } from 'lib/constants';
-import { getTableAssets, replaceAsset } from 'lib/functions';
+import { getTableAssets, replaceArrayAtIndex } from 'lib/functions';
 import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
@@ -119,13 +119,9 @@ export const MoveAssets = () => {
 			const index = (assets ?? []).findIndex(asset => asset.id === assetToMove.id);
 
 			// Overwrite assets
-			replacingAssets = replaceAsset({
-				assets: replacingAssets,
-				value: {
-					...replacingAssets[index],
-					parentId: selectedFolderAssetId
-				},
-				index
+			replacingAssets = replaceArrayAtIndex(replacingAssets, index, {
+				...replacingAssets[index],
+				parentId: selectedFolderAssetId
 			});
 		}
 

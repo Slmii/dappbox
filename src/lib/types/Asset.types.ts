@@ -14,6 +14,7 @@ export interface Asset {
 	isFavorite: boolean;
 	chunks: Chunk[];
 	createdAt: Date;
+	updatedAt: Date;
 }
 
 export type AssetType = 'folder' | 'file';

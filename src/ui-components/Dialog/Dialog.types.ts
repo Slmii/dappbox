@@ -5,6 +5,7 @@ export interface DialogProps {
 	onConfirmText?: string;
 	onCancelText?: string;
 	onConfirmDisabled?: boolean;
+	onConfirmLoading?: boolean;
 	onCancelDisabled?: boolean;
 	onConfirm: () => void;
 	onClose: () => void;

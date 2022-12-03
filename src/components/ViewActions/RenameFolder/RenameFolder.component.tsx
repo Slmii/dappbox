@@ -1,19 +1,22 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
+import { api } from 'api';
 import { constants } from 'lib/constants';
-import { replaceAsset } from 'lib/functions';
+import { replaceArrayAtIndex } from 'lib/functions';
 import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
 import { Asset } from 'lib/types/Asset.types';
-import { Box } from 'ui-components/Box';
+import { Box, Column } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { Field } from 'ui-components/Field';
 import { Form } from 'ui-components/Form';
+import { CircularProgress } from 'ui-components/Progress';
 import { Snackbar } from 'ui-components/Snackbar';
+import { Body } from 'ui-components/Typography';
 import { RenameFolderFormData } from '../ViewActions.types';
 
 export const RenameFolder = () => {
@@ -21,46 +24,61 @@ export const RenameFolder = () => {
 	const renameFolderFormRef = useRef<null | HTMLFormElement>(null);
 	const [renameOpenDialog, setRenameOpenDialog] = useState(false);
 	const [handleOnConfirmRenameDialog, setHandleOnConfirmRenameDialog] = useState<() => void>(() => null);
-	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
-	const { data: assets } = useUserAssets();
-
+	const [undoAsset, setUndoAsset] = useState<Asset | null>(null);
 	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
+
+	const { data: assets } = useUserAssets();
+	const {
+		mutateAsync: editAssetMutate,
+		isLoading: editAssetIsLoading,
+		isSuccess: editAssetIsSuccess,
+		reset: editAssetReset
+	} = useMutation({
+		mutationFn: api.Asset.editAsset,
+		onSuccess: asset => {
+			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], (old: Asset[] | undefined) => {
+				if (!old) {
+					return [];
+				}
+
+				const index = old.findIndex(oldAsset => oldAsset.id === asset.id);
+				if (index === -1) {
+					return old;
+				}
+
+				return replaceArrayAtIndex(old, index, asset);
+			});
+		}
+	});
 
 	const handleOnRenameFolder = () => {
 		setRenameOpenDialog(selectedRows.length === 1);
-		setHandleOnConfirmRenameDialog(() => (data: RenameFolderFormData) => {
+		setHandleOnConfirmRenameDialog(() => async (data: RenameFolderFormData) => {
 			if (!assets) {
 				return;
 			}
 
-			// There should always be only 1 asset selected
+			setRenameOpenDialog(false);
+
+			// There must always be only 1 asset selected
 			// for the rename functionality
-			const index = assets.findIndex(asset => asset.id === selectedRows[0].id);
+			const asset = selectedRows[0];
 
 			// Store assets in the state before the renaming happens
 			// This will be used to undo the renaming
-			setUndoAssets(assets);
+			setUndoAsset(asset);
 
-			// TODO: mutate canister
-			// TODO: update cache in react query or invalidate query after udpdate
-			// TODO: move to useMutation call
-			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], () => {
-				return replaceAsset({
-					assets,
-					value: {
-						...assets[index],
-						name: data.folderName
-					},
-					index
-				});
+			const updatedAsset = await editAssetMutate({
+				asset_id: asset.id,
+				name: [data.folderName],
+				is_favorite: [asset.isFavorite],
+				parent_id: asset.parentId ? [asset.parentId] : []
 			});
 
-			setRenameOpenDialog(false);
-
-			// Reset selected rows
+			// Update selected rows
 			setTableState(prevState => ({
 				...prevState,
-				selectedRows: []
+				selectedRows: replaceArrayAtIndex(assets, 0, updatedAsset)
 			}));
 		});
 	};
@@ -108,21 +126,44 @@ export const RenameFolder = () => {
 				</>
 			) : null}
 			<Snackbar
-				open={!!undoAssets.length}
-				message='Folder renamed successfully'
-				onUndo={() => {
+				open={editAssetIsLoading}
+				message={
+					<Column>
+						<Body>Renaming asset</Body>
+						<CircularProgress />
+					</Column>
+				}
+			/>
+			<Snackbar
+				open={editAssetIsSuccess}
+				message='Asset renamed successfully'
+				onUndo={async () => {
+					if (!undoAsset || !assets) {
+						return;
+					}
+
 					// Apply `undo` assets
-					// TODO: mutate canister
-					// TODO: update cache in react query or invalidate query after udpdate
-					// TODO: move to useMutation call
-					queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], () => {
-						return undoAssets;
+					await editAssetMutate({
+						asset_id: undoAsset.id,
+						name: [undoAsset.name],
+						is_favorite: [undoAsset.isFavorite],
+						parent_id: undoAsset.parentId ? [undoAsset.parentId] : []
 					});
 
+					// Update selected rows
+					setTableState(prevState => ({
+						...prevState,
+						selectedRows: replaceArrayAtIndex(assets, 0, undoAsset)
+					}));
+
 					// Reset assets for `undo` functionality
-					setUndoAssets([]);
+					setUndoAsset(null);
+					editAssetReset();
 				}}
-				onClose={() => setUndoAssets([])}
+				onClose={() => {
+					setUndoAsset(null);
+					editAssetReset();
+				}}
 			/>
 		</>
 	);

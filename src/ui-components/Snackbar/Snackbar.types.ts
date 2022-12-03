@@ -3,5 +3,6 @@ export interface SnackbarProps {
 	message: string | JSX.Element;
 	persist?: boolean;
 	onClose?: () => void;
-	onUndo?: () => void;
+	onUndo?: () => void | Promise<void>;
+	isOnUndoLoading?: boolean;
 }

@@ -14,7 +14,7 @@ function Transition(props: TransitionProps) {
 	return <Slide {...props} direction='right' />;
 }
 
-export const Snackbar = ({ open, message, persist = false, onClose, onUndo }: SnackbarProps) => {
+export const Snackbar = ({ open, message, persist = false, onClose, onUndo, isOnUndoLoading }: SnackbarProps) => {
 	return (
 		<MuiSnackbar
 			TransitionComponent={Transition}
@@ -41,8 +41,9 @@ export const Snackbar = ({ open, message, persist = false, onClose, onUndo }: Sn
 							variant='text'
 							label='UNDO'
 							size='small'
-							onClick={() => {
-								onUndo?.();
+							loading={isOnUndoLoading}
+							onClick={async () => {
+								await onUndo?.();
 								onClose?.();
 							}}
 						/>

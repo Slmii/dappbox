@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
 import { constants } from 'lib/constants';
-import { replaceAsset } from 'lib/functions';
+import { replaceArrayAtIndex } from 'lib/functions';
 import { useUserAssets } from './useUserAssets';
 
 export const useFavorites = () => {
@@ -28,11 +28,7 @@ export const useFavorites = () => {
 			// TODO: update cache in react query or invalidate query after udpdate
 			// TODO: move to useMutation call
 			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], () => {
-				return replaceAsset({
-					assets,
-					index,
-					value: { ...asset, isFavorite: !asset.isFavorite }
-				});
+				return replaceArrayAtIndex(assets, index, { ...asset, isFavorite: !asset.isFavorite });
 			});
 		}
 	};

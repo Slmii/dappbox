@@ -28,6 +28,7 @@ export const Dialog = ({
 	onConfirmText,
 	onCancelText,
 	onConfirmDisabled,
+	onConfirmLoading,
 	onCancelDisabled,
 	onConfirm,
 	children
@@ -63,7 +64,12 @@ export const Dialog = ({
 			</DialogContent>
 			<DialogActions>
 				<Button label={onCancelText ?? 'Cancel'} onClick={onClose} disabled={onCancelDisabled} />
-				<Button label={onConfirmText ?? 'Confirm'} onClick={onConfirm} disabled={onConfirmDisabled} />
+				<Button
+					label={onConfirmText ?? 'Confirm'}
+					onClick={onConfirm}
+					loading={onConfirmLoading}
+					disabled={onConfirmDisabled}
+				/>
 			</DialogActions>
 		</MuiDialog>
 	);

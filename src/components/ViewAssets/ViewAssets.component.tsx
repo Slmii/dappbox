@@ -37,7 +37,7 @@ const columns: Column = {
 		sortable: true,
 		type: 'bigint'
 	},
-	createdAt: {
+	updatedAt: {
 		alignment: 'left',
 		label: 'Modifed',
 		sortable: true,
