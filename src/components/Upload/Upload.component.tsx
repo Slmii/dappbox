@@ -7,7 +7,7 @@ import { api } from 'api';
 import { Chunk } from 'declarations/assets/assets.did';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
-import { getImage } from 'lib/functions';
+import { getExtension, getImage } from 'lib/functions';
 import { Asset } from 'lib/types/Asset.types';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
@@ -69,7 +69,7 @@ export const Upload = () => {
 		const parentId = getAssetId(pathname);
 		const asset = await addAssetMutate({
 			asset_type: 'file',
-			extension: file.name.split('.').pop() ?? '',
+			extension: getExtension(file.name),
 			name: file.name,
 			parent_id: !!parentId ? [Number(parentId)] : [],
 			user_id: user.id,

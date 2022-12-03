@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
 import { constants } from 'lib/constants';
-import { replaceArrayAtIndex } from 'lib/functions';
+import { getExtension, replaceArrayAtIndex } from 'lib/functions';
 import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
@@ -46,7 +46,15 @@ export const Rename = () => {
 					return old;
 				}
 
-				return replaceArrayAtIndex(old, index, asset);
+				const updatedAssets = replaceArrayAtIndex(old, index, asset);
+
+				// Update selected rows
+				setTableState(prevState => ({
+					...prevState,
+					selectedRows: replaceArrayAtIndex(prevState.selectedRows, 0, asset)
+				}));
+
+				return updatedAssets;
 			});
 		}
 	});
@@ -68,18 +76,13 @@ export const Rename = () => {
 			// This will be used to undo the renaming
 			setUndoAsset(asset);
 
-			const updatedAsset = await editAssetMutate({
+			await editAssetMutate({
 				asset_id: asset.id,
 				name: [data.folderName],
+				extension: [getExtension(data.folderName)],
 				is_favorite: [asset.isFavorite],
 				parent_id: asset.parentId ? [asset.parentId] : []
 			});
-
-			// Update selected rows
-			setTableState(prevState => ({
-				...prevState,
-				selectedRows: replaceArrayAtIndex(assets, 0, updatedAsset)
-			}));
 		});
 	};
 
@@ -138,7 +141,7 @@ export const Rename = () => {
 				open={editAssetIsSuccess}
 				message='Asset renamed successfully'
 				onUndo={async () => {
-					if (!undoAsset || !assets) {
+					if (!undoAsset) {
 						return;
 					}
 
@@ -146,15 +149,10 @@ export const Rename = () => {
 					await editAssetMutate({
 						asset_id: undoAsset.id,
 						name: [undoAsset.name],
+						extension: [getExtension(undoAsset.name)],
 						is_favorite: [undoAsset.isFavorite],
 						parent_id: undoAsset.parentId ? [undoAsset.parentId] : []
 					});
-
-					// Update selected rows
-					setTableState(prevState => ({
-						...prevState,
-						selectedRows: replaceArrayAtIndex(assets, 0, undoAsset)
-					}));
 
 					// Reset assets for `undo` functionality
 					setUndoAsset(null);

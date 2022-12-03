@@ -25,7 +25,7 @@ export const Download = () => {
 			const url = window.URL.createObjectURL(blob);
 			const tempLink = document.createElement('a');
 			tempLink.href = url;
-			tempLink.setAttribute('download', asset.name);
+			tempLink.setAttribute('download', `${asset.name}.${asset.extension}`);
 			tempLink.click();
 		}
 	};

@@ -37,6 +37,7 @@ export const idlFactory = ({ IDL }) => {
     'is_favorite' : IDL.Opt(IDL.Bool),
     'parent_id' : IDL.Opt(IDL.Nat32),
     'asset_id' : IDL.Nat32,
+    'extension' : IDL.Opt(IDL.Text),
   });
   const ApiError = IDL.Variant({
     'NotFound' : IDL.Text,

@@ -128,3 +128,7 @@ export const replaceArrayAtIndex = <T>(array: T[], index: number, newValue: T): 
 	copy[index] = newValue;
 	return copy;
 };
+
+export const getExtension = (name: string) => {
+	return name.split('.').pop() ?? '';
+};

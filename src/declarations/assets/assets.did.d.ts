@@ -28,6 +28,7 @@ export interface EditAsset {
   'is_favorite' : [] | [boolean],
   'parent_id' : [] | [number],
   'asset_id' : number,
+  'extension' : [] | [string],
 }
 export interface PostAsset {
   'asset_type' : string,
