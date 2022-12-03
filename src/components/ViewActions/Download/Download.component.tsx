@@ -20,13 +20,21 @@ export const Download = () => {
 				assetsToDownload.push(res);
 			}
 
-			const blob = new Blob(assetsToDownload);
+			// Create a new Blob object from the file data
+			const blob = new Blob(assetsToDownload, { type: 'application/octet-stream' });
 
+			// Generate a URL for the blob
 			const url = window.URL.createObjectURL(blob);
-			const tempLink = document.createElement('a');
-			tempLink.href = url;
-			tempLink.setAttribute('download', `${asset.name}.${asset.extension}`);
-			tempLink.click();
+
+			// Create a link to the file and set the download attribute
+			const downloadLink = document.createElement('a');
+			downloadLink.href = url;
+			downloadLink.setAttribute('download', `${asset.name}.${asset.extension}`);
+			downloadLink.click();
+
+			downloadLink.addEventListener('click', function () {
+				URL.revokeObjectURL(url);
+			});
 		}
 	};
 
