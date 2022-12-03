@@ -1,11 +1,12 @@
 export const idlFactory = ({ IDL }) => {
+  const AssetType = IDL.Variant({ 'Folder' : IDL.Null, 'File' : IDL.Null });
   const Chunk = IDL.Record({
     'id' : IDL.Nat32,
     'canister' : IDL.Principal,
     'index' : IDL.Nat32,
   });
   const PostAsset = IDL.Record({
-    'asset_type' : IDL.Text,
+    'asset_type' : AssetType,
     'name' : IDL.Text,
     'size' : IDL.Nat32,
     'mime_type' : IDL.Text,
@@ -17,7 +18,7 @@ export const idlFactory = ({ IDL }) => {
   const Asset = IDL.Record({
     'id' : IDL.Nat32,
     'updated_at' : IDL.Nat64,
-    'asset_type' : IDL.Text,
+    'asset_type' : AssetType,
     'name' : IDL.Text,
     'size' : IDL.Nat32,
     'mime_type' : IDL.Text,

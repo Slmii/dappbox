@@ -38,6 +38,8 @@ export const Download = () => {
 		}
 	};
 
+	const hasFolderSelected = selectedRows.some(row => row.type === 'folder');
+
 	return (
 		<>
 			{selectedRows.length ? (
@@ -48,6 +50,8 @@ export const Download = () => {
 					color='inherit'
 					onClick={handleOnDownload}
 					loading={isLoading}
+					disabled={hasFolderSelected}
+					tooltip={hasFolderSelected ? 'No support for folder downloads yet' : undefined}
 				/>
 			) : null}
 		</>

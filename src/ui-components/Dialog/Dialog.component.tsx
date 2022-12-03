@@ -63,12 +63,13 @@ export const Dialog = ({
 				{children}
 			</DialogContent>
 			<DialogActions>
-				<Button label={onCancelText ?? 'Cancel'} onClick={onClose} disabled={onCancelDisabled} />
+				<Button label={onCancelText ?? 'Cancel'} onClick={onClose} disabled={onCancelDisabled} size='large' />
 				<Button
 					label={onConfirmText ?? 'Confirm'}
 					onClick={onConfirm}
 					loading={onConfirmLoading}
 					disabled={onConfirmDisabled}
+					size='large'
 				/>
 			</DialogActions>
 		</MuiDialog>

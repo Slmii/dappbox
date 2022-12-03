@@ -7,7 +7,7 @@ export type ApiError = { 'NotFound' : string } |
 export interface Asset {
   'id' : number,
   'updated_at' : bigint,
-  'asset_type' : string,
+  'asset_type' : AssetType,
   'name' : string,
   'size' : number,
   'mime_type' : string,
@@ -18,6 +18,8 @@ export interface Asset {
   'chunks' : Array<Chunk>,
   'extension' : string,
 }
+export type AssetType = { 'Folder' : null } |
+  { 'File' : null };
 export interface Chunk {
   'id' : number,
   'canister' : Principal,
@@ -31,7 +33,7 @@ export interface EditAsset {
   'extension' : [] | [string],
 }
 export interface PostAsset {
-  'asset_type' : string,
+  'asset_type' : AssetType,
   'name' : string,
   'size' : number,
   'mime_type' : string,

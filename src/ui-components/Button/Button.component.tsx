@@ -57,7 +57,7 @@ export const Button = ({
 		<>
 			{tooltip ? (
 				<Tooltip arrow title={tooltip}>
-					{button}
+					{props.disabled ? <span>{button}</span> : button}
 				</Tooltip>
 			) : (
 				<>{button}</>

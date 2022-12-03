@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 import { tableStateAtom } from 'lib/recoil';
 import { Box, Column } from 'ui-components/Box';
 import { Caption } from 'ui-components/Typography';
-import { AddFolder } from './AddFolder';
+import { CreateFolder } from './CreateFolder';
 import { Delete } from './Delete';
 import { Download } from './Download';
 import { Move } from './Move';
@@ -16,7 +16,7 @@ export const ViewActions = () => {
 	return (
 		<>
 			<Column>
-				<AddFolder />
+				<CreateFolder />
 				<Rename />
 				<Preview />
 				<Download />

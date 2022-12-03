@@ -17,7 +17,7 @@ import { Form } from 'ui-components/Form';
 import { CircularProgress } from 'ui-components/Progress';
 import { Snackbar } from 'ui-components/Snackbar';
 import { Body } from 'ui-components/Typography';
-import { RenameFolderFormData } from '../ViewActions.types';
+import { RenameAssetFormData } from '../ViewActions.types';
 
 export const Rename = () => {
 	const queryClient = useQueryClient();
@@ -61,7 +61,7 @@ export const Rename = () => {
 
 	const handleOnRenameFolder = () => {
 		setRenameOpenDialog(selectedRows.length === 1);
-		setHandleOnConfirmRenameDialog(() => async (data: RenameFolderFormData) => {
+		setHandleOnConfirmRenameDialog(() => async (data: RenameAssetFormData) => {
 			if (!assets) {
 				return;
 			}
@@ -79,7 +79,7 @@ export const Rename = () => {
 			await editAssetMutate({
 				asset_id: asset.id,
 				name: [data.folderName],
-				extension: [getExtension(data.folderName)],
+				extension: asset.type === 'file' ? [getExtension(data.folderName)] : [],
 				is_favorite: [asset.isFavorite],
 				parent_id: asset.parentId ? [asset.parentId] : []
 			});
@@ -98,8 +98,11 @@ export const Rename = () => {
 						onClick={handleOnRenameFolder}
 					/>
 					<Dialog
-						title='Rename folder'
-						onClose={() => setRenameOpenDialog(false)}
+						title='Rename asset'
+						onClose={() => {
+							setRenameOpenDialog(false);
+							setHandleOnConfirmRenameDialog(() => null);
+						}}
 						open={renameOpenDialog}
 						onConfirm={() =>
 							// Programatically submit react hook form outside the form component
@@ -107,13 +110,14 @@ export const Rename = () => {
 								new Event('submit', { cancelable: true, bubbles: true })
 							)
 						}
+						onConfirmText='Rename'
 					>
 						<Box
 							sx={{
 								marginTop: constants.SPACING
 							}}
 						>
-							<Form<RenameFolderFormData>
+							<Form<RenameAssetFormData>
 								action={handleOnConfirmRenameDialog}
 								defaultValues={{
 									folderName: selectedRows.length === 1 ? selectedRows[0].name : ''
@@ -122,7 +126,7 @@ export const Rename = () => {
 								myRef={renameFolderFormRef}
 								mode='onSubmit'
 							>
-								<Field name='folderName' label='Folder name' />
+								<Field name='folderName' label='Asset name' />
 							</Form>
 						</Box>
 					</Dialog>

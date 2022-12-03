@@ -38,7 +38,7 @@ export abstract class Asset {
 const mapToAssetInterface = (asset: ControllerAsset): IAsset => {
 	return {
 		id: asset.id,
-		type: asset.asset_type as AssetType,
+		type: 'File' in asset.asset_type ? ('file' as AssetType) : ('folder' as AssetType),
 		name: asset.name,
 		userId: asset.user_id,
 		isFavorite: asset.is_favorite,

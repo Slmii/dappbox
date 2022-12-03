@@ -68,7 +68,9 @@ export const Upload = () => {
 
 		const parentId = getAssetId(pathname);
 		const asset = await addAssetMutate({
-			asset_type: 'file',
+			asset_type: {
+				File: null
+			},
 			extension: getExtension(file.name),
 			name: file.name,
 			parent_id: !!parentId ? [Number(parentId)] : [],
