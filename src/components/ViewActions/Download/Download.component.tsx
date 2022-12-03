@@ -8,7 +8,7 @@ import { Button } from 'ui-components/Button';
 export const Download = () => {
 	const [{ selectedRows }] = useRecoilState(tableStateAtom);
 	const { mutateAsync, isLoading } = useMutation({
-		mutationFn: api.Asset.getChunksByChunkId
+		mutationFn: api.Chunk.getChunksByChunkId
 	});
 
 	const handleOnDownload = async () => {
@@ -16,7 +16,7 @@ export const Download = () => {
 			const assetsToDownload: Uint8Array[] = [];
 
 			for (const chunk of asset.chunks) {
-				const res = await mutateAsync(chunk.id);
+				const res = await mutateAsync({ chunkId: chunk.id, canisterPrincipal: chunk.canister });
 				assetsToDownload.push(res);
 			}
 

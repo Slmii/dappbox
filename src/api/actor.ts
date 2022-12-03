@@ -1,8 +1,10 @@
 import { Actor as DfinityActor, ActorSubclass, HttpAgent } from '@dfinity/agent';
 import { AuthClient } from '@dfinity/auth-client';
 import { IDL } from '@dfinity/candid';
+import { Principal } from '@dfinity/principal';
 
 import { idlFactory as idlFactoryAssets } from 'declarations/assets';
+import { idlFactory as idlFactoryChunks } from 'declarations/chunks';
 import { idlFactory as idlFactoryUsers } from 'declarations/users';
 import { constants } from 'lib/constants';
 import canisters from './canister_ids.json';
@@ -10,12 +12,12 @@ import canisters from './canister_ids.json';
 type Controller = keyof typeof canisters;
 const idlFactoryMapping: Record<Controller, IDL.InterfaceFactory> = {
 	assets: idlFactoryAssets,
-	users: idlFactoryUsers
+	users: idlFactoryUsers,
+	chunks: idlFactoryChunks
 };
 
 export abstract class Actor {
 	static authClient: AuthClient | undefined = undefined;
-	static actor: Record<string, ActorSubclass<unknown>> = {};
 
 	static async setAuthClient(authClient: AuthClient) {
 		this.authClient = authClient;
@@ -29,15 +31,11 @@ export abstract class Actor {
 		return AuthClient.create();
 	}
 
-	static async getActor<T>(controller: Controller): Promise<ActorSubclass<T>> {
-		if (this.actor[controller]) {
-			return this.actor[controller] as ActorSubclass<T>;
-		}
-
+	static async getActor<T>(controller: Controller, canisterPrincipal?: Principal): Promise<ActorSubclass<T>> {
 		const authClient = await this.getAuthClient();
 
 		const canisterEnv = canisters[controller];
-		const canisterId = canisterEnv[constants.ENVIRONMENT as keyof typeof canisterEnv];
+		const canisterId = canisterPrincipal ?? canisterEnv[constants.ENVIRONMENT as keyof typeof canisterEnv];
 
 		const actor = DfinityActor.createActor<T>(idlFactoryMapping[controller], {
 			agent: new HttpAgent({
@@ -46,8 +44,6 @@ export abstract class Actor {
 			}),
 			canisterId
 		});
-
-		this.actor[controller] = actor;
 
 		return actor;
 	}

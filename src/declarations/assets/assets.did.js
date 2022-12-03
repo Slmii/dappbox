@@ -28,10 +28,6 @@ export const idlFactory = ({ IDL }) => {
     'chunks' : IDL.Vec(Chunk),
     'extension' : IDL.Text,
   });
-  const PostChunk = IDL.Record({
-    'blob' : IDL.Vec(IDL.Nat8),
-    'index' : IDL.Nat32,
-  });
   const EditAsset = IDL.Record({
     'name' : IDL.Opt(IDL.Text),
     'is_favorite' : IDL.Opt(IDL.Bool),
@@ -45,12 +41,9 @@ export const idlFactory = ({ IDL }) => {
     'AlreadyExists' : IDL.Text,
   });
   const Result = IDL.Variant({ 'Ok' : Asset, 'Err' : ApiError });
-  const Result_1 = IDL.Variant({ 'Ok' : IDL.Vec(IDL.Nat8), 'Err' : ApiError });
   return IDL.Service({
     'add_asset' : IDL.Func([PostAsset], [Asset], []),
-    'add_chunk' : IDL.Func([PostChunk], [Chunk], []),
     'edit_asset' : IDL.Func([EditAsset], [Result], []),
-    'get_chunks_by_chunk_id' : IDL.Func([IDL.Nat32], [Result_1], ['query']),
     'get_user_assets' : IDL.Func([], [IDL.Vec(Asset)], ['query']),
   });
 };

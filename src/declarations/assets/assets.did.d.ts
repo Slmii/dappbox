@@ -40,15 +40,10 @@ export interface PostAsset {
   'chunks' : Array<Chunk>,
   'extension' : string,
 }
-export interface PostChunk { 'blob' : Uint8Array, 'index' : number }
 export type Result = { 'Ok' : Asset } |
-  { 'Err' : ApiError };
-export type Result_1 = { 'Ok' : Uint8Array } |
   { 'Err' : ApiError };
 export interface _SERVICE {
   'add_asset' : ActorMethod<[PostAsset], Asset>,
-  'add_chunk' : ActorMethod<[PostChunk], Chunk>,
   'edit_asset' : ActorMethod<[EditAsset], Result>,
-  'get_chunks_by_chunk_id' : ActorMethod<[number], Result_1>,
   'get_user_assets' : ActorMethod<[], Array<Asset>>,
 }

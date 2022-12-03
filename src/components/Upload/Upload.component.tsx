@@ -32,7 +32,7 @@ export const Upload = () => {
 	});
 
 	const { mutateAsync: addChunkMutate, isLoading: addChunkIsLoading } = useMutation({
-		mutationFn: api.Asset.addChunk
+		mutationFn: api.Chunk.addChunk
 	});
 
 	const handleOnUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

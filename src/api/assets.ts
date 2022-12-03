@@ -1,19 +1,10 @@
-import { _SERVICE, Asset as ControllerAsset, EditAsset, PostAsset, PostChunk } from 'declarations/assets/assets.did';
+import { _SERVICE, Asset as ControllerAsset, EditAsset, PostAsset } from 'declarations/assets/assets.did';
 import { dateFromBigInt } from 'lib/dates';
 import { resolve, unwrap } from 'lib/functions';
 import { Asset as IAsset, AssetType } from 'lib/types/Asset.types';
 import { Actor } from './actor';
 
 export abstract class Asset {
-	static async addChunk(chunk: PostChunk) {
-		const actor = await Actor.getActor<_SERVICE>('assets');
-
-		return resolve(async () => {
-			const response = await actor.add_chunk(chunk);
-			return response;
-		});
-	}
-
 	static async addAsset(asset: PostAsset) {
 		const actor = await Actor.getActor<_SERVICE>('assets');
 
@@ -40,15 +31,6 @@ export abstract class Asset {
 		return resolve(async () => {
 			const response = await actor.get_user_assets();
 			return response.map(asset => mapToAssetInterface(asset));
-		});
-	}
-
-	static async getChunksByChunkId(chunkId: number) {
-		const actor = await Actor.getActor<_SERVICE>('assets');
-
-		return resolve(async () => {
-			const response = await actor.get_chunks_by_chunk_id(chunkId);
-			return unwrap(response);
 		});
 	}
 }
