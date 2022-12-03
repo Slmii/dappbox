@@ -23,7 +23,8 @@ export const Field = ({
 	fullWidth,
 	size = 'medium',
 	readOnly = false,
-	onChange
+	onChange,
+	autoFocus = false
 }: FieldProps) => {
 	const [showPassword, setShowPassword] = useState(false);
 	const { control, getValues } = useFormContext();
@@ -53,6 +54,7 @@ export const Field = ({
 					fullWidth={fullWidth}
 					variant={disabled ? 'filled' : 'outlined'}
 					InputProps={{
+						autoFocus,
 						sx: {
 							'& input[type=number]': {
 								MozAppearance: 'textfield'

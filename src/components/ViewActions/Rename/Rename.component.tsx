@@ -126,7 +126,7 @@ export const Rename = () => {
 								myRef={renameFolderFormRef}
 								mode='onSubmit'
 							>
-								<Field name='folderName' label='Asset name' />
+								<Field name='folderName' label='Asset name' autoFocus />
 							</Form>
 						</Box>
 					</Dialog>

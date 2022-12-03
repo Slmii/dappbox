@@ -1,13 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
 
 import { api } from 'api';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
-import { getTableAssets } from 'lib/functions';
-import { tableStateAtom } from 'lib/recoil';
 import { createFolderSchema } from 'lib/schemas';
 import { Asset } from 'lib/types/Asset.types';
 import { getAssetId } from 'lib/url';
@@ -27,8 +24,6 @@ export const CreateFolder = () => {
 	const [createFolderOpenDialog, setCreateFolderOpenDialog] = useState(false);
 	const [handleOnConfirmCreateFolderDialog, setHandleOnConfirmCreateFolderDialog] = useState<() => void>(() => null);
 
-	const { order, orderBy } = useRecoilValue(tableStateAtom);
-
 	const { mutateAsync: addAssetMutate, isLoading: addAssetIsLoading } = useMutation({
 		mutationFn: api.Asset.addAsset,
 		onSuccess: asset => {
@@ -37,14 +32,7 @@ export const CreateFolder = () => {
 					return [];
 				}
 
-				const newAssets = [asset, ...(old ?? [])];
-
-				return getTableAssets({
-					assets: newAssets,
-					order,
-					orderBy,
-					assetId: getAssetId(pathname)
-				});
+				return [asset, ...old];
 			});
 		}
 	});
@@ -110,7 +98,7 @@ export const CreateFolder = () => {
 						myRef={createFolderFormRef}
 						mode='onSubmit'
 					>
-						<Field name='folderName' label='Folder name' />
+						<Field name='folderName' label='Folder name' autoFocus />
 					</Form>
 				</Box>
 			</Dialog>

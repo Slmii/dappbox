@@ -14,4 +14,5 @@ export interface FieldProps {
 	onChange?: (value: string) => void;
 	startIcon?: Icons;
 	endIcon?: Icons;
+	autoFocus?: boolean;
 }
