@@ -1,12 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { api } from 'api';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
+import { useAddAsset } from 'lib/hooks';
 import { createFolderSchema } from 'lib/schemas';
-import { Asset } from 'lib/types/Asset.types';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -19,23 +17,11 @@ import { CreateFolderFormData } from '../ViewActions.types';
 export const CreateFolder = () => {
 	const { user } = useContext(AuthContext);
 	const { pathname } = useLocation();
-	const queryClient = useQueryClient();
 	const createFolderFormRef = useRef<null | HTMLFormElement>(null);
 	const [createFolderOpenDialog, setCreateFolderOpenDialog] = useState(false);
 	const [handleOnConfirmCreateFolderDialog, setHandleOnConfirmCreateFolderDialog] = useState<() => void>(() => null);
 
-	const { mutateAsync: addAssetMutate, isLoading: addAssetIsLoading } = useMutation({
-		mutationFn: api.Asset.addAsset,
-		onSuccess: asset => {
-			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], (old: Asset[] | undefined) => {
-				if (!old) {
-					return [];
-				}
-
-				return [asset, ...old];
-			});
-		}
-	});
+	const { mutateAsync: addAssetMutate, isLoading: addAssetIsLoading } = useAddAsset();
 
 	const handleOnCreateFolder = () => {
 		setCreateFolderOpenDialog(true);

@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -8,7 +8,7 @@ import { Chunk } from 'declarations/assets/assets.did';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
 import { getExtension, getImage } from 'lib/functions';
-import { Asset } from 'lib/types/Asset.types';
+import { useAddAsset } from 'lib/hooks';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -21,7 +21,6 @@ const Input = styled('input')({
 
 export const Upload = () => {
 	const { pathname } = useLocation();
-	const queryClient = useQueryClient();
 	const { user } = useContext(AuthContext);
 	const [totalChunks, setTotalChunks] = useState(0);
 	const [currentChunk, setCurrentChunk] = useState(0);
@@ -31,18 +30,7 @@ export const Upload = () => {
 		isLoading: addAssetIsLoading,
 		isSuccess: addAssetIsSuccess,
 		reset: addAssetReset
-	} = useMutation({
-		mutationFn: api.Asset.addAsset,
-		onSuccess: asset => {
-			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], (old: Asset[] | undefined) => {
-				if (!old) {
-					return [];
-				}
-
-				return [asset, ...old];
-			});
-		}
-	});
+	} = useAddAsset();
 
 	const { mutateAsync: addChunkMutate, isLoading: addChunkIsLoading } = useMutation({
 		mutationFn: api.Chunk.addChunk
