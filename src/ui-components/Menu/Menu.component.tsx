@@ -37,11 +37,11 @@ export const Menu = ({ label, id, menu }: MenuProps) => {
 					horizontal: 'left'
 				}}
 			>
-				{menu.map(({ label, icon, image, href, action }) => {
+				{menu.map(({ label, icon, image, href, action, disabled }) => {
 					const IconComponent = icons[icon as keyof typeof icons];
 
 					return (
-						<MenuItem key={label} onClick={() => handleOnMenuClose(action)}>
+						<MenuItem key={label} onClick={() => handleOnMenuClose(action)} disabled={disabled}>
 							{icon ? (
 								<ListItemIcon>
 									<IconComponent fontSize='small' />

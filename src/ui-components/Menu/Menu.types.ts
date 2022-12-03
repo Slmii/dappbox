@@ -15,4 +15,5 @@ interface Menu {
 	 */
 	image?: string;
 	action?: () => void;
+	disabled?: boolean;
 }

@@ -7,12 +7,13 @@ import { Box, Column } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { IconButton } from 'ui-components/IconButton';
 import { Link } from 'ui-components/Link';
+import { Menu } from 'ui-components/Menu';
 import { Snackbar } from 'ui-components/Snackbar';
 
 export const Header = () => {
 	const theme = useTheme();
 	const { toggleColorMode } = useContext(ColorModeContext);
-	const { isAuthenticated, principal, signOut } = useContext(AuthContext);
+	const { isAuthenticated, principal, logOut } = useContext(AuthContext);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
 
 	const renderPrincipalId = useMemo(() => {
@@ -52,7 +53,24 @@ export const Header = () => {
 					label={colorMode === 'dark' ? 'Lights on' : 'Lights off'}
 					onClick={toggleColorMode}
 				/>
-				{isAuthenticated ? <IconButton icon='signOUt' label='Sign out' onClick={signOut} /> : null}
+				{isAuthenticated ? (
+					<Menu
+						label={<IconButton icon='account' label='Profile' />}
+						id='profile'
+						menu={[
+							{
+								label: 'Set username (Soon)',
+								action: logOut,
+								disabled: true
+							},
+							{
+								label: 'Log out',
+								icon: 'logOut',
+								action: logOut
+							}
+						]}
+					/>
+				) : null}
 			</Column>
 			<Snackbar open={isAddressCopied} message='Copied' onClose={() => setIsAddressCopied(false)} />
 		</Appbar>

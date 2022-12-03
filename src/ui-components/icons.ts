@@ -74,7 +74,7 @@ const icons = {
 	expandLess: ExpandLessIcon,
 	next: NavigateNextIcon,
 	previous: NavigateBeforeIcon,
-	signOUt: PowerSettingsNewIcon
+	logOut: PowerSettingsNewIcon
 };
 
 export type Icons = keyof typeof icons;

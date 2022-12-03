@@ -30,7 +30,7 @@ interface IAuthClient {
 	/**
 	 * Sign Out with II
 	 */
-	signOut: () => Promise<void>;
+	logOut: () => Promise<void>;
 	/**
 	 * Principal
 	 */
@@ -48,7 +48,7 @@ interface IAuthClient {
 
 export const AuthContext = createContext<IAuthClient>({
 	loginII: () => Promise.resolve(),
-	signOut: () => Promise.resolve(),
+	logOut: () => Promise.resolve(),
 	principal: undefined,
 	isLoading: false,
 	isAuthenticated: false,
@@ -110,7 +110,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 				const isSuccess = await initUser();
 
 				if (!isSuccess) {
-					await signOut();
+					await logOut();
 					return;
 				}
 
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 			onError: async error => {
 				console.error('Failed to II Login', error);
 
-				await signOut();
+				await logOut();
 				navigate('/authenticate');
 			},
 			// 7 days
@@ -169,7 +169,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 		onSuccess(authClient);
 	};
 
-	const signOut = async () => {
+	const logOut = async () => {
 		const authClient = await api.Actor.getAuthClient();
 		await authClient.logout();
 
@@ -186,7 +186,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 			<AuthContext.Provider
 				value={{
 					loginII,
-					signOut,
+					logOut,
 					principal,
 					isLoading,
 					isAuthenticated,
