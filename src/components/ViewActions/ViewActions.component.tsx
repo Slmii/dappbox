@@ -6,9 +6,9 @@ import { Caption } from 'ui-components/Typography';
 import { AddFolder } from './AddFolder';
 import { Delete } from './Delete';
 import { Download } from './Download';
-import { MoveAssets } from './MoveFolder';
+import { Move } from './Move';
 import { Preview } from './Preview';
-import { RenameFolder } from './RenameFolder';
+import { Rename } from './Rename';
 
 export const ViewActions = () => {
 	const { selectedRows } = useRecoilValue(tableStateAtom);
@@ -17,10 +17,10 @@ export const ViewActions = () => {
 		<>
 			<Column>
 				<AddFolder />
-				<RenameFolder />
+				<Rename />
 				<Preview />
 				<Download />
-				<MoveAssets />
+				<Move />
 				<Delete />
 				<Box
 					sx={{

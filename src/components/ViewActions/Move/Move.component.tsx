@@ -13,7 +13,7 @@ import { AssetsList } from 'ui-components/List';
 import { Snackbar } from 'ui-components/Snackbar';
 import { MoveFolderBreadcrumbs } from './Breadcrumbs.component';
 
-export const MoveAssets = () => {
+export const Move = () => {
 	const queryClient = useQueryClient();
 	const [moveFolderDialogOpen, setMoveFolderDialogOpen] = useState(false);
 	// State of the selected folder for the items to move

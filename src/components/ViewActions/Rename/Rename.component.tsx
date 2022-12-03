@@ -19,7 +19,7 @@ import { Snackbar } from 'ui-components/Snackbar';
 import { Body } from 'ui-components/Typography';
 import { RenameFolderFormData } from '../ViewActions.types';
 
-export const RenameFolder = () => {
+export const Rename = () => {
 	const queryClient = useQueryClient();
 	const renameFolderFormRef = useRef<null | HTMLFormElement>(null);
 	const [renameOpenDialog, setRenameOpenDialog] = useState(false);
