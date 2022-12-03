@@ -101,9 +101,11 @@ export const resolve = async <T>(fn: () => Promise<T>): Promise<T> => {
 		.then(response => response)
 		.catch(error => {
 			console.trace('Error', error);
-			const typedError = error as Record<'error', ApiError> | Error;
+			const typedError = error as Record<'error', ApiError> | Error | string;
 
-			if ('error' in typedError) {
+			if (typeof typedError === 'string') {
+				throw new Error(typedError);
+			} else if ('error' in typedError) {
 				throw new Error(Object.values(typedError.error)[0]);
 			} else {
 				throw new Error(typedError.message);
