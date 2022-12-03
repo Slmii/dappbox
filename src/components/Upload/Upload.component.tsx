@@ -26,7 +26,12 @@ export const Upload = () => {
 	const [totalChunks, setTotalChunks] = useState(0);
 	const [currentChunk, setCurrentChunk] = useState(0);
 
-	const { mutateAsync: addAssetMutate, isLoading: addAssetIsLoading } = useMutation({
+	const {
+		mutateAsync: addAssetMutate,
+		isLoading: addAssetIsLoading,
+		isSuccess: addAssetIsSuccess,
+		reset: addAssetReset
+	} = useMutation({
 		mutationFn: api.Asset.addAsset,
 		onSuccess: asset => {
 			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], (old: Asset[] | undefined) => {
@@ -110,6 +115,8 @@ export const Upload = () => {
 						color='primary'
 						size='large'
 						fullWidth
+						disabled={isLoading}
+						tooltip={isLoading ? 'No support for multiple uploads yet' : undefined}
 						// @ts-ignore
 						component='span'
 						sx={{
@@ -127,6 +134,7 @@ export const Upload = () => {
 					</Body>
 				}
 			/>
+			<Snackbar open={addAssetIsSuccess} message='Asset uploaded successfully' onClose={addAssetReset} />
 		</>
 	);
 };
