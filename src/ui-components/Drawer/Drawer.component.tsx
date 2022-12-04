@@ -84,7 +84,15 @@ export const Drawer = () => {
 							<Icon icon={foldersOpen ? 'expandLess' : 'expandMore'} />
 						</ListItem>
 						{folders.length ? (
-							<Collapse in={foldersOpen} timeout='auto' unmountOnExit>
+							<Collapse
+								in={foldersOpen}
+								timeout='auto'
+								unmountOnExit
+								sx={{
+									maxHeight: 300,
+									overflowY: 'auto'
+								}}
+							>
 								<List
 									dense
 									component='div'
@@ -105,11 +113,9 @@ export const Drawer = () => {
 													disableTypography
 													primary={folder.name}
 													sx={{
-														'& > span': {
-															textOverflow: 'ellipsis',
-															whiteSpace: 'nowrap',
-															overflow: 'hidden'
-														}
+														textOverflow: 'ellipsis',
+														whiteSpace: 'nowrap',
+														overflow: 'hidden'
 													}}
 												/>
 											</ListItem>
