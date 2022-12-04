@@ -15,6 +15,7 @@ export const Header = () => {
 	const { toggleColorMode } = useContext(ColorModeContext);
 	const { isAuthenticated, principal, logOut } = useContext(AuthContext);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
+	const [isLogOutLoading, setIsLogOutLoading] = useState(false);
 
 	const renderPrincipalId = useMemo(() => {
 		if (principal) {
@@ -55,18 +56,21 @@ export const Header = () => {
 				/>
 				{isAuthenticated ? (
 					<Menu
-						label={<IconButton icon='account' label='Profile' />}
+						label={<IconButton icon='account' label='Profile' loading={isLogOutLoading} />}
 						id='profile'
 						menu={[
 							{
 								label: 'Set username (Soon)',
-								action: logOut,
 								disabled: true
 							},
 							{
 								label: 'Log out',
 								icon: 'logOut',
-								action: logOut
+								action: async () => {
+									setIsLogOutLoading(true);
+									await logOut();
+									setIsLogOutLoading(false);
+								}
 							}
 						]}
 					/>

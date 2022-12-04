@@ -1,5 +1,6 @@
 import { AuthClient } from '@dfinity/auth-client';
 import { Principal } from '@dfinity/principal';
+import { useQueryClient } from '@tanstack/react-query';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -56,6 +57,7 @@ export const AuthContext = createContext<IAuthClient>({
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
+	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	const { state } = useLocation();
 
@@ -172,6 +174,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	const logOut = async () => {
 		const authClient = await api.Actor.getAuthClient();
 		await authClient.logout();
+
+		await queryClient.resetQueries();
+		await queryClient.invalidateQueries();
 
 		setPrincipal(undefined);
 		setIsLoading(false);

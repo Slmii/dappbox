@@ -166,7 +166,7 @@ const TableHead = ({
 						)}
 					</MuiTableCell>
 				))}
-				<MuiTableCell align='right'>Actions</MuiTableCell>
+				{/* <MuiTableCell align='right'>Actions</MuiTableCell> */}
 			</TableRow>
 		</MuiTableHead>
 	);
@@ -271,10 +271,10 @@ export const Table = ({
 										onFavoriteToggle={onFavoriteToggle}
 									/>
 								))}
-								<MuiTableCell align='right'>
-									{/* <IconButton icon='share' label='Share' onClick={e => e.stopPropagation()} /> */}
+								{/* <MuiTableCell align='right'>
+									<IconButton icon='share' label='Share' onClick={e => e.stopPropagation()} />
 									<IconButton icon='more' label='More' onClick={e => e.stopPropagation()} />
-								</MuiTableCell>
+								</MuiTableCell> */}
 							</TableRow>
 						);
 					})}
