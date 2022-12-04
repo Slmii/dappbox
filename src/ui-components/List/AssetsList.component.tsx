@@ -20,6 +20,8 @@ export const AssetsList = ({ assets }: AssetsListProps) => {
 							<IconButton
 								icon={asset.secondaryAction.icon}
 								label={asset.secondaryAction.label}
+								disabled={asset.secondaryAction.disabled}
+								loading={asset.secondaryAction.loading}
 								onClick={() => asset?.secondaryAction?.onClick(asset.id)}
 							/>
 						) : undefined

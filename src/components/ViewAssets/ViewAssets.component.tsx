@@ -8,6 +8,7 @@ import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
+import { Snackbar } from 'ui-components/Snackbar';
 import { Column, Table } from 'ui-components/Table';
 
 const columns: Column = {
@@ -47,7 +48,7 @@ const columns: Column = {
 
 export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 	const { pathname } = useLocation();
-	const { handleOnFavoritesToggle } = useFavorites();
+	const { handleOnFavoritesToggle, isLoading: toggleFavoriteIsLoading, removeOrAdd } = useFavorites();
 	const [{ order, orderBy, selectedRows }, setTableState] = useRecoilState(tableStateAtom);
 
 	/**
@@ -75,23 +76,30 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 	}, [pathname]);
 
 	return (
-		<Box
-			sx={{
-				position: 'relative',
-				height: '100%'
-			}}
-		>
-			<Table
-				rows={tableAssets}
-				columns={columns}
-				order={order}
-				orderBy={orderBy}
-				selectedRows={selectedRows}
-				setOrder={order => setTableState(prevState => ({ ...prevState, order }))}
-				setOrderBy={orderBy => setTableState(prevState => ({ ...prevState, orderBy }))}
-				setSelectedRows={selectedRows => setTableState(prevState => ({ ...prevState, selectedRows }))}
-				onFavoriteToggle={assetId => handleOnFavoritesToggle(assetId)}
+		<>
+			<Box
+				sx={{
+					position: 'relative',
+					height: '100%'
+				}}
+			>
+				<Table
+					rows={tableAssets}
+					columns={columns}
+					order={order}
+					orderBy={orderBy}
+					selectedRows={selectedRows}
+					setOrder={order => setTableState(prevState => ({ ...prevState, order }))}
+					setOrderBy={orderBy => setTableState(prevState => ({ ...prevState, orderBy }))}
+					setSelectedRows={selectedRows => setTableState(prevState => ({ ...prevState, selectedRows }))}
+					onFavoriteToggle={assetId => handleOnFavoritesToggle(assetId)}
+				/>
+			</Box>
+			<Snackbar
+				open={toggleFavoriteIsLoading}
+				message={`${removeOrAdd === 'add' ? 'Adding assed to' : 'Removing asset from'} favorites`}
+				loader
 			/>
-		</Box>
+		</>
 	);
 };

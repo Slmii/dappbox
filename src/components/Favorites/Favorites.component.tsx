@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useFavorites, useUserAssets } from 'lib/hooks';
@@ -12,9 +12,16 @@ import { PageTitle } from 'ui-components/Typography';
 
 export const Favorites = () => {
 	const navigate = useNavigate();
-	const [snackbarOpen, setSnackbarOpen] = useState(false);
+
 	const { data: assets, isLoading } = useUserAssets();
-	const { handleOnFavoritesToggle, handleOnUndo } = useFavorites();
+	const {
+		handleOnFavoritesToggle,
+		handleOnUndo,
+		isSuccess: toggleFavoriteIsSuccess,
+		reset: toggleFavoriteReset,
+		isLoading: toggleFavoriteIsLoading,
+		removeOrAdd
+	} = useFavorites();
 
 	const favoriteAssets = useMemo(() => {
 		if (!assets) {
@@ -37,11 +44,6 @@ export const Favorites = () => {
 
 		[assets]
 	);
-
-	const handleOnRemoveFavorite = (assetId: number) => {
-		handleOnFavoritesToggle(assetId);
-		setSnackbarOpen(true);
-	};
 
 	const isLoaded = !!assets && !isLoading;
 
@@ -68,7 +70,7 @@ export const Favorites = () => {
 								secondaryAction: {
 									icon: 'favorite',
 									label: 'Remove from favorites',
-									onClick: handleOnRemoveFavorite
+									onClick: handleOnFavoritesToggle
 								}
 							}))}
 						/>
@@ -76,9 +78,14 @@ export const Favorites = () => {
 				</>
 			</Content>
 			<Snackbar
-				open={snackbarOpen}
-				onClose={() => setSnackbarOpen(false)}
-				message='Asset is removed from favorites'
+				open={toggleFavoriteIsLoading}
+				message={`${removeOrAdd === 'add' ? 'Adding assed to' : 'Removing asset from'} favorites`}
+				loader
+			/>
+			<Snackbar
+				open={toggleFavoriteIsSuccess}
+				onClose={toggleFavoriteReset}
+				message={`Asset is successfully ${removeOrAdd === 'add' ? 'added to' : 'removed from'} favorites`}
 				onUndo={handleOnUndo}
 			/>
 		</Main>

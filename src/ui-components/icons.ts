@@ -31,15 +31,6 @@ import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { styled } from '@mui/material/styles';
-
-const StyledFavoriteIcon = styled(FavoriteIcon)(({ theme }) => ({
-	color: theme.palette.error.main
-}));
-
-const StyledFavoriteOutlinedIcon = styled(FavoriteBorderIcon)(({ theme }) => ({
-	color: theme.palette.error.main
-}));
 
 const icons = {
 	darkMode: Brightness4Icon,
@@ -65,8 +56,8 @@ const icons = {
 	folderMoveOutlined: DriveFileMoveOutlinedIcon,
 	addFolder: CreateNewFolderIcon,
 	addFolderOutlined: CreateNewFolderOutlinedIcon,
-	favorite: StyledFavoriteIcon,
-	favoriteOutlined: StyledFavoriteOutlinedIcon,
+	favorite: FavoriteIcon,
+	favoriteOutlined: FavoriteBorderIcon,
 	more: MoreVertIcon,
 	share: ShareIcon,
 	edit: EditIcon,

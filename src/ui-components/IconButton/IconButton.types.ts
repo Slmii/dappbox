@@ -5,4 +5,5 @@ import { Icons } from 'ui-components/icons';
 export interface CustomIconButtonProps extends IconButtonProps {
 	icon: Icons;
 	label?: string;
+	loading?: boolean;
 }
