@@ -40,15 +40,14 @@ export const Header = () => {
 		<Appbar>
 			<Box sx={{ flexGrow: 1 }}>{isAuthenticated ? <Link href='/'>LOGO</Link> : 'LOGO'}</Box>
 			<Column>
-				<>
-					{isAuthenticated ? (
-						<Button
-							label={renderPrincipalId.toUpperCase()}
-							onClick={handleOnAddressCopy}
-							tooltip='Copy principal'
-						/>
-					) : null}
-				</>
+				{isAuthenticated ? (
+					<Button
+						label={renderPrincipalId.toUpperCase()}
+						onClick={handleOnAddressCopy}
+						tooltip='Copy principal'
+					/>
+				) : null}
+
 				<IconButton
 					icon={colorMode === 'dark' ? 'lightMode' : 'darkMode'}
 					label={colorMode === 'dark' ? 'Lights on' : 'Lights off'}

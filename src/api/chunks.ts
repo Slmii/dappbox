@@ -28,4 +28,13 @@ export abstract class Chunk {
 			return unwrap(response);
 		});
 	}
+
+	static async getAllChunksAsAdmin() {
+		const actor = await Actor.getActor<_SERVICE>('chunks');
+
+		return resolve(async () => {
+			const response = await actor.get_chunks();
+			return unwrap(response);
+		});
+	}
 }

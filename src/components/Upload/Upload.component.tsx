@@ -13,7 +13,6 @@ import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Snackbar } from 'ui-components/Snackbar';
-import { Body } from 'ui-components/Typography';
 
 const Input = styled('input')({
 	display: 'none'
@@ -23,7 +22,7 @@ export const Upload = () => {
 	const { pathname } = useLocation();
 	const { user } = useContext(AuthContext);
 	const [totalChunks, setTotalChunks] = useState(0);
-	const [currentChunk, setCurrentChunk] = useState(0);
+	const [currentChunkIndex, setCurrentChunkIndex] = useState(0);
 
 	const {
 		mutateAsync: addAssetMutate,
@@ -39,7 +38,7 @@ export const Upload = () => {
 	const handleOnUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const files = e.target.files;
 
-		if (!files || !user) {
+		if (!files || !files.length || !user) {
 			return;
 		}
 
@@ -51,8 +50,6 @@ export const Upload = () => {
 			return;
 		}
 
-		let counter = 1;
-
 		setTotalChunks(blobsLength);
 		console.log('Total chunks to upload', blobsLength);
 		console.log('============');
@@ -60,9 +57,10 @@ export const Upload = () => {
 		// Upload each blob seperatly
 		const chunks: Chunk[] = [];
 		for (const [index, blob] of blobs.entries()) {
-			console.log(`Uploading chunk ${counter}/${blobsLength}`);
+			const counter = index + 1;
+			setCurrentChunkIndex(counter);
 
-			setCurrentChunk(counter);
+			console.log(`Uploading chunk ${counter}/${blobsLength}`);
 
 			const chunk = await addChunkMutate({
 				blob,
@@ -71,7 +69,6 @@ export const Upload = () => {
 			chunks.push(chunk);
 
 			console.log(`Chunk ${counter} uploaded`, chunk);
-			counter++;
 		}
 
 		console.log('Uploading Asset...');
@@ -121,9 +118,9 @@ export const Upload = () => {
 				open={isLoading}
 				loader
 				message={
-					<Body>
-						Uploading chunks {currentChunk}/{totalChunks}
-					</Body>
+					<>
+						Uploading chunks {currentChunkIndex}/{totalChunks}
+					</>
 				}
 			/>
 			<Snackbar open={addAssetIsSuccess} message='Asset uploaded successfully' onClose={addAssetReset} />

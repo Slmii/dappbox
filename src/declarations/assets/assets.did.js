@@ -29,6 +29,12 @@ export const idlFactory = ({ IDL }) => {
     'chunks' : IDL.Vec(Chunk),
     'extension' : IDL.Text,
   });
+  const ApiError = IDL.Variant({
+    'NotFound' : IDL.Text,
+    'Unauthorized' : IDL.Text,
+    'AlreadyExists' : IDL.Text,
+  });
+  const Result = IDL.Variant({ 'Ok' : IDL.Vec(Asset), 'Err' : ApiError });
   const EditAsset = IDL.Record({
     'id' : IDL.Nat32,
     'name' : IDL.Opt(IDL.Text),
@@ -36,22 +42,18 @@ export const idlFactory = ({ IDL }) => {
     'parent_id' : IDL.Opt(IDL.Nat32),
     'extension' : IDL.Opt(IDL.Text),
   });
-  const ApiError = IDL.Variant({
-    'NotFound' : IDL.Text,
-    'Unauthorized' : IDL.Text,
-    'AlreadyExists' : IDL.Text,
-  });
-  const Result = IDL.Variant({ 'Ok' : Asset, 'Err' : ApiError });
+  const Result_1 = IDL.Variant({ 'Ok' : Asset, 'Err' : ApiError });
   const MoveAsset = IDL.Record({
     'id' : IDL.Nat32,
     'parent_id' : IDL.Opt(IDL.Nat32),
   });
-  const Result_1 = IDL.Variant({ 'Ok' : IDL.Vec(Asset), 'Err' : ApiError });
   return IDL.Service({
     'add_asset' : IDL.Func([PostAsset], [Asset], []),
-    'edit_asset' : IDL.Func([EditAsset], [Result], []),
+    'delete_assets' : IDL.Func([IDL.Vec(IDL.Nat32)], [Result], []),
+    'edit_asset' : IDL.Func([EditAsset], [Result_1], []),
+    'get_assets' : IDL.Func([], [Result], ['query']),
     'get_user_assets' : IDL.Func([], [IDL.Vec(Asset)], ['query']),
-    'move_assets' : IDL.Func([IDL.Vec(MoveAsset)], [Result_1], []),
+    'move_assets' : IDL.Func([IDL.Vec(MoveAsset)], [Result], []),
   });
 };
 export const init = ({ IDL }) => { return []; };

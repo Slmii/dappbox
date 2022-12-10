@@ -22,7 +22,7 @@ export const useFavorites = () => {
 	} = useMutation({
 		mutationFn: api.Asset.editAsset,
 		onSuccess: asset => {
-			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], (old: Asset[] | undefined) => {
+			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
 				if (!old) {
 					return [];
 				}

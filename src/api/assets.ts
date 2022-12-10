@@ -36,6 +36,17 @@ export abstract class Asset {
 		});
 	}
 
+	static async deleteAssets(assets: number[]) {
+		const actor = await Actor.getActor<_SERVICE>('assets');
+
+		return resolve(async () => {
+			const response = await actor.delete_assets(Uint32Array.from(assets));
+			const unwrapped = await unwrap(response);
+
+			return unwrapped.map(asset => mapToAssetInterface(asset));
+		});
+	}
+
 	static async getUserAssets() {
 		const actor = await Actor.getActor<_SERVICE>('assets');
 

@@ -1,9 +1,9 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
 
+import { api } from 'api';
 import { constants } from 'lib/constants';
-import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { Button } from 'ui-components/Button';
@@ -13,37 +13,37 @@ import { Snackbar } from 'ui-components/Snackbar';
 export const Delete = () => {
 	const queryClient = useQueryClient();
 	const [deleteOpenDialog, setDeleteOpenDialog] = useState(false);
-	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
 
-	const { data: assets, getNestedChildAssets } = useUserAssets();
 	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
 
-	const handleOnConfirmDeleteAssets = () => {
-		// Make a copy of the current assets
-		let replacingAssets = [...(assets ?? [])];
+	const {
+		mutateAsync: deleteAssetsMutate,
+		isSuccess: deleteAssetsIsSuccess,
+		isLoading: deleteAssetsIsLoading,
+		reset: deleteAssetsReset
+	} = useMutation({
+		// TODO: implement onError on all calls so when 1 call goes wrong, everything will be reverted
+		mutationFn: api.Asset.deleteAssets,
+		onSuccess: deletedAssets => {
+			console.log({ deletedAssets });
+			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
+				if (!old) {
+					return [];
+				}
 
-		setUndoAssets(replacingAssets);
+				return old.filter(asset => !deletedAssets.map(asset => asset.id).includes(asset.id));
+			});
+		}
+	});
 
-		// Get all assets + nested child assets
-		const assetsToDelete = selectedRows
-			.map(row => {
-				const nestedRows = getNestedChildAssets(row.id);
-				return [row, ...nestedRows];
-			})
-			.flat();
-
-		replacingAssets = replacingAssets.filter(asset => {
-			return !assetsToDelete.map(asset => asset.id).includes(asset.id);
-		});
-
-		// TODO: mutate canister
-		// TODO: update cache in react query or invalidate query after udpdate
-		// TODO: move to useMutation call
-		queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], () => {
-			return replacingAssets;
-		});
+	const handleOnConfirmDeleteAssets = async () => {
+		if (!selectedRows.length) {
+			return;
+		}
 
 		setDeleteOpenDialog(false);
+
+		await deleteAssetsMutate(selectedRows.map(asset => asset.id));
 
 		// Reset selected rows
 		setTableState(prevState => ({
@@ -68,23 +68,8 @@ export const Delete = () => {
 					/>
 				</>
 			) : null}
-			<Snackbar
-				open={!!undoAssets.length}
-				message='Asset(s) deleted successfully'
-				onUndo={() => {
-					// Apply `undo` assets
-					// TODO: mutate canister
-					// TODO: update cache in react query or invalidate query after udpdate
-					// TODO: move to useMutation call
-					queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], () => {
-						return undoAssets;
-					});
-
-					// Reset assets for `undo` functionality
-					setUndoAssets([]);
-				}}
-				onClose={() => setUndoAssets([])}
-			/>
+			<Snackbar open={deleteAssetsIsLoading} message='Deleting assets' loader />
+			<Snackbar open={deleteAssetsIsSuccess} message='Assets deleted successfully' onClose={deleteAssetsReset} />
 		</>
 	);
 };

@@ -13,10 +13,17 @@ export const idlFactory = ({ IDL }) => {
     'Unauthorized' : IDL.Text,
     'AlreadyExists' : IDL.Text,
   });
-  const Result = IDL.Variant({ 'Ok' : IDL.Vec(IDL.Nat8), 'Err' : ApiError });
+  const Result = IDL.Variant({
+    'Ok' : IDL.Vec(
+      IDL.Tuple(IDL.Tuple(IDL.Nat32, IDL.Principal), IDL.Vec(IDL.Nat8))
+    ),
+    'Err' : ApiError,
+  });
+  const Result_1 = IDL.Variant({ 'Ok' : IDL.Vec(IDL.Nat8), 'Err' : ApiError });
   return IDL.Service({
     'add_chunk' : IDL.Func([PostChunk], [Chunk], []),
-    'get_chunks_by_chunk_id' : IDL.Func([IDL.Nat32], [Result], ['query']),
+    'get_chunks' : IDL.Func([], [Result], ['query']),
+    'get_chunks_by_chunk_id' : IDL.Func([IDL.Nat32], [Result_1], ['query']),
   });
 };
 export const init = ({ IDL }) => { return []; };

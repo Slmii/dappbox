@@ -21,7 +21,12 @@ export const CreateFolder = () => {
 	const [createFolderOpenDialog, setCreateFolderOpenDialog] = useState(false);
 	const [handleOnConfirmCreateFolderDialog, setHandleOnConfirmCreateFolderDialog] = useState<() => void>(() => null);
 
-	const { mutateAsync: addAssetMutate, isLoading: addAssetIsLoading } = useAddAsset();
+	const {
+		mutateAsync: addAssetMutate,
+		isLoading: addAssetIsLoading,
+		isSuccess: addAssetIsSuccess,
+		reset: addAssetReset
+	} = useAddAsset();
 
 	const handleOnCreateFolder = () => {
 		setCreateFolderOpenDialog(true);
@@ -89,6 +94,7 @@ export const CreateFolder = () => {
 				</Box>
 			</Dialog>
 			<Snackbar open={addAssetIsLoading} message='Creating folder' loader />
+			<Snackbar open={addAssetIsSuccess} message='Folder created successfully' onClose={addAssetReset} />
 		</>
 	);
 };

@@ -32,9 +32,10 @@ export const Move = () => {
 		isSuccess: moveAssetsIsSuccess,
 		reset: moveAssetsReset
 	} = useMutation({
+		// TODO: implement onError on all calls so when 1 call goes wrong, everything will be reverted
 		mutationFn: api.Asset.moveAssets,
 		onSuccess: movedAssets => {
-			queryClient.setQueriesData([constants.QUERY_KEYS.USER_ASSETS], (old: Asset[] | undefined) => {
+			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
 				if (!old) {
 					return [];
 				}
@@ -118,7 +119,6 @@ export const Move = () => {
 		}
 
 		resetState();
-
 		setUndoAssets(assets);
 
 		await moveAssetMutate(
@@ -182,7 +182,7 @@ export const Move = () => {
 			<Snackbar open={moveAssetsIsLoading} message='Moving assets' loader />
 			<Snackbar
 				open={moveAssetsIsSuccess}
-				message='Asset(s) moved successfully'
+				message='Assets moved successfully'
 				onUndo={async () => {
 					if (!undoAssets.length) {
 						return;
