@@ -43,15 +43,17 @@ export interface PostAsset {
   'chunks' : Array<Chunk>,
   'extension' : string,
 }
-export type Result = { 'Ok' : Array<Asset> } |
+export type Result = { 'Ok' : Uint32Array } |
   { 'Err' : ApiError };
 export type Result_1 = { 'Ok' : Asset } |
+  { 'Err' : ApiError };
+export type Result_2 = { 'Ok' : Array<Asset> } |
   { 'Err' : ApiError };
 export interface _SERVICE {
   'add_asset' : ActorMethod<[PostAsset], Asset>,
   'delete_assets' : ActorMethod<[Uint32Array], Result>,
   'edit_asset' : ActorMethod<[EditAsset], Result_1>,
-  'get_assets' : ActorMethod<[], Result>,
+  'get_assets' : ActorMethod<[], Result_2>,
   'get_user_assets' : ActorMethod<[], Array<Asset>>,
-  'move_assets' : ActorMethod<[Array<MoveAsset>], Result>,
+  'move_assets' : ActorMethod<[Array<MoveAsset>], Result_2>,
 }

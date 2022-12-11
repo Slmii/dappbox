@@ -97,7 +97,7 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 			</Box>
 			<Snackbar
 				open={toggleFavoriteIsLoading}
-				message={`${removeOrAdd === 'add' ? 'Adding assed to' : 'Removing asset from'} favorites`}
+				message={`${removeOrAdd === 'add' ? 'Adding asset to' : 'Removing asset from'} favorites`}
 				loader
 			/>
 		</>

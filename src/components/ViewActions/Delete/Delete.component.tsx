@@ -31,7 +31,7 @@ export const Delete = () => {
 					return [];
 				}
 
-				return old.filter(asset => !deletedAssets.map(asset => asset.id).includes(asset.id));
+				return old.filter(asset => !deletedAssets.includes(asset.id));
 			});
 		}
 	});

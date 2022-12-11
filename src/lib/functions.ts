@@ -74,7 +74,7 @@ export const getImage = async (file: File) => {
 		return chunks;
 	};
 
-	const arrayBuffers = await Promise.all(createChunks(file, 1500).map(blob => blob.arrayBuffer()));
+	const arrayBuffers = await Promise.all(createChunks(file, 500).map(blob => blob.arrayBuffer()));
 	const blob = new Blob(arrayBuffers);
 	const preview = URL.createObjectURL(blob);
 
@@ -133,4 +133,11 @@ export const replaceArrayAtIndex = <T>(array: T[], index: number, newValue: T): 
 
 export const getExtension = (name: string) => {
 	return name.split('.').pop() ?? '';
+};
+
+export const uintArrayToNumbers = (value: Uint32Array) => {
+	return value.reduce((accum, value) => {
+		accum.push(value);
+		return accum;
+	}, [] as number[]);
 };
