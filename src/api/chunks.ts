@@ -10,9 +10,7 @@ export abstract class Chunk {
 
 		return resolve(async () => {
 			const response = await actor.add_chunk(chunk);
-			const unwrapped = await unwrap(response);
-
-			return unwrapped;
+			return unwrap(response);
 		});
 	}
 
