@@ -22,10 +22,8 @@ export const Delete = () => {
 		isLoading: deleteAssetsIsLoading,
 		reset: deleteAssetsReset
 	} = useMutation({
-		// TODO: implement onError on all calls so when 1 call goes wrong, everything will be reverted
 		mutationFn: api.Asset.deleteAssets,
 		onSuccess: deletedAssets => {
-			console.log({ deletedAssets });
 			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
 				if (!old) {
 					return [];

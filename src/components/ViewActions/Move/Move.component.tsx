@@ -32,7 +32,6 @@ export const Move = () => {
 		isSuccess: moveAssetsIsSuccess,
 		reset: moveAssetsReset
 	} = useMutation({
-		// TODO: implement onError on all calls so when 1 call goes wrong, everything will be reverted
 		mutationFn: api.Asset.moveAssets,
 		onSuccess: movedAssets => {
 			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
@@ -73,7 +72,6 @@ export const Move = () => {
 		}).filter(asset => asset.type === 'folder');
 	}, [assets, parentAssetId]);
 
-	// TODO: fix moving folders to other folders only when folders are selected
 	// Filter out assets who cannot be moved to the same folder or if the folder asset is being moved to a child
 	const assetsToMove = useMemo(() => {
 		return selectedRows.filter(asset => {
