@@ -35,7 +35,7 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 				year: 'numeric',
 				hour: '2-digit',
 				minute: '2-digit',
-				hourCycle: 'h24'
+				hourCycle: 'h23'
 			}).format(value);
 		}
 
