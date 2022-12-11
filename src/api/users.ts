@@ -1,6 +1,6 @@
 import { _SERVICE, User as ControllerUser } from 'declarations/users/users.did';
 import { dateFromBigInt } from 'lib/dates';
-import { resolve } from 'lib/functions';
+import { resolve, unwrap } from 'lib/functions';
 import { User as IUser } from 'lib/types/User.types';
 import { Actor } from './actor';
 
@@ -9,8 +9,10 @@ export abstract class User {
 		const actor = await Actor.getActor<_SERVICE>('users');
 
 		return resolve(async () => {
-			const users = await actor.get_users();
-			return users.map(user => mapToUserInterface(user));
+			const response = await actor.get_users();
+			const unwrapped = await unwrap(response);
+
+			return unwrapped.map(user => mapToUserInterface(user));
 		});
 	}
 }

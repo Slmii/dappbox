@@ -10,7 +10,9 @@ export abstract class Chunk {
 
 		return resolve(async () => {
 			const response = await actor.add_chunk(chunk);
-			return response;
+			const unwrapped = await unwrap(response);
+
+			return unwrapped;
 		});
 	}
 
@@ -25,15 +27,6 @@ export abstract class Chunk {
 
 		return resolve(async () => {
 			const response = await actor.get_chunks_by_chunk_id(chunkId);
-			return unwrap(response);
-		});
-	}
-
-	static async getAllChunksAsAdmin() {
-		const actor = await Actor.getActor<_SERVICE>('chunks');
-
-		return resolve(async () => {
-			const response = await actor.get_chunks();
 			return unwrap(response);
 		});
 	}

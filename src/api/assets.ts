@@ -1,6 +1,6 @@
 import { _SERVICE, Asset as ControllerAsset, EditAsset, MoveAsset, PostAsset } from 'declarations/assets/assets.did';
 import { dateFromBigInt } from 'lib/dates';
-import { resolve, uintArrayToNumbers, unwrap } from 'lib/functions';
+import { resolve, uint32ArrayToNumbers, unwrap } from 'lib/functions';
 import { Asset as IAsset, AssetType } from 'lib/types/Asset.types';
 import { Actor } from './actor';
 
@@ -45,7 +45,7 @@ export abstract class Asset {
 			const response = await actor.delete_assets(Uint32Array.from(assets));
 			const unwrapped = await unwrap(response);
 
-			return uintArrayToNumbers(unwrapped);
+			return uint32ArrayToNumbers(unwrapped);
 		});
 	}
 

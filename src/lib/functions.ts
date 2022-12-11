@@ -135,7 +135,7 @@ export const getExtension = (name: string) => {
 	return name.split('.').pop() ?? '';
 };
 
-export const uintArrayToNumbers = (value: Uint32Array) => {
+export const uint32ArrayToNumbers = (value: Uint32Array) => {
 	return value.reduce((accum, value) => {
 		accum.push(value);
 		return accum;

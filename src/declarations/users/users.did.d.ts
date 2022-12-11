@@ -6,6 +6,8 @@ export type ApiError = { 'NotFound' : string } |
   { 'AlreadyExists' : string };
 export type Result = { 'Ok' : User } |
   { 'Err' : ApiError };
+export type Result_1 = { 'Ok' : Array<User> } |
+  { 'Err' : ApiError };
 export interface User {
   'username' : [] | [string],
   'created_at' : bigint,
@@ -14,5 +16,5 @@ export interface User {
 export interface _SERVICE {
   'create_user' : ActorMethod<[[] | [string]], Result>,
   'get_user' : ActorMethod<[], Result>,
-  'get_users' : ActorMethod<[], Array<User>>,
+  'get_users' : ActorMethod<[], Result_1>,
 }

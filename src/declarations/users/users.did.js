@@ -10,10 +10,11 @@ export const idlFactory = ({ IDL }) => {
     'AlreadyExists' : IDL.Text,
   });
   const Result = IDL.Variant({ 'Ok' : User, 'Err' : ApiError });
+  const Result_1 = IDL.Variant({ 'Ok' : IDL.Vec(User), 'Err' : ApiError });
   return IDL.Service({
     'create_user' : IDL.Func([IDL.Opt(IDL.Text)], [Result], []),
     'get_user' : IDL.Func([], [Result], ['query']),
-    'get_users' : IDL.Func([], [IDL.Vec(User)], ['query']),
+    'get_users' : IDL.Func([], [Result_1], ['query']),
   });
 };
 export const init = ({ IDL }) => { return []; };

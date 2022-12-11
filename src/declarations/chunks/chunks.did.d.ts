@@ -10,12 +10,14 @@ export interface Chunk {
   'index' : number,
 }
 export interface PostChunk { 'blob' : Uint8Array, 'index' : number }
-export type Result = { 'Ok' : Array<[[number, Principal], Uint8Array]> } |
+export type Result = { 'Ok' : Chunk } |
   { 'Err' : ApiError };
-export type Result_1 = { 'Ok' : Uint8Array } |
+export type Result_1 = { 'Ok' : Array<[[number, Principal], Uint8Array]> } |
+  { 'Err' : ApiError };
+export type Result_2 = { 'Ok' : Uint8Array } |
   { 'Err' : ApiError };
 export interface _SERVICE {
-  'add_chunk' : ActorMethod<[PostChunk], Chunk>,
-  'get_chunks' : ActorMethod<[], Result>,
-  'get_chunks_by_chunk_id' : ActorMethod<[number], Result_1>,
+  'add_chunk' : ActorMethod<[PostChunk], Result>,
+  'get_chunks' : ActorMethod<[], Result_1>,
+  'get_chunks_by_chunk_id' : ActorMethod<[number], Result_2>,
 }
