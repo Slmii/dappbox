@@ -10,7 +10,9 @@ export abstract class Asset {
 
 		return resolve(async () => {
 			const response = await actor.add_asset(asset);
-			return mapToAssetInterface(response);
+			const unwrapped = await unwrap(response);
+
+			return mapToAssetInterface(unwrapped);
 		});
 	}
 
@@ -52,7 +54,9 @@ export abstract class Asset {
 
 		return resolve(async () => {
 			const response = await actor.get_user_assets();
-			return response.map(asset => mapToAssetInterface(asset));
+			const unwrapped = await unwrap(response);
+
+			return unwrapped.map(asset => mapToAssetInterface(asset));
 		});
 	}
 }
