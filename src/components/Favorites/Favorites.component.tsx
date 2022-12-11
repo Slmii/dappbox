@@ -50,7 +50,7 @@ export const Favorites = () => {
 	return (
 		<Main>
 			<Content>
-				<PageTitle title='Favorites' />
+				<PageTitle>Favorites</PageTitle>
 			</Content>
 			<Divider />
 			<Content>

@@ -25,7 +25,7 @@ export const Authenticate = () => {
 			}}
 		>
 			<Row>
-				<PageTitle title='DappBox' />
+				<PageTitle>DappBox</PageTitle>
 				<Button
 					label='Login with Internet Identity'
 					color='primary'

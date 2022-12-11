@@ -9,17 +9,25 @@ export const Caption = ({ title }: { title: string }) => {
 	);
 };
 
-export const PageTitle = ({ title, gutterBottom }: { title: string; gutterBottom?: boolean }) => {
+export const PageTitle = ({ children, gutter }: PropsWithChildren<{ gutter?: boolean }>) => {
 	return (
-		<Typography color='inherit' variant='h4' fontWeight='bold' gutterBottom={gutterBottom}>
-			{title}
+		<Typography color='inherit' variant='h4' fontWeight='bold' gutterBottom={gutter}>
+			{children}
 		</Typography>
 	);
 };
 
-export const Body = ({ children, gutterBottom }: PropsWithChildren<{ gutterBottom?: boolean }>) => {
+export const SubTitle = ({ children, gutter }: PropsWithChildren<{ gutter?: boolean }>) => {
 	return (
-		<Typography variant='body2' gutterBottom={gutterBottom}>
+		<Typography color='inherit' variant='subtitle2' gutterBottom={gutter}>
+			{children}
+		</Typography>
+	);
+};
+
+export const Paragraph = ({ children, gutter }: PropsWithChildren<{ gutter?: boolean }>) => {
+	return (
+		<Typography variant='body2' gutterBottom={gutter}>
 			{children}
 		</Typography>
 	);
