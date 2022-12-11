@@ -29,7 +29,7 @@ export const Download = () => {
 			// Create a link to the file and set the download attribute
 			const downloadLink = document.createElement('a');
 			downloadLink.href = url;
-			downloadLink.setAttribute('download', `${asset.name}.${asset.extension}`);
+			downloadLink.setAttribute('download', asset.name);
 			downloadLink.click();
 
 			downloadLink.addEventListener('click', function () {
