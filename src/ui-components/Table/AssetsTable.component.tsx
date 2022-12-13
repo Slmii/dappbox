@@ -172,7 +172,7 @@ const TableHead = ({
 	);
 };
 
-export const Table = ({
+export const AssetsTable = ({
 	rows,
 	selectedRows,
 	setSelectedRows,

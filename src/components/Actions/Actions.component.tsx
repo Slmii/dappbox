@@ -10,7 +10,7 @@ import { Move } from './Move';
 import { Preview } from './Preview';
 import { Rename } from './Rename';
 
-export const ViewActions = () => {
+export const Actions = () => {
 	const { selectedRows } = useRecoilValue(tableStateAtom);
 
 	return (

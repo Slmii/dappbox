@@ -9,7 +9,7 @@ import { Asset } from 'lib/types/Asset.types';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Snackbar } from 'ui-components/Snackbar';
-import { Column, Table } from 'ui-components/Table';
+import { AssetsTable, Column } from 'ui-components/Table';
 
 const columns: Column = {
 	name: {
@@ -83,7 +83,7 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 					height: '100%'
 				}}
 			>
-				<Table
+				<AssetsTable
 					rows={tableAssets}
 					columns={columns}
 					order={order}

@@ -12,7 +12,7 @@ import { Dialog } from 'ui-components/Dialog';
 import { Field } from 'ui-components/Field';
 import { Form } from 'ui-components/Form';
 import { Snackbar } from 'ui-components/Snackbar';
-import { CreateFolderFormData } from '../ViewActions.types';
+import { CreateFolderFormData } from '../Actions.types';
 
 export const CreateFolder = () => {
 	const { user } = useContext(AuthContext);

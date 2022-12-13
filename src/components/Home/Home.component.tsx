@@ -1,4 +1,4 @@
-import { ViewActions } from 'components/ViewActions';
+import { Actions } from 'components/Actions';
 import { ViewAssets } from 'components/ViewAssets';
 // import { ViewMode } from 'components/ViewMode';
 import { useUserAssets } from 'lib/hooks';
@@ -30,7 +30,7 @@ export const Home = () => {
 			<Divider />
 			<Content>
 				<Row>
-					{isLoaded && <ViewActions />}
+					{isLoaded && <Actions />}
 					<FilesContainer>{!isLoaded ? <TableLoader /> : <ViewAssets assets={assets} />}</FilesContainer>
 				</Row>
 			</Content>

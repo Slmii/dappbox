@@ -15,7 +15,7 @@ import { Dialog } from 'ui-components/Dialog';
 import { Field } from 'ui-components/Field';
 import { Form } from 'ui-components/Form';
 import { Snackbar } from 'ui-components/Snackbar';
-import { RenameAssetFormData } from '../ViewActions.types';
+import { RenameAssetFormData } from '../Actions.types';
 
 export const Rename = () => {
 	const queryClient = useQueryClient();
