@@ -238,9 +238,9 @@ export const Table = ({
 					columns={columns}
 				/>
 				<TableBody>
-					{rows.map((row, index) => {
+					{rows.map(row => {
 						const isItemSelected = isSelected(row.id);
-						const labelId = `enhanced-table-checkbox-${index}`;
+						const labelId = `enhanced-table-checkbox-${row.id}`;
 
 						return (
 							<TableRow

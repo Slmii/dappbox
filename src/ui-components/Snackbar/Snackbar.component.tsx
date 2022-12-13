@@ -1,6 +1,5 @@
 import Slide, { SlideProps } from '@mui/material/Slide';
 import MuiSnackbar from '@mui/material/Snackbar';
-import ReactDOM from 'react-dom';
 
 import { constants } from 'lib/constants';
 import { Button } from 'ui-components/Button';
@@ -25,7 +24,7 @@ export const Snackbar = ({
 	isOnUndoLoading,
 	loader
 }: SnackbarProps) => {
-	return ReactDOM.createPortal(
+	return (
 		<MuiSnackbar
 			TransitionComponent={Transition}
 			anchorOrigin={{
@@ -70,7 +69,6 @@ export const Snackbar = ({
 					) : null}
 				</>
 			}
-		/>,
-		document.body
+		/>
 	);
 };

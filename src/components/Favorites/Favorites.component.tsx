@@ -14,7 +14,7 @@ import { PageTitle } from 'ui-components/Typography';
 export const Favorites = () => {
 	const navigate = useNavigate();
 
-	const { download, isLoading: downloadIsLoading } = useDownload();
+	const { download } = useDownload();
 	const { data: assets, isLoading: useAssetsIsLoading } = useUserAssets();
 	const {
 		handleOnFavoritesToggle,
@@ -84,7 +84,6 @@ export const Favorites = () => {
 													: 'Download'
 											}
 											disabled={asset.type === 'folder'}
-											loading={downloadIsLoading}
 											onClick={() => download([asset])}
 										/>
 									</>
