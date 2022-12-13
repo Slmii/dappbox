@@ -10,11 +10,5 @@ interface ListItem {
 	icon?: Icons;
 	isSelected?: boolean;
 	onClick?: (id: number) => void;
-	secondaryAction?: {
-		icon: Icons;
-		label: string;
-		onClick: (id: number) => void;
-		disabled?: boolean;
-		loading?: boolean;
-	};
+	secondaryAction?: JSX.Element;
 }

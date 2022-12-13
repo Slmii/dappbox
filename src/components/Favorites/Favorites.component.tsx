@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useFavorites, useUserAssets } from 'lib/hooks';
+import { useDownload, useFavorites, useUserAssets } from 'lib/hooks';
 import { getUrlPathToAsset } from 'lib/url';
 import { Content, Main } from 'ui-components/Container';
 import { Divider } from 'ui-components/Divider';
+import { IconButton } from 'ui-components/IconButton';
 import { AssetsList } from 'ui-components/List';
 import { TableLoader } from 'ui-components/Loaders';
 import { Snackbar } from 'ui-components/Snackbar';
@@ -13,7 +14,8 @@ import { PageTitle } from 'ui-components/Typography';
 export const Favorites = () => {
 	const navigate = useNavigate();
 
-	const { data: assets, isLoading } = useUserAssets();
+	const { download, isLoading: downloadIsLoading } = useDownload();
+	const { data: assets, isLoading: useAssetsIsLoading } = useUserAssets();
 	const {
 		handleOnFavoritesToggle,
 		handleOnUndo,
@@ -45,7 +47,7 @@ export const Favorites = () => {
 		[assets]
 	);
 
-	const isLoaded = !!assets && !isLoading;
+	const isLoaded = !!assets && !useAssetsIsLoading;
 
 	return (
 		<Main>
@@ -67,11 +69,26 @@ export const Favorites = () => {
 									asset.type === 'folder'
 										? () => navigate(`/${generateAssetPath(asset.id)}`)
 										: () => alert('TODO: preview'),
-								secondaryAction: {
-									icon: 'favorite',
-									label: 'Remove from favorites',
-									onClick: handleOnFavoritesToggle
-								}
+								secondaryAction: (
+									<>
+										<IconButton
+											icon='favorite'
+											label='Remove from favorites'
+											onClick={() => handleOnFavoritesToggle(asset.id)}
+										/>
+										<IconButton
+											icon='download'
+											label={
+												asset.type === 'folder'
+													? 'No support for folder downloads yet'
+													: 'Download'
+											}
+											disabled={asset.type === 'folder'}
+											loading={downloadIsLoading}
+											onClick={() => download([asset])}
+										/>
+									</>
+								)
 							}))}
 						/>
 					)}

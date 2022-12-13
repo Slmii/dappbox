@@ -8,7 +8,7 @@ export const Preview = () => {
 
 	return (
 		<>
-			{selectedRows.some(row => row.type === 'file') ? (
+			{selectedRows.length === 1 && selectedRows[0].type === 'file' ? (
 				<Button label='Preview (Soon)' disabled startIcon='view' variant='outlined' color='inherit' />
 			) : null}
 		</>

@@ -8,9 +8,17 @@ import { CustomIconButtonProps } from './IconButton.types';
 export const IconButton = ({ icon, label, loading, ...props }: CustomIconButtonProps) => {
 	return (
 		<Tooltip title={label ? label : ''} arrow>
-			<MUIIconButton {...props} disabled={props.disabled || loading}>
-				{loading ? <CircularProgress /> : <Icon icon={icon} />}
-			</MUIIconButton>
+			{props.disabled ? (
+				<span>
+					<MUIIconButton {...props} disabled={props.disabled || loading}>
+						{loading ? <CircularProgress /> : <Icon icon={icon} />}
+					</MUIIconButton>
+				</span>
+			) : (
+				<MUIIconButton {...props} disabled={props.disabled || loading}>
+					{loading ? <CircularProgress /> : <Icon icon={icon} />}
+				</MUIIconButton>
+			)}
 		</Tooltip>
 	);
 };

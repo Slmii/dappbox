@@ -10,6 +10,7 @@ import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
+import { IconButton } from 'ui-components/IconButton';
 import { AssetsList } from 'ui-components/List';
 import { Snackbar } from 'ui-components/Snackbar';
 import { MoveFolderBreadcrumbs } from './Breadcrumbs.component';
@@ -165,13 +166,13 @@ export const Move = () => {
 								icon: 'folder',
 								onClick: setSelectedFolderAssetId,
 								secondaryAction: getChildAssets(asset.id).filter(asset => asset.type === 'folder')
-									.length
-									? {
-											icon: 'next',
-											label: 'Go to folder',
-											onClick: handleOnFolderNavigation
-									  }
-									: undefined
+									.length ? (
+									<IconButton
+										icon='next'
+										label='Go to folder'
+										onClick={() => handleOnFolderNavigation(asset.id)}
+									/>
+								) : undefined
 							}))}
 						/>
 					</Dialog>
