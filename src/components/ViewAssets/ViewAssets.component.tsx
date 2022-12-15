@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 
 import { PreviewBackdrop } from 'components/Actions/Preview';
 import { getTableAssets } from 'lib/functions';
-import { useDownload, useFavorites } from 'lib/hooks';
+import { useFavorites, usePreview } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { Doc } from 'lib/types/Doc.types';
@@ -54,7 +54,7 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 	const [{ order, orderBy, selectedRows }, setTableState] = useRecoilState(tableStateAtom);
 	const [docs, setDocs] = useState<Doc[]>([]);
 
-	const { preview, isPreviewSuccess, resetPreview } = useDownload();
+	const { preview, isSuccess, reset } = usePreview();
 
 	const downloadPreviewChunks = async (asset: Asset) => {
 		if (asset.type === 'folder') {
@@ -115,11 +115,11 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 				message={`${removeOrAdd === 'add' ? 'Adding asset to' : 'Removing asset from'} favorites`}
 				loader
 			/>
-			{isPreviewSuccess ? (
+			{isSuccess ? (
 				<PreviewBackdrop
-					open={isPreviewSuccess}
+					open={isSuccess}
 					onClick={() => {
-						resetPreview();
+						reset();
 						setDocs([]);
 					}}
 					docs={docs}

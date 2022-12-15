@@ -3,8 +3,9 @@ import { useState } from 'react';
 
 import { api } from 'api';
 import { Asset } from 'lib/types/Asset.types';
+import { Doc } from 'lib/types/Doc.types';
 
-export const useDownload = () => {
+export const usePreview = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSuccess, setIsSuccess] = useState(false);
 
@@ -12,41 +13,37 @@ export const useDownload = () => {
 		mutationFn: api.Chunk.getChunksByChunkId
 	});
 
-	const download = async (assets: Asset[]) => {
+	const preview = async (assets: Asset[]) => {
+		const docs: Doc[] = [];
+
 		setIsLoading(true);
 		setIsSuccess(false);
 
 		for (const asset of assets) {
-			const assetsToDownload: Uint8Array[] = [];
+			const assetsToPreview: Uint8Array[] = [];
 
 			for (const chunk of asset.chunks) {
 				const res = await mutateAsync({ chunkId: chunk.id, canisterPrincipal: chunk.canister });
-				assetsToDownload.push(res);
+				assetsToPreview.push(res);
 			}
 
 			// Create a new Blob object from the file data
-			const blob = new Blob(assetsToDownload, { type: 'application/octet-stream' });
+			const blob = new Blob(assetsToPreview, { type: asset.mimeType });
 
 			// Generate a URL for the blob
 			const url = window.URL.createObjectURL(blob);
 
-			// Create a link to the file and set the download attribute
-			const downloadLink = document.createElement('a');
-			downloadLink.href = url;
-			downloadLink.setAttribute('download', asset.name);
-			downloadLink.click();
-
-			downloadLink.addEventListener('click', function () {
-				URL.revokeObjectURL(url);
-			});
+			docs.push({ url, asset });
 		}
 
 		setIsLoading(false);
 		setIsSuccess(true);
+
+		return docs;
 	};
 
 	return {
-		download,
+		preview,
 		isLoading,
 		isSuccess,
 		reset: () => {

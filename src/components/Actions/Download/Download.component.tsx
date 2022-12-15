@@ -6,7 +6,7 @@ import { Button } from 'ui-components/Button';
 
 export const Download = () => {
 	const { selectedRows } = useRecoilValue(tableStateAtom);
-	const { download, isDownloadLoading } = useDownload();
+	const { download, isLoading } = useDownload();
 
 	const hasFolderSelected = selectedRows.some(row => row.type === 'folder');
 
@@ -19,7 +19,7 @@ export const Download = () => {
 					variant='outlined'
 					color='inherit'
 					onClick={async () => download(selectedRows)}
-					loading={isDownloadLoading}
+					loading={isLoading}
 					disabled={hasFolderSelected}
 					tooltip={hasFolderSelected ? 'No support for folder downloads yet' : undefined}
 				/>

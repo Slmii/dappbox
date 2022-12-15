@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import { useDownload } from 'lib/hooks';
+import { usePreview } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Doc } from 'lib/types/Doc.types';
 import { Button } from 'ui-components/Button';
@@ -11,7 +11,7 @@ export const Preview = () => {
 	const [docs, setDocs] = useState<Doc[]>([]);
 	const { selectedRows } = useRecoilValue(tableStateAtom);
 
-	const { preview, isPreviewSuccess, isPreviewLoading, resetPreview } = useDownload();
+	const { preview, isSuccess, isLoading, reset } = usePreview();
 
 	const downloadPreviewChunks = async () => {
 		const docs = await preview(selectedRows.filter(row => row.type === 'file'));
@@ -27,14 +27,14 @@ export const Preview = () => {
 					startIcon='view'
 					variant='outlined'
 					color='inherit'
-					loading={isPreviewLoading}
+					loading={isLoading}
 				/>
 			) : null}
-			{isPreviewSuccess ? (
+			{isSuccess ? (
 				<PreviewBackdrop
-					open={isPreviewSuccess}
+					open={isSuccess}
 					onClick={() => {
-						resetPreview();
+						reset();
 						setDocs([]);
 					}}
 					docs={docs}

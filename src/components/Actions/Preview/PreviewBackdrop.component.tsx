@@ -2,7 +2,8 @@ import Paper from '@mui/material/Paper';
 import { useMemo, useState } from 'react';
 
 import { constants } from 'lib/constants';
-import { useKeyPress } from 'lib/hooks';
+import { useDownload, useKeyPress } from 'lib/hooks';
+import { Asset } from 'lib/types/Asset.types';
 import { Doc } from 'lib/types/Doc.types';
 import { Backdrop } from 'ui-components/Backdrop';
 import { Box, Column, Row } from 'ui-components/Box';
@@ -12,6 +13,8 @@ import { Paragraph } from 'ui-components/Typography';
 
 export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: Doc[]; onClick: () => void }) => {
 	const [previewIndex, setPreviewIndex] = useState(0);
+	const { download, isLoading } = useDownload();
+
 	useKeyPress('ArrowLeft', () => handleOnPrevious());
 	useKeyPress('ArrowRight', () => handleOnNext());
 	useKeyPress('Escape', () => {
@@ -33,6 +36,10 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 		} else {
 			setPreviewIndex(prevState => prevState + 1);
 		}
+	};
+
+	const handleOnDownload = async (asset: Asset) => {
+		await download([asset]);
 	};
 
 	const docToUse = useMemo(() => {
@@ -60,15 +67,35 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 					<Column>
 						<IconButton icon='close' label='Close' color='inherit' />
-						<Paragraph>{docToUse?.name}</Paragraph>
+						<Paragraph>{docToUse?.asset.name}</Paragraph>
 					</Column>
 					<Column>
-						<IconButton icon='download' label='Download' color='inherit' />
-						<IconButton icon='print' label='Print' onClick={() => window.print()} color='inherit' />
+						<IconButton
+							icon='download'
+							label='Download'
+							color='inherit'
+							loading={isLoading}
+							onClick={e => {
+								e.stopPropagation();
+								handleOnDownload(docToUse.asset);
+							}}
+						/>
+						<IconButton
+							icon='print'
+							label='Print'
+							onClick={e => {
+								e.stopPropagation();
+								window.print();
+							}}
+							color='inherit'
+						/>
 						<IconButton
 							icon='newWindow'
 							label='Open in new window'
-							onClick={() => window.open(docToUse.url, '_blank')}
+							onClick={e => {
+								e.stopPropagation();
+								window.open(docToUse.url, '_blank');
+							}}
 							color='inherit'
 						/>
 					</Column>
@@ -98,7 +125,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 						display: 'block'
 					}}
 				>
-					{docToUse && docToUse.mimeType.includes('image') ? (
+					{docToUse && docToUse.asset.mimeType?.includes('image') ? (
 						<img
 							style={{
 								height: '100%',
@@ -106,10 +133,10 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 								objectFit: 'contain'
 							}}
 							src={docToUse.url}
-							alt={docToUse.name}
+							alt={docToUse.asset.name}
 						/>
 					) : null}
-					{docToUse && docToUse.mimeType.includes('pdf') ? (
+					{docToUse && docToUse.asset.mimeType?.includes('pdf') ? (
 						<Paper
 							elevation={10}
 							sx={{
