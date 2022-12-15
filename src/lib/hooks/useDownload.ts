@@ -1,7 +1,9 @@
 import { useMutation } from '@tanstack/react-query';
+import JSZip from 'jszip';
 import { useState } from 'react';
 
 import { api } from 'api';
+import { saveAs } from 'lib/functions';
 import { Asset } from 'lib/types/Asset.types';
 
 export const useDownload = () => {
@@ -16,7 +18,28 @@ export const useDownload = () => {
 		setIsLoading(true);
 		setIsSuccess(false);
 
-		for (const asset of assets) {
+		if (assets.length > 1) {
+			const zip = new JSZip();
+
+			for (const asset of assets) {
+				const assetsToDownload: Uint8Array[] = [];
+
+				for (const chunk of asset.chunks) {
+					const res = await mutateAsync({ chunkId: chunk.id, canisterPrincipal: chunk.canister });
+					assetsToDownload.push(res);
+				}
+
+				// Create a new Blob object from the file data
+				const blob = new Blob(assetsToDownload, { type: 'application/octet-stream' });
+
+				zip.file(asset.name, blob, { base64: true });
+			}
+
+			zip.generateAsync({ type: 'blob' }).then(function (content) {
+				saveAs(content, 'download.zip');
+			});
+		} else {
+			const asset = assets[0];
 			const assetsToDownload: Uint8Array[] = [];
 
 			for (const chunk of asset.chunks) {
@@ -27,18 +50,7 @@ export const useDownload = () => {
 			// Create a new Blob object from the file data
 			const blob = new Blob(assetsToDownload, { type: 'application/octet-stream' });
 
-			// Generate a URL for the blob
-			const url = window.URL.createObjectURL(blob);
-
-			// Create a link to the file and set the download attribute
-			const downloadLink = document.createElement('a');
-			downloadLink.href = url;
-			downloadLink.setAttribute('download', asset.name);
-			downloadLink.click();
-
-			downloadLink.addEventListener('click', function () {
-				URL.revokeObjectURL(url);
-			});
+			saveAs(blob, asset.name);
 		}
 
 		setIsLoading(false);

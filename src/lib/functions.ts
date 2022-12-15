@@ -141,3 +141,17 @@ export const uint32ArrayToNumbers = (value: Uint32Array) => {
 		return accum;
 	}, [] as number[]);
 };
+
+export const saveAs = (blob: Blob, name: string) => {
+	const url = window.URL.createObjectURL(blob);
+
+	// Create a link to the file and set the download attribute
+	const downloadLink = document.createElement('a');
+	downloadLink.href = url;
+	downloadLink.setAttribute('download', name);
+	downloadLink.click();
+
+	downloadLink.addEventListener('click', function () {
+		URL.revokeObjectURL(url);
+	});
+};
