@@ -38,7 +38,7 @@ export const Header = () => {
 
 	return (
 		<Appbar>
-			<Box sx={{ flexGrow: 1 }}>{isAuthenticated ? <Link href='/'>LOGO</Link> : 'LOGO'}</Box>
+			<Box sx={{ flexGrow: 1 }}>{isAuthenticated ? <Link href='/'>DappBox</Link> : 'DappBox'}</Box>
 			<Column>
 				{isAuthenticated ? (
 					<Button
