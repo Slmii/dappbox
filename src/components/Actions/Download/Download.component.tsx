@@ -18,7 +18,7 @@ export const Download = () => {
 					startIcon='download'
 					variant='outlined'
 					color='inherit'
-					onClick={async () => download(selectedRows)}
+					onClick={async () => download(selectedRows.filter(row => row.type === 'file'))}
 					loading={isLoading}
 					disabled={hasFolderSelected}
 					tooltip={hasFolderSelected ? 'No support for folder downloads yet' : undefined}
