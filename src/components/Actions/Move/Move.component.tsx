@@ -24,7 +24,7 @@ export const Move = () => {
 	const [parentAssetId, setParentAssetId] = useState<number>(0);
 	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
 
-	const { data: assets, getChildAssets, getParentId } = useUserAssets();
+	const { data: assets, getChildAssets, getParentId, getRootParent } = useUserAssets();
 	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
 
 	const {
@@ -89,6 +89,36 @@ export const Move = () => {
 			// This means that an asset cannot be moved to its own position in the tree
 			if (asset.id === selectedFolderAssetId) {
 				return false;
+			}
+
+			if (asset.type === 'folder') {
+				const rootAsset = getRootParent(asset.id);
+
+				// If root (meaning the asset has no parentId)
+				if (rootAsset) {
+					// If the root's assetId is equal to the selected folder asset id, then
+					// it's not allowed to move, because it's unnecessary to move an asset
+					// to its own location in the tree
+					if (rootAsset.id !== selectedFolderAssetId) {
+						// Get root asset of the selected folder
+						const rootAssetOfSelectedFolder = getRootParent(selectedFolderAssetId);
+
+						// The root asset of the selected folder cannot be the same as the
+						// assetId of the root asset to be moved.
+						// If this is the case, it means that the user is trying to move
+						// the root asset to one of its children in the tree
+						return rootAssetOfSelectedFolder?.id === rootAsset.id ? false : true;
+					}
+
+					// Root by default is always allowed to move
+					return true;
+				}
+
+				// This check is required if you want to move a folder to a lower positon in the tree, within the same tree
+				// Example:
+				// A1 > A2 > A3
+				// Moving A1 to a lower position is not allowed, same as moving A2 to A3 is not allowed (only for folders)
+				return getChildAssets(asset.id).length > 0 ? false : true;
 			}
 
 			return true;
