@@ -57,6 +57,10 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 	const { preview, isPreviewSuccess, resetPreview } = useDownload();
 
 	const downloadPreviewChunks = async (asset: Asset) => {
+		if (asset.type === 'folder') {
+			return;
+		}
+
 		const docs = await preview([asset]);
 		setDocs(docs);
 	};
@@ -111,14 +115,16 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 				message={`${removeOrAdd === 'add' ? 'Adding asset to' : 'Removing asset from'} favorites`}
 				loader
 			/>
-			<PreviewBackdrop
-				open={isPreviewSuccess}
-				onClick={() => {
-					resetPreview();
-					setDocs([]);
-				}}
-				docs={docs}
-			/>
+			{isPreviewSuccess ? (
+				<PreviewBackdrop
+					open={isPreviewSuccess}
+					onClick={() => {
+						resetPreview();
+						setDocs([]);
+					}}
+					docs={docs}
+				/>
+			) : null}
 		</>
 	);
 };

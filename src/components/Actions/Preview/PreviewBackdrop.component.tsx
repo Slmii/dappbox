@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import { constants } from 'lib/constants';
+import { useKeyPress } from 'lib/hooks';
 import { Doc } from 'lib/types/Doc.types';
 import { Backdrop } from 'ui-components/Backdrop';
 import { Box, Column } from 'ui-components/Box';
@@ -9,10 +10,16 @@ import { Paragraph } from 'ui-components/Typography';
 
 export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: Doc[]; onClick: () => void }) => {
 	const [previewIndex, setPreviewIndex] = useState(0);
+	useKeyPress('ArrowLeft', () => handleOnPrevious());
+	useKeyPress('ArrowRight', () => handleOnNext());
+	useKeyPress('Escape', () => {
+		setPreviewIndex(0);
+		onClick();
+	});
 
 	const handleOnPrevious = () => {
 		if (previewIndex === 0) {
-			setPreviewIndex(docs.length);
+			setPreviewIndex(docs.length - 1);
 		} else {
 			setPreviewIndex(prevState => prevState - 1);
 		}

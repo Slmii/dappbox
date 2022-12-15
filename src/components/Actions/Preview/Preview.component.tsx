@@ -14,7 +14,7 @@ export const Preview = () => {
 	const { preview, isPreviewSuccess, isPreviewLoading, resetPreview } = useDownload();
 
 	const downloadPreviewChunks = async () => {
-		const docs = await preview(selectedRows);
+		const docs = await preview(selectedRows.filter(row => row.type === 'file'));
 		setDocs(docs);
 	};
 
@@ -30,14 +30,16 @@ export const Preview = () => {
 					loading={isPreviewLoading}
 				/>
 			) : null}
-			<PreviewBackdrop
-				open={isPreviewSuccess}
-				onClick={() => {
-					resetPreview();
-					setDocs([]);
-				}}
-				docs={docs}
-			/>
+			{isPreviewSuccess ? (
+				<PreviewBackdrop
+					open={isPreviewSuccess}
+					onClick={() => {
+						resetPreview();
+						setDocs([]);
+					}}
+					docs={docs}
+				/>
+			) : null}
 		</>
 	);
 };
