@@ -11,7 +11,12 @@ export const AssetsList = ({ assets }: AssetsListProps) => {
 	return (
 		<List>
 			{assets.map(asset => (
-				<ListItem key={asset.id} disablePadding secondaryAction={asset.secondaryAction}>
+				<ListItem
+					key={asset.id}
+					disablePadding
+					secondaryAction={asset.secondaryAction}
+					disabled={asset.disabled}
+				>
 					<ListItemButton onClick={() => asset.onClick?.(asset.id)} selected={asset.isSelected}>
 						{asset.icon ? (
 							<ListItemIcon>
