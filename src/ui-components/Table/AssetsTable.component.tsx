@@ -9,18 +9,15 @@ import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import { visuallyHidden } from '@mui/utils';
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { formatBytes } from 'lib/functions';
 import { Asset } from 'lib/types/Asset.types';
 import { Icon } from 'ui-components/Icon';
 import { IconButton } from 'ui-components/IconButton';
-import { Link } from 'ui-components/Link';
 import { Column, TableCellProps, TableHeadProps, TableProps } from './Table.types';
 
-const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: TableCellProps) => {
-	const { pathname } = useLocation();
-
+const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle, onNavigate }: TableCellProps) => {
 	const renderValue = () => {
 		const value = row[columnId as keyof Column];
 
@@ -56,12 +53,9 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 
 		if (row.type === 'folder') {
 			return (
-				<Link
-					href={`${pathname.split('/').filter(Boolean).join('/')}/${encodeURIComponent(row.id.toString())}`}
-					onClick={e => e.stopPropagation()}
-				>
+				<Box sx={{ cursor: 'pointer' }} onClick={() => onNavigate(row)}>
 					{value.toString()}
-				</Link>
+				</Box>
 			);
 		} else {
 			if (columnId === 'size') {
@@ -78,10 +72,9 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle }: Table
 						WebkitLineClamp: 1,
 						WebkitBoxOrient: 'vertical'
 					}}
-					// TODO: open full dialog with preview
 					onClick={e => {
 						e.stopPropagation();
-						alert('Open Preview');
+						onNavigate(row);
 					}}
 				>
 					{value.toString()}
@@ -181,9 +174,13 @@ export const AssetsTable = ({
 	orderBy,
 	setOrder,
 	setOrderBy,
-	onFavoriteToggle
+	onFavoriteToggle,
+	onPreview
 }: TableProps) => {
-	const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Asset) => {
+	const navigate = useNavigate();
+	const { pathname } = useLocation();
+
+	const handleRequestSort = (_event: React.MouseEvent<unknown>, property: keyof Asset) => {
 		const isAsc = orderBy === property && order === 'asc';
 		setOrder(isAsc ? 'desc' : 'asc');
 		setOrderBy(property);
@@ -198,7 +195,16 @@ export const AssetsTable = ({
 		setSelectedRows([]);
 	};
 
-	const handleClick = (_event: React.MouseEvent<unknown>, asset: Asset) => {
+	const handleOnRowClick = (_event: React.MouseEvent<unknown>, asset: Asset) => {
+		const selectedIndex = selectedRows.findIndex(row => row.id === asset.id);
+
+		setSelectedRows([]);
+		if (selectedIndex === -1) {
+			setSelectedRows([asset]);
+		}
+	};
+
+	const handleCheckboxClick = (asset: Asset) => {
 		const selectedIndex = selectedRows.findIndex(row => row.id === asset.id);
 		let newSelected: Asset[] = [];
 
@@ -216,6 +222,14 @@ export const AssetsTable = ({
 		}
 
 		setSelectedRows(newSelected);
+	};
+
+	const handleOnDoubleClick = (asset: Asset) => {
+		if (asset.type === 'folder') {
+			navigate(`${pathname.split('/').filter(Boolean).join('/')}/${encodeURIComponent(asset.id.toString())}`);
+		} else {
+			onPreview(asset);
+		}
 	};
 
 	const isSelected = (assetId: number) => selectedRows.findIndex(row => row.id === assetId) !== -1;
@@ -245,7 +259,8 @@ export const AssetsTable = ({
 						return (
 							<TableRow
 								hover
-								onClick={event => handleClick(event, row)}
+								onClick={event => !isItemSelected && handleOnRowClick(event, row)}
+								onDoubleClick={() => handleOnDoubleClick(row)}
 								role='checkbox'
 								aria-checked={isItemSelected}
 								tabIndex={-1}
@@ -260,6 +275,10 @@ export const AssetsTable = ({
 											'aria-labelledby': labelId
 										}}
 										size='small'
+										onClick={e => {
+											e.stopPropagation();
+											handleCheckboxClick(row);
+										}}
 									/>
 								</MuiTableCell>
 								{Object.entries(columns).map(([columnId, column]) => (
@@ -269,6 +288,7 @@ export const AssetsTable = ({
 										columnId={columnId as keyof Column}
 										column={column}
 										onFavoriteToggle={onFavoriteToggle}
+										onNavigate={handleOnDoubleClick}
 									/>
 								))}
 								{/* <MuiTableCell align='right'>

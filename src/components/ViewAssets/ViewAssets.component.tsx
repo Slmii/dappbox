@@ -1,11 +1,13 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
+import { PreviewBackdrop } from 'components/Actions/Preview';
 import { getTableAssets } from 'lib/functions';
-import { useFavorites } from 'lib/hooks';
+import { useDownload, useFavorites } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
+import { Doc } from 'lib/types/Doc.types';
 import { getAssetId } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Snackbar } from 'ui-components/Snackbar';
@@ -50,6 +52,14 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 	const { pathname } = useLocation();
 	const { handleOnFavoritesToggle, isLoading: toggleFavoriteIsLoading, removeOrAdd } = useFavorites();
 	const [{ order, orderBy, selectedRows }, setTableState] = useRecoilState(tableStateAtom);
+	const [docs, setDocs] = useState<Doc[]>([]);
+
+	const { preview, isPreviewSuccess, resetPreview } = useDownload();
+
+	const downloadPreviewChunks = async (asset: Asset) => {
+		const docs = await preview([asset]);
+		setDocs(docs);
+	};
 
 	/**
 	 * 1. Render assets that are a child of the current assetId in the URL
@@ -93,12 +103,21 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 					setOrderBy={orderBy => setTableState(prevState => ({ ...prevState, orderBy }))}
 					setSelectedRows={selectedRows => setTableState(prevState => ({ ...prevState, selectedRows }))}
 					onFavoriteToggle={assetId => handleOnFavoritesToggle(assetId)}
+					onPreview={downloadPreviewChunks}
 				/>
 			</Box>
 			<Snackbar
 				open={toggleFavoriteIsLoading}
 				message={`${removeOrAdd === 'add' ? 'Adding asset to' : 'Removing asset from'} favorites`}
 				loader
+			/>
+			<PreviewBackdrop
+				open={isPreviewSuccess}
+				onClick={() => {
+					resetPreview();
+					setDocs([]);
+				}}
+				docs={docs}
 			/>
 		</>
 	);

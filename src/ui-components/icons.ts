@@ -25,7 +25,9 @@ import ListIcon from '@mui/icons-material/List';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import PrintIcon from '@mui/icons-material/Print';
 import ShareIcon from '@mui/icons-material/Share';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -59,13 +61,15 @@ const icons = {
 	favorite: FavoriteIcon,
 	favoriteOutlined: FavoriteBorderIcon,
 	more: MoreVertIcon,
+	print: PrintIcon,
 	share: ShareIcon,
 	edit: EditIcon,
 	expandMore: ExpandMoreIcon,
 	expandLess: ExpandLessIcon,
 	next: NavigateNextIcon,
 	previous: NavigateBeforeIcon,
-	logOut: PowerSettingsNewIcon
+	logOut: PowerSettingsNewIcon,
+	newWindow: OpenInNewIcon
 };
 
 export type Icons = keyof typeof icons;

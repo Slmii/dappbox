@@ -126,7 +126,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 				navigate('/authenticate');
 			},
 			// 7 days
-			maxTimeToLive: BigInt(Date.now() + 7 * 86400000),
+			// maxTimeToLive: BigInt(Date.now() + 7 * 86400000),
 			identityProvider: 'https://identity.ic0.app/#authorize'
 		});
 	};

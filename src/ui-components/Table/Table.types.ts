@@ -17,6 +17,7 @@ export interface TableProps {
 	setOrder: (order: Order) => void;
 	setOrderBy: (orderBy: keyof Asset) => void;
 	onFavoriteToggle: (assetId: number) => void;
+	onPreview: (asset: Asset) => Promise<void>;
 }
 
 export interface ColumnOptions {
@@ -43,4 +44,5 @@ export interface TableCellProps {
 	column: ColumnOptions;
 	row: Asset;
 	onFavoriteToggle: (assetId: number) => void;
+	onNavigate: (asset: Asset) => void;
 }
