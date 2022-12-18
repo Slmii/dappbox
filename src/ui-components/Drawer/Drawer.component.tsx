@@ -134,24 +134,6 @@ export const Drawer = () => {
 								disableTypography
 								primary={
 									<>
-										NFTs
-										<Chip
-											size='small'
-											label='Soon'
-											sx={{
-												marginLeft: constants.SPACING
-											}}
-											color='secondary'
-										/>
-									</>
-								}
-							/>
-						</ListItem>
-						<ListItem button disabled>
-							<ListItemText
-								disableTypography
-								primary={
-									<>
 										Shared
 										<Chip
 											size='small'
