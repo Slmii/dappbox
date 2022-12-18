@@ -3,14 +3,14 @@ import { Asset } from 'lib/types/Asset.types';
 /**
  * Get the page title of the current asset
  */
-export const getPageTitle = (pathname: string, rows: Asset[]) => {
+export const getPageTitle = (pathname: string, assets: Asset[]) => {
 	const param = pathname.split('/').pop();
 
 	if (!param) {
 		return '';
 	}
 
-	const pageTitle = rows.find(row => row.id === Number(param))?.name ?? '';
+	const pageTitle = assets.find(asset => asset.id === Number(param))?.name ?? '';
 	return decodeURIComponent(pageTitle);
 };
 
@@ -20,7 +20,7 @@ export const getPageTitle = (pathname: string, rows: Asset[]) => {
 export const getUrlPathToAsset = (assetId: number, assets: Asset[]) => {
 	const paths: Asset[] = [];
 
-	const asset = assets.find(row => row.id === assetId);
+	const asset = assets.find(asset => asset.id === assetId);
 	if (asset) {
 		// Put at the front of the array for the correct order
 		paths.unshift(asset);

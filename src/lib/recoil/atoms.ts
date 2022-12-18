@@ -4,18 +4,18 @@ import { Asset } from 'lib/types/Asset.types';
 import { Order } from 'ui-components/Table';
 
 export interface TableState {
-	selectedRows: Asset[];
+	selectedAssets: Asset[];
 	order: Order;
 	orderBy: keyof Asset;
 }
 
 /**
- * Atom for current table state (order, orderBy and selectedRows)
+ * Atom for current table state (order, orderBy and selectedAssets)
  */
 export const tableStateAtom = atom<TableState>({
 	key: 'tableStateAtom',
 	default: {
-		selectedRows: [],
+		selectedAssets: [],
 		order: 'asc',
 		orderBy: 'name'
 	}

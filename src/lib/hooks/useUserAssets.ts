@@ -14,12 +14,12 @@ export const useUserAssets = () => {
 		enabled: isAuthenticated
 	});
 
-	const getChildAssets = (parentId: number) => {
+	const getChildAssets = (assetId: number) => {
 		if (!data.data) {
 			return [];
 		}
 
-		return data.data.filter(asset => typeof asset.parentId !== 'undefined' && asset.parentId === parentId);
+		return data.data.filter(asset => typeof asset.parentId !== 'undefined' && asset.parentId === assetId);
 	};
 
 	const getNestedChildAssets = (assetId: number): Asset[] => {

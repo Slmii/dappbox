@@ -14,7 +14,7 @@ export const Delete = () => {
 	const queryClient = useQueryClient();
 	const [deleteOpenDialog, setDeleteOpenDialog] = useState(false);
 
-	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
+	const [{ selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 
 	const {
 		mutateAsync: deleteAssetsMutate,
@@ -35,24 +35,24 @@ export const Delete = () => {
 	});
 
 	const handleOnConfirmDeleteAssets = async () => {
-		if (!selectedRows.length) {
+		if (!selectedAssets.length) {
 			return;
 		}
 
 		setDeleteOpenDialog(false);
 
-		await deleteAssetsMutate(selectedRows.map(asset => asset.id));
+		await deleteAssetsMutate(selectedAssets.map(asset => asset.id));
 
 		// Reset selected rows
 		setTableState(prevState => ({
 			...prevState,
-			selectedRows: []
+			selectedAssets: []
 		}));
 	};
 
 	return (
 		<>
-			{selectedRows.length ? (
+			{selectedAssets.length ? (
 				<>
 					<Button label='Delete' startIcon='delete' color='error' onClick={() => setDeleteOpenDialog(true)} />
 					<Dialog

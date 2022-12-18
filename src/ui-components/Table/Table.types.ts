@@ -9,7 +9,7 @@ export type Column = {
 
 export interface TableProps {
 	rows: Asset[];
-	selectedRows: Asset[];
+	selectedAssets: Asset[];
 	columns: Column;
 	order: Order;
 	orderBy: keyof Asset;

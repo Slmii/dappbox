@@ -4,11 +4,11 @@ import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
 import { constants } from 'lib/constants';
-import { getExtension, replaceArrayAtIndex } from 'lib/functions';
 import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
 import { Asset } from 'lib/types/Asset.types';
+import { getExtension, replaceArrayAtIndex } from 'lib/utils';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
@@ -23,7 +23,7 @@ export const Rename = () => {
 	const [renameOpenDialog, setRenameOpenDialog] = useState(false);
 	const [handleOnConfirmRenameDialog, setHandleOnConfirmRenameDialog] = useState<() => void>(() => null);
 	const [undoAsset, setUndoAsset] = useState<Asset | null>(null);
-	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
+	const [{ selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 
 	const { data: assets } = useUserAssets();
 	const {
@@ -51,7 +51,7 @@ export const Rename = () => {
 				// Update selected rows
 				setTableState(prevState => ({
 					...prevState,
-					selectedRows: replaceArrayAtIndex(prevState.selectedRows, 0, asset)
+					selectedAssets: replaceArrayAtIndex(prevState.selectedAssets, 0, asset)
 				}));
 
 				return updatedAssets;
@@ -60,7 +60,7 @@ export const Rename = () => {
 	});
 
 	const handleOnRenameFolder = () => {
-		setRenameOpenDialog(selectedRows.length === 1);
+		setRenameOpenDialog(selectedAssets.length === 1);
 		setHandleOnConfirmRenameDialog(() => async (data: RenameAssetFormData) => {
 			if (!assets) {
 				return;
@@ -70,7 +70,7 @@ export const Rename = () => {
 
 			// There must always be only 1 asset selected
 			// for the rename functionality
-			const asset = selectedRows[0];
+			const asset = selectedAssets[0];
 
 			// Store assets in the state before the renaming happens
 			// This will be used to undo the renaming
@@ -88,7 +88,7 @@ export const Rename = () => {
 
 	return (
 		<>
-			{selectedRows.length === 1 ? (
+			{selectedAssets.length === 1 ? (
 				<>
 					<Button
 						label='Rename'
@@ -120,7 +120,7 @@ export const Rename = () => {
 							<Form<RenameAssetFormData>
 								action={handleOnConfirmRenameDialog}
 								defaultValues={{
-									folderName: selectedRows.length === 1 ? selectedRows[0].name : ''
+									folderName: selectedAssets.length === 1 ? selectedAssets[0].name : ''
 								}}
 								schema={renameFolderSchema}
 								myRef={renameFolderFormRef}

@@ -11,8 +11,8 @@ import { visuallyHidden } from '@mui/utils';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { formatBytes } from 'lib/functions';
 import { Asset } from 'lib/types/Asset.types';
+import { formatBytes } from 'lib/utils';
 import { Icon } from 'ui-components/Icon';
 import { IconButton } from 'ui-components/IconButton';
 import { Column, TableCellProps, TableHeadProps, TableProps } from './Table.types';
@@ -167,7 +167,7 @@ const TableHead = ({
 
 export const AssetsTable = ({
 	rows,
-	selectedRows,
+	selectedAssets,
 	setSelectedRows,
 	columns,
 	order,
@@ -196,7 +196,7 @@ export const AssetsTable = ({
 	};
 
 	const handleOnRowClick = (_event: React.MouseEvent<unknown>, asset: Asset) => {
-		const selectedIndex = selectedRows.findIndex(row => row.id === asset.id);
+		const selectedIndex = selectedAssets.findIndex(({ id }) => id === asset.id);
 
 		setSelectedRows([]);
 		if (selectedIndex === -1) {
@@ -205,19 +205,19 @@ export const AssetsTable = ({
 	};
 
 	const handleCheckboxClick = (asset: Asset) => {
-		const selectedIndex = selectedRows.findIndex(row => row.id === asset.id);
+		const selectedIndex = selectedAssets.findIndex(({ id }) => id === asset.id);
 		let newSelected: Asset[] = [];
 
 		if (selectedIndex === -1) {
-			newSelected = newSelected.concat(selectedRows, asset);
+			newSelected = newSelected.concat(selectedAssets, asset);
 		} else if (selectedIndex === 0) {
-			newSelected = newSelected.concat(selectedRows.slice(1));
-		} else if (selectedIndex === selectedRows.length - 1) {
-			newSelected = newSelected.concat(selectedRows.slice(0, -1));
+			newSelected = newSelected.concat(selectedAssets.slice(1));
+		} else if (selectedIndex === selectedAssets.length - 1) {
+			newSelected = newSelected.concat(selectedAssets.slice(0, -1));
 		} else if (selectedIndex > 0) {
 			newSelected = newSelected.concat(
-				selectedRows.slice(0, selectedIndex),
-				selectedRows.slice(selectedIndex + 1)
+				selectedAssets.slice(0, selectedIndex),
+				selectedAssets.slice(selectedIndex + 1)
 			);
 		}
 
@@ -232,7 +232,7 @@ export const AssetsTable = ({
 		}
 	};
 
-	const isSelected = (assetId: number) => selectedRows.findIndex(row => row.id === assetId) !== -1;
+	const isSelected = (assetId: number) => selectedAssets.findIndex(asset => asset.id === assetId) !== -1;
 
 	return (
 		<TableContainer
@@ -243,7 +243,7 @@ export const AssetsTable = ({
 		>
 			<MuiTable stickyHeader aria-labelledby='tableTitle' size='small' sx={{ minWidth: 1000 }}>
 				<TableHead
-					numSelected={selectedRows.length}
+					numSelected={selectedAssets.length}
 					order={order}
 					orderBy={orderBy}
 					onSelectAllClick={handleSelectAllClick}
@@ -252,19 +252,19 @@ export const AssetsTable = ({
 					columns={columns}
 				/>
 				<TableBody>
-					{rows.map(row => {
-						const isItemSelected = isSelected(row.id);
-						const labelId = `enhanced-table-checkbox-${row.id}`;
+					{rows.map(asset => {
+						const isItemSelected = isSelected(asset.id);
+						const labelId = `enhanced-table-checkbox-${asset.id}`;
 
 						return (
 							<TableRow
 								hover
-								onClick={event => !isItemSelected && handleOnRowClick(event, row)}
-								onDoubleClick={() => handleOnDoubleClick(row)}
+								onClick={event => !isItemSelected && handleOnRowClick(event, asset)}
+								onDoubleClick={() => handleOnDoubleClick(asset)}
 								role='checkbox'
 								aria-checked={isItemSelected}
 								tabIndex={-1}
-								key={row.id}
+								key={asset.id}
 								selected={isItemSelected}
 							>
 								<MuiTableCell padding='checkbox'>
@@ -277,14 +277,14 @@ export const AssetsTable = ({
 										size='small'
 										onClick={e => {
 											e.stopPropagation();
-											handleCheckboxClick(row);
+											handleCheckboxClick(asset);
 										}}
 									/>
 								</MuiTableCell>
 								{Object.entries(columns).map(([columnId, column]) => (
 									<TableCell
-										key={`${columnId}${row.id}`}
-										row={row}
+										key={`${columnId}${asset.id}`}
+										row={asset}
 										columnId={columnId as keyof Column}
 										column={column}
 										onFavoriteToggle={onFavoriteToggle}

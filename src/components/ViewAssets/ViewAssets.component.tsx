@@ -3,12 +3,12 @@ import { useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 import { PreviewBackdrop } from 'components/Actions/Preview';
-import { getTableAssets } from 'lib/functions';
 import { useFavorites, usePreview } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { Doc } from 'lib/types/Doc.types';
 import { getAssetId } from 'lib/url';
+import { getTableAssets } from 'lib/utils';
 import { Box } from 'ui-components/Box';
 import { Snackbar } from 'ui-components/Snackbar';
 import { AssetsTable, Column } from 'ui-components/Table';
@@ -51,7 +51,7 @@ const columns: Column = {
 export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 	const { pathname } = useLocation();
 	const { handleOnFavoritesToggle, isLoading: toggleFavoriteIsLoading, removeOrAdd } = useFavorites();
-	const [{ order, orderBy, selectedRows }, setTableState] = useRecoilState(tableStateAtom);
+	const [{ order, orderBy, selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 	const [docs, setDocs] = useState<Doc[]>([]);
 
 	const { preview, isSuccess, reset } = usePreview();
@@ -78,12 +78,12 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 		});
 	}, [order, orderBy, pathname, assets]);
 
-	// Reset `selectedRows` in table state when redirecting
+	// Reset `selectedAssets` in table state when redirecting
 	// to another folder
 	useEffect(() => {
 		setTableState(prevState => ({
 			...prevState,
-			selectedRows: []
+			selectedAssets: []
 		}));
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,10 +102,10 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 					columns={columns}
 					order={order}
 					orderBy={orderBy}
-					selectedRows={selectedRows}
+					selectedAssets={selectedAssets}
 					setOrder={order => setTableState(prevState => ({ ...prevState, order }))}
 					setOrderBy={orderBy => setTableState(prevState => ({ ...prevState, orderBy }))}
-					setSelectedRows={selectedRows => setTableState(prevState => ({ ...prevState, selectedRows }))}
+					setSelectedRows={selectedAssets => setTableState(prevState => ({ ...prevState, selectedAssets }))}
 					onFavoriteToggle={assetId => handleOnFavoritesToggle(assetId)}
 					onPreview={downloadPreviewChunks}
 				/>

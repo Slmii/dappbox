@@ -1,7 +1,7 @@
 import { _SERVICE, User as ControllerUser } from 'declarations/users/users.did';
 import { dateFromBigInt } from 'lib/dates';
-import { resolve, unwrap } from 'lib/functions';
 import { User as IUser } from 'lib/types/User.types';
+import { resolve, unwrap } from 'lib/utils';
 import { Actor } from './actor';
 
 export abstract class User {

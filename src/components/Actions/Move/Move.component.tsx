@@ -4,10 +4,10 @@ import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
 import { constants } from 'lib/constants';
-import { getTableAssets, replaceArrayAtIndex } from 'lib/functions';
 import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
+import { getTableAssets, replaceArrayAtIndex } from 'lib/utils';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { IconButton } from 'ui-components/IconButton';
@@ -25,7 +25,7 @@ export const Move = () => {
 	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
 
 	const { data: assets, getChildAssets, getParentId, getRootParent } = useUserAssets();
-	const [{ selectedRows }, setTableState] = useRecoilState(tableStateAtom);
+	const [{ selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 
 	const {
 		mutateAsync: moveAssetMutate,
@@ -75,7 +75,7 @@ export const Move = () => {
 
 	// Filter out assets who cannot be moved to the same folder or if the folder asset is being moved to a child
 	const assetsToMove = useMemo(() => {
-		return selectedRows.filter(asset => {
+		return selectedAssets.filter(asset => {
 			const parentId = getParentId(asset.id);
 
 			// Asset's parentId cannot be the same as the selected folder's assetId
@@ -128,7 +128,7 @@ export const Move = () => {
 	}, [selectedFolderAssetId]);
 
 	const handleOnMoveFolder = () => {
-		setMoveFolderDialogOpen(selectedRows.length > 0);
+		setMoveFolderDialogOpen(selectedAssets.length > 0);
 	};
 
 	const handleOnFolderNavigation = (assetId: number) => {
@@ -160,13 +160,13 @@ export const Move = () => {
 		// Reset selected rows
 		setTableState(prevState => ({
 			...prevState,
-			selectedRows: []
+			selectedAssets: []
 		}));
 	};
 
 	return (
 		<>
-			{selectedRows.length ? (
+			{selectedAssets.length ? (
 				<>
 					<Button
 						label='Move'

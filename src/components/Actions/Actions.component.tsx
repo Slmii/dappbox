@@ -11,7 +11,7 @@ import { Preview } from './Preview';
 import { Rename } from './Rename';
 
 export const Actions = () => {
-	const { selectedRows } = useRecoilValue(tableStateAtom);
+	const { selectedAssets } = useRecoilValue(tableStateAtom);
 
 	return (
 		<>
@@ -27,7 +27,7 @@ export const Actions = () => {
 						marginLeft: 'auto'
 					}}
 				>
-					<Caption title={`${selectedRows.length} selected`} />
+					<Caption title={`${selectedAssets.length} selected`} />
 				</Box>
 			</Column>
 		</>

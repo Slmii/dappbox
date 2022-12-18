@@ -3,27 +3,26 @@ import { useRecoilValue } from 'recoil';
 import { useDownload } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Button } from 'ui-components/Button';
+import { Snackbar } from 'ui-components/Snackbar';
 
 export const Download = () => {
-	const { selectedRows } = useRecoilValue(tableStateAtom);
+	const { selectedAssets } = useRecoilValue(tableStateAtom);
 	const { download, isLoading } = useDownload();
-
-	const hasFolderSelected = selectedRows.some(row => row.type === 'folder');
 
 	return (
 		<>
-			{selectedRows.length ? (
+			{selectedAssets.length ? (
 				<Button
 					label='Download'
 					startIcon='download'
 					variant='outlined'
 					color='inherit'
-					onClick={async () => download(selectedRows.filter(row => row.type === 'file'))}
-					loading={isLoading}
-					disabled={hasFolderSelected}
-					tooltip={hasFolderSelected ? 'No support for folder downloads yet' : undefined}
+					onClick={async () => {
+						await download(selectedAssets);
+					}}
 				/>
 			) : null}
+			<Snackbar open={isLoading} message='Download assets' loader />
 		</>
 	);
 };

@@ -1,7 +1,7 @@
 import { _SERVICE, Asset as ControllerAsset, EditAsset, MoveAsset, PostAsset } from 'declarations/assets/assets.did';
 import { dateFromBigInt } from 'lib/dates';
-import { resolve, uint32ArrayToNumbers, unwrap } from 'lib/functions';
 import { Asset as IAsset, AssetType } from 'lib/types/Asset.types';
+import { resolve, uint32ArrayToNumbers, unwrap } from 'lib/utils';
 import { Actor } from './actor';
 
 export abstract class Asset {

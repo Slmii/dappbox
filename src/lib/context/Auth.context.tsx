@@ -8,8 +8,8 @@ import { Actor } from 'api/actor';
 import { api } from 'api/index';
 import { mapToUserInterface } from 'api/users';
 import { _SERVICE } from 'declarations/users/users.did';
-import { unwrap } from 'lib/functions';
 import { User } from 'lib/types/User.types';
+import { unwrap } from 'lib/utils';
 import { Snackbar } from 'ui-components/Snackbar';
 
 interface ValidateSession {

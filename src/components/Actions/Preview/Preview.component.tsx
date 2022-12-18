@@ -9,18 +9,18 @@ import { PreviewBackdrop } from './PreviewBackdrop.component';
 
 export const Preview = () => {
 	const [docs, setDocs] = useState<Doc[]>([]);
-	const { selectedRows } = useRecoilValue(tableStateAtom);
+	const { selectedAssets } = useRecoilValue(tableStateAtom);
 
 	const { preview, isSuccess, isLoading, reset } = usePreview();
 
 	const downloadPreviewChunks = async () => {
-		const docs = await preview(selectedRows.filter(row => row.type === 'file'));
+		const docs = await preview(selectedAssets.filter(asset => asset.type === 'file'));
 		setDocs(docs);
 	};
 
 	return (
 		<>
-			{selectedRows.length && selectedRows.every(asset => asset.type === 'file') ? (
+			{selectedAssets.length && selectedAssets.every(asset => asset.type === 'file') ? (
 				<Button
 					label='Preview'
 					onClick={downloadPreviewChunks}
