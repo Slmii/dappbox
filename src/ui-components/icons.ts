@@ -18,6 +18,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FeedbackIcon from '@mui/icons-material/Feedback';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -73,7 +74,8 @@ const icons = {
 	logOut: PowerSettingsNewIcon,
 	newWindow: OpenInNewIcon,
 	uploadFile: UploadFileIcon,
-	uploadFolder: DriveFolderUploadIcon
+	uploadFolder: DriveFolderUploadIcon,
+	feedback: FeedbackIcon
 };
 
 export type Icons = keyof typeof icons;

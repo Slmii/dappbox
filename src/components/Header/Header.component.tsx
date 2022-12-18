@@ -65,6 +65,15 @@ export const Header = () => {
 								disabled: true
 							},
 							{
+								label: 'Bug/Feedback',
+								action: () =>
+									window.open(
+										'https://docs.google.com/forms/d/e/1FAIpQLScPkNcDnT7EWlAeGgNcj6hzis4dpvZU-dr8gDgdIJiegpaTuA/viewform?usp=sf_link',
+										'_blank'
+									),
+								icon: 'feedback'
+							},
+							{
 								label: 'Log out',
 								icon: 'logOut',
 								action: async () => {

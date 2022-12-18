@@ -136,7 +136,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 							alt={docToUse.asset.name}
 						/>
 					) : null}
-					{docToUse && docToUse.asset.mimeType?.includes('pdf') ? (
+					{docToUse && !docToUse.asset.mimeType?.includes('image') ? (
 						<Paper
 							elevation={10}
 							sx={{
@@ -147,7 +147,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 							}}
 						>
 							<Row>
-								<Paragraph>Non-Image assets are not yet supported for Preview!</Paragraph>
+								<Paragraph>Non-image assets are not yet supported for preview 😥</Paragraph>
 								<div style={{ textAlign: 'center' }}>
 									<Button
 										label='Open in new window'
