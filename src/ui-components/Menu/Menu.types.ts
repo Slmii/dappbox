@@ -4,6 +4,7 @@ export interface MenuProps {
 	label: JSX.Element;
 	id: string;
 	menu: Menu[];
+	fullWidth?: boolean;
 }
 
 interface Menu {

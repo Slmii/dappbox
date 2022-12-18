@@ -12,6 +12,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import DriveFileMoveOutlinedIcon from '@mui/icons-material/DriveFileMoveOutlined';
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -29,6 +30,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import PrintIcon from '@mui/icons-material/Print';
 import ShareIcon from '@mui/icons-material/Share';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -69,7 +71,9 @@ const icons = {
 	next: NavigateNextIcon,
 	previous: NavigateBeforeIcon,
 	logOut: PowerSettingsNewIcon,
-	newWindow: OpenInNewIcon
+	newWindow: OpenInNewIcon,
+	uploadFile: UploadFileIcon,
+	uploadFolder: DriveFolderUploadIcon
 };
 
 export type Icons = keyof typeof icons;

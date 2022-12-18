@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { icons } from 'ui-components/icons';
 import { MenuProps } from './Menu.types';
 
-export const Menu = ({ label, id, menu }: MenuProps) => {
+export const Menu = ({ label, id, menu, fullWidth }: MenuProps) => {
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
 	const handleOnMenuOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -36,6 +36,15 @@ export const Menu = ({ label, id, menu }: MenuProps) => {
 					vertical: 'top',
 					horizontal: 'left'
 				}}
+				PaperProps={
+					fullWidth
+						? {
+								style: {
+									width: anchorEl?.getBoundingClientRect().width ?? undefined
+								}
+						  }
+						: undefined
+				}
 			>
 				{menu.map(({ label, icon, image, href, action, disabled }) => {
 					const IconComponent = icons[icon as keyof typeof icons];
