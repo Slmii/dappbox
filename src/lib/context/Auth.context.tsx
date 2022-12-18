@@ -172,18 +172,16 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const logOut = async () => {
-		const authClient = await api.Actor.getAuthClient();
-		await authClient.logout();
-
-		await queryClient.resetQueries();
-		await queryClient.invalidateQueries();
-
 		setPrincipal(undefined);
 		setIsLoading(false);
 		setUser(undefined);
 		setIsAuthenticated(false);
 
-		navigate('/authenticate');
+		const authClient = await api.Actor.getAuthClient();
+		await authClient.logout();
+
+		await queryClient.resetQueries();
+		await queryClient.invalidateQueries();
 	};
 
 	return (

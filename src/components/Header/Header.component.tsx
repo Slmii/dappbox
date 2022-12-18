@@ -1,5 +1,6 @@
 import { useTheme } from '@mui/material/styles';
 import { useCallback, useContext, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { AuthContext, ColorModeContext } from 'lib/context';
 import { Appbar } from 'ui-components/AppBar';
@@ -12,6 +13,7 @@ import { Snackbar } from 'ui-components/Snackbar';
 
 export const Header = () => {
 	const theme = useTheme();
+	const navigate = useNavigate();
 	const { toggleColorMode } = useContext(ColorModeContext);
 	const { isAuthenticated, principal, logOut } = useContext(AuthContext);
 	const [isAddressCopied, setIsAddressCopied] = useState(false);
@@ -69,6 +71,8 @@ export const Header = () => {
 									setIsLogOutLoading(true);
 									await logOut();
 									setIsLogOutLoading(false);
+
+									navigate('/authenticate');
 								}
 							}
 						]}

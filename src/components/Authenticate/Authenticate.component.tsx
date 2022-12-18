@@ -4,7 +4,6 @@ import { Navigate } from 'react-router-dom';
 import { AuthContext } from 'lib/context';
 import { Box, Row } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
-import { PageTitle } from 'ui-components/Typography';
 
 export const Authenticate = () => {
 	const { isAuthenticated, loginII, isLoading } = useContext(AuthContext);
@@ -25,7 +24,7 @@ export const Authenticate = () => {
 			}}
 		>
 			<Row>
-				<PageTitle>DappBox</PageTitle>
+				<img src='/assets/dappbox.png' alt='DappBox' />
 				<Button
 					label='Login with Internet Identity'
 					color='primary'
