@@ -9,7 +9,7 @@ import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
 import { useAddAsset } from 'lib/hooks';
 import { getAssetId } from 'lib/url';
-import { getExtension, getImage } from 'lib/utils';
+import { formatBytes, getExtension, getImage } from 'lib/utils';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Snackbar } from 'ui-components/Snackbar';
@@ -21,15 +21,14 @@ const Input = styled('input')({
 export const Upload = () => {
 	const { pathname } = useLocation();
 	const { user } = useContext(AuthContext);
+	const [uploadError, setUploadError] = useState<string | null>(null);
+	const [assetsUploadSuccess, setAssetsUploadSucces] = useState(false);
+	const [totalFiles, setTotalFiles] = useState(0);
+	const [currentFileIndex, setCurrentFileIndex] = useState(0);
 	const [totalChunks, setTotalChunks] = useState(0);
 	const [currentChunkIndex, setCurrentChunkIndex] = useState(0);
 
-	const {
-		mutateAsync: addAssetMutate,
-		isLoading: addAssetIsLoading,
-		isSuccess: addAssetIsSuccess,
-		reset: addAssetReset
-	} = useAddAsset();
+	const { mutateAsync: addAssetMutate, isLoading: addAssetIsLoading, reset: addAssetReset } = useAddAsset();
 
 	const { mutateAsync: addChunkMutate, isLoading: addChunkIsLoading } = useMutation({
 		mutationFn: api.Chunk.addChunk
@@ -42,52 +41,72 @@ export const Upload = () => {
 			return;
 		}
 
-		const file = files[0];
-		const { blobs } = await getImage(file);
+		// Convert FilesList to array
+		const filesAsArray = Array.from(files);
 
-		const blobsLength = blobs.length;
-		if (!blobsLength) {
+		// Max size validation
+		if (filesAsArray.some(file => file.size > constants.MAX_UPLOAD_LIMIT)) {
+			setUploadError(`Max upload size is ${formatBytes(constants.MAX_UPLOAD_LIMIT)}`);
 			return;
 		}
 
-		setTotalChunks(blobsLength);
-		console.log('Total chunks to upload', blobsLength);
-		console.log('============');
+		const filesLength = filesAsArray.length;
+		setTotalFiles(filesLength);
 
-		// Upload each blob seperatly
-		const chunks: Chunk[] = [];
-		for (const [index, blob] of blobs.entries()) {
+		for (const [index, file] of filesAsArray.entries()) {
 			const counter = index + 1;
-			setCurrentChunkIndex(counter);
+			setCurrentFileIndex(counter);
 
-			console.log(`Uploading chunk ${counter}/${blobsLength}`);
+			console.log(`Uploading File ${counter}/${filesLength}`);
 
-			const chunk = await addChunkMutate({
-				blob,
-				index
+			const { blobs } = await getImage(file);
+
+			const blobsLength = blobs.length;
+			if (!blobsLength) {
+				return;
+			}
+
+			setTotalChunks(blobsLength);
+			console.log('Total chunks to upload', blobsLength);
+
+			// Upload each blob seperatly
+			const chunks: Chunk[] = [];
+			for (const [index, blob] of blobs.entries()) {
+				const counter = index + 1;
+				setCurrentChunkIndex(counter);
+
+				console.log(`Uploading chunk ${counter}/${blobsLength}`);
+
+				const chunk = await addChunkMutate({
+					blob,
+					index
+				});
+				chunks.push(chunk);
+
+				console.log(`Chunk ${counter} uploaded`, chunk);
+			}
+
+			console.log('Uploading Asset...');
+
+			const parentId = getAssetId(pathname);
+			const asset = await addAssetMutate({
+				asset_type: {
+					File: null
+				},
+				extension: getExtension(file.name),
+				name: file.name,
+				parent_id: !!parentId ? [Number(parentId)] : [],
+				user_id: user.id,
+				mime_type: file.type,
+				chunks,
+				size: file.size
 			});
-			chunks.push(chunk);
 
-			console.log(`Chunk ${counter} uploaded`, chunk);
+			console.log('Done uploading Asset', asset, file);
+			console.log('============');
 		}
 
-		console.log('Uploading Asset...');
-
-		const parentId = getAssetId(pathname);
-		const asset = await addAssetMutate({
-			asset_type: {
-				File: null
-			},
-			extension: getExtension(file.name),
-			name: file.name,
-			parent_id: !!parentId ? [Number(parentId)] : [],
-			user_id: user.id,
-			mime_type: file.type,
-			chunks,
-			size: file.size
-		});
-
-		console.log('Done', asset);
+		setAssetsUploadSucces(true);
 	};
 
 	const isLoading = addAssetIsLoading || addChunkIsLoading;
@@ -96,7 +115,7 @@ export const Upload = () => {
 		<>
 			<Box sx={{ padding: constants.SPACING }}>
 				<label htmlFor='upload-file'>
-					<Input id='upload-file' /*multiple*/ type='file' onChange={handleOnUpload} />
+					<Input id='upload-file' multiple type='file' onChange={handleOnUpload} />
 					<Button
 						startIcon='addOutlined'
 						label='Upload'
@@ -119,11 +138,28 @@ export const Upload = () => {
 				loader
 				message={
 					<>
+						{totalFiles > 1 ? (
+							<>
+								Processing files {currentFileIndex}/{totalFiles}.&nbsp;
+							</>
+						) : null}
 						Uploading chunks {currentChunkIndex}/{totalChunks}
 					</>
 				}
 			/>
-			<Snackbar open={addAssetIsSuccess} message='Asset uploaded successfully' onClose={addAssetReset} />
+			<Snackbar
+				open={assetsUploadSuccess}
+				message='Asset uploaded successfully'
+				onClose={() => setAssetsUploadSucces(false)}
+			/>
+			<Snackbar
+				open={!!uploadError}
+				message={uploadError ?? ''}
+				onClose={() => {
+					setUploadError(null);
+					addAssetReset();
+				}}
+			/>
 		</>
 	);
 };

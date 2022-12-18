@@ -7,5 +7,6 @@ export const constants = {
 		CHUNKS: 'CHUNKS'
 	},
 	ENVIRONMENT: process.env.REACT_APP_ENV ?? 'local',
-	IS_LOCAL: process.env.REACT_APP_ENV === 'local'
+	IS_LOCAL: process.env.REACT_APP_ENV === 'local',
+	MAX_UPLOAD_LIMIT: 1_572_864
 };
