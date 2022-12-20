@@ -124,12 +124,12 @@ export const Upload = () => {
 		const filesLength = files.length;
 		setTotalFiles(filesLength);
 
-		let folderCount = 0;
+		let filesCount = 0;
 		for (const file of files) {
-			folderCount += 1;
-			setCurrentFileIndex(folderCount);
+			filesCount += 1;
+			setCurrentFileIndex(filesCount);
 
-			console.log(`Uploading File ${folderCount}/${filesLength}`);
+			console.log(`Uploading File ${filesCount}/${filesLength}`);
 
 			const { blobs } = await getImage(file);
 
