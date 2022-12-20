@@ -79,7 +79,13 @@ export const Upload = () => {
 			name: folderName,
 			parent_id: parentId ? [Number(parentId)] : [],
 			size: 0,
-			user_id: user.id
+			user_id: user.id,
+			settings: {
+				privacy: {
+					Public: null
+				},
+				url: []
+			}
 		});
 
 		// Creating folder finished
@@ -164,7 +170,13 @@ export const Upload = () => {
 				user_id: user?.id,
 				mime_type: file.type,
 				chunks,
-				size: file.size
+				size: file.size,
+				settings: {
+					privacy: {
+						Public: null
+					},
+					url: []
+				}
 			});
 
 			console.log('Done uploading Asset', asset, file);

@@ -3,7 +3,8 @@ import type { ActorMethod } from '@dfinity/agent';
 
 export type ApiError = { 'NotFound' : string } |
   { 'Unauthorized' : string } |
-  { 'AlreadyExists' : string };
+  { 'AlreadyExists' : string } |
+  { 'CanisterFailed' : CanisterFailedError };
 export interface Asset {
   'id' : number,
   'updated_at' : bigint,
@@ -15,11 +16,16 @@ export interface Asset {
   'user_id' : Principal,
   'is_favorite' : boolean,
   'parent_id' : [] | [number],
+  'settings' : Settings,
   'chunks' : Array<Chunk>,
   'extension' : string,
 }
 export type AssetType = { 'Folder' : null } |
   { 'File' : null };
+export interface CanisterFailedError {
+  'code' : RejectionCode,
+  'message' : string,
+}
 export interface Chunk {
   'id' : number,
   'canister' : Principal,
@@ -40,15 +46,26 @@ export interface PostAsset {
   'mime_type' : string,
   'user_id' : Principal,
   'parent_id' : [] | [number],
+  'settings' : Settings,
   'chunks' : Array<Chunk>,
   'extension' : string,
 }
+export type Privacy = { 'Private' : null } |
+  { 'Public' : null };
+export type RejectionCode = { 'NoError' : null } |
+  { 'CanisterError' : null } |
+  { 'SysTransient' : null } |
+  { 'DestinationInvalid' : null } |
+  { 'Unknown' : null } |
+  { 'SysFatal' : null } |
+  { 'CanisterReject' : null };
 export type Result = { 'Ok' : Asset } |
   { 'Err' : ApiError };
 export type Result_1 = { 'Ok' : Uint32Array } |
   { 'Err' : ApiError };
 export type Result_2 = { 'Ok' : Array<Asset> } |
   { 'Err' : ApiError };
+export interface Settings { 'url' : [] | [string], 'privacy' : Privacy }
 export interface _SERVICE {
   'add_asset' : ActorMethod<[PostAsset], Result>,
   'delete_assets' : ActorMethod<[Uint32Array], Result_1>,

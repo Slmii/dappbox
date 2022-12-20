@@ -154,6 +154,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 				setUser(mapToUserInterface(user));
 				return true;
 			} catch (error) {
+				console.log('Init user Error', { error });
 				setErrorSnackarOpen(true);
 				return false;
 			}

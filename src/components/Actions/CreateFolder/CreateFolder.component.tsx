@@ -48,7 +48,13 @@ export const CreateFolder = () => {
 				name: data.folderName,
 				parent_id: parentId ? [Number(parentId)] : [],
 				size: 0,
-				user_id: user.id
+				user_id: user.id,
+				settings: {
+					privacy: {
+						Public: null
+					},
+					url: []
+				}
 			});
 		});
 	};

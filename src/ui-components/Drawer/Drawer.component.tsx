@@ -1,6 +1,7 @@
 import Chip from '@mui/material/Chip';
 import Collapse from '@mui/material/Collapse';
 import MuiDrawer from '@mui/material/Drawer';
+import LinearProgress from '@mui/material/LinearProgress';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -12,9 +13,12 @@ import { Upload } from 'components/Upload';
 import { constants } from 'lib/constants';
 import { useUserAssets } from 'lib/hooks';
 import { getUrlPathToAsset } from 'lib/url';
+import { Box } from 'ui-components/Box';
+import { Content } from 'ui-components/Container';
 import { Icon } from 'ui-components/Icon';
 import { Link } from 'ui-components/Link';
 import { DrawerLoader } from 'ui-components/Loaders';
+import { Caption } from 'ui-components/Typography';
 
 export const Drawer = () => {
 	const { data: assets, isLoading } = useUserAssets();
@@ -150,6 +154,16 @@ export const Drawer = () => {
 					</List>
 				</>
 			)}
+			<Box
+				sx={{
+					marginTop: 'auto'
+				}}
+			>
+				<Content>
+					<Caption gutter>1.5 GB of 4 GB used</Caption>
+					<LinearProgress variant='determinate' value={50} color='secondary' />
+				</Content>
+			</Box>
 		</MuiDrawer>
 	);
 };

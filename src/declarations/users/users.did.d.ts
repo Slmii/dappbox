@@ -3,7 +3,19 @@ import type { ActorMethod } from '@dfinity/agent';
 
 export type ApiError = { 'NotFound' : string } |
   { 'Unauthorized' : string } |
-  { 'AlreadyExists' : string };
+  { 'AlreadyExists' : string } |
+  { 'CanisterFailed' : CanisterFailedError };
+export interface CanisterFailedError {
+  'code' : RejectionCode,
+  'message' : string,
+}
+export type RejectionCode = { 'NoError' : null } |
+  { 'CanisterError' : null } |
+  { 'SysTransient' : null } |
+  { 'DestinationInvalid' : null } |
+  { 'Unknown' : null } |
+  { 'SysFatal' : null } |
+  { 'CanisterReject' : null };
 export type Result = { 'Ok' : User } |
   { 'Err' : ApiError };
 export type Result_1 = { 'Ok' : Array<User> } |
@@ -12,9 +24,11 @@ export interface User {
   'username' : [] | [string],
   'created_at' : bigint,
   'user_id' : Principal,
+  'canisters' : Array<Principal>,
 }
 export interface _SERVICE {
   'create_user' : ActorMethod<[[] | [string]], Result>,
+  'get_chunks_wasm' : ActorMethod<[], Uint8Array>,
   'get_user' : ActorMethod<[], Result>,
   'get_users' : ActorMethod<[], Result_1>,
 }

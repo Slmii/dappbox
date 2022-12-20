@@ -27,7 +27,7 @@ export const Actions = () => {
 						marginLeft: 'auto'
 					}}
 				>
-					<Caption title={`${selectedAssets.length} selected`} />
+					<Caption>{selectedAssets.length} selected</Caption>
 				</Box>
 			</Column>
 		</>

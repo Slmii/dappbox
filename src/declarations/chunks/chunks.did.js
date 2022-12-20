@@ -8,10 +8,24 @@ export const idlFactory = ({ IDL }) => {
     'canister' : IDL.Principal,
     'index' : IDL.Nat32,
   });
+  const RejectionCode = IDL.Variant({
+    'NoError' : IDL.Null,
+    'CanisterError' : IDL.Null,
+    'SysTransient' : IDL.Null,
+    'DestinationInvalid' : IDL.Null,
+    'Unknown' : IDL.Null,
+    'SysFatal' : IDL.Null,
+    'CanisterReject' : IDL.Null,
+  });
+  const CanisterFailedError = IDL.Record({
+    'code' : RejectionCode,
+    'message' : IDL.Text,
+  });
   const ApiError = IDL.Variant({
     'NotFound' : IDL.Text,
     'Unauthorized' : IDL.Text,
     'AlreadyExists' : IDL.Text,
+    'CanisterFailed' : CanisterFailedError,
   });
   const Result = IDL.Variant({ 'Ok' : Chunk, 'Err' : ApiError });
   const Result_1 = IDL.Variant({
@@ -27,4 +41,4 @@ export const idlFactory = ({ IDL }) => {
     'get_chunks_by_chunk_id' : IDL.Func([IDL.Nat32], [Result_2], ['query']),
   });
 };
-export const init = ({ IDL }) => { return []; };
+export const init = ({ IDL }) => { return [IDL.Opt(IDL.Principal)]; };

@@ -21,6 +21,7 @@ export const mapToUserInterface = (user: ControllerUser): IUser => {
 	return {
 		id: user.user_id,
 		username: user.username.length ? user.username[0] : undefined,
-		createdAt: dateFromBigInt(user.created_at)
+		createdAt: dateFromBigInt(user.created_at),
+		canisters: user.canisters
 	};
 };

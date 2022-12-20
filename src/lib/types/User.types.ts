@@ -4,4 +4,5 @@ export interface User {
 	id: Principal;
 	username?: string;
 	createdAt: Date;
+	canisters: Principal[];
 }

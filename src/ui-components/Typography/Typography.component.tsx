@@ -1,10 +1,10 @@
 import Typography from '@mui/material/Typography';
 import { PropsWithChildren } from 'react';
 
-export const Caption = ({ title }: { title: string }) => {
+export const Caption = ({ children, gutter }: PropsWithChildren<{ gutter?: boolean }>) => {
 	return (
-		<Typography color='inherit' variant='caption'>
-			{title}
+		<Typography color='inherit' variant='caption' gutterBottom={gutter}>
+			{children}
 		</Typography>
 	);
 };

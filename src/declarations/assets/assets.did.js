@@ -1,5 +1,10 @@
 export const idlFactory = ({ IDL }) => {
   const AssetType = IDL.Variant({ 'Folder' : IDL.Null, 'File' : IDL.Null });
+  const Privacy = IDL.Variant({ 'Private' : IDL.Null, 'Public' : IDL.Null });
+  const Settings = IDL.Record({
+    'url' : IDL.Opt(IDL.Text),
+    'privacy' : Privacy,
+  });
   const Chunk = IDL.Record({
     'id' : IDL.Nat32,
     'canister' : IDL.Principal,
@@ -12,6 +17,7 @@ export const idlFactory = ({ IDL }) => {
     'mime_type' : IDL.Text,
     'user_id' : IDL.Principal,
     'parent_id' : IDL.Opt(IDL.Nat32),
+    'settings' : Settings,
     'chunks' : IDL.Vec(Chunk),
     'extension' : IDL.Text,
   });
@@ -26,13 +32,28 @@ export const idlFactory = ({ IDL }) => {
     'user_id' : IDL.Principal,
     'is_favorite' : IDL.Bool,
     'parent_id' : IDL.Opt(IDL.Nat32),
+    'settings' : Settings,
     'chunks' : IDL.Vec(Chunk),
     'extension' : IDL.Text,
+  });
+  const RejectionCode = IDL.Variant({
+    'NoError' : IDL.Null,
+    'CanisterError' : IDL.Null,
+    'SysTransient' : IDL.Null,
+    'DestinationInvalid' : IDL.Null,
+    'Unknown' : IDL.Null,
+    'SysFatal' : IDL.Null,
+    'CanisterReject' : IDL.Null,
+  });
+  const CanisterFailedError = IDL.Record({
+    'code' : RejectionCode,
+    'message' : IDL.Text,
   });
   const ApiError = IDL.Variant({
     'NotFound' : IDL.Text,
     'Unauthorized' : IDL.Text,
     'AlreadyExists' : IDL.Text,
+    'CanisterFailed' : CanisterFailedError,
   });
   const Result = IDL.Variant({ 'Ok' : Asset, 'Err' : ApiError });
   const Result_1 = IDL.Variant({ 'Ok' : IDL.Vec(IDL.Nat32), 'Err' : ApiError });
