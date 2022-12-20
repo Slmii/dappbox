@@ -5,8 +5,8 @@ import { resolve, unwrap } from 'lib/utils';
 import { Actor } from './actor';
 
 export abstract class Chunk {
-	static async addChunk(chunk: PostChunk) {
-		const actor = await Actor.getActor<_SERVICE>('chunks');
+	static async addChunk({ chunk, canisterPrincipal }: { chunk: PostChunk; canisterPrincipal?: Principal }) {
+		const actor = await Actor.getActor<_SERVICE>('chunks', canisterPrincipal);
 
 		return resolve(async () => {
 			const response = await actor.add_chunk(chunk);

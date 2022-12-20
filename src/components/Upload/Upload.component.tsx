@@ -150,8 +150,11 @@ export const Upload = () => {
 				console.log(`Uploading chunk ${counter}/${blobsLength}`);
 
 				const chunk = await addChunkMutate({
-					blob,
-					index
+					chunk: {
+						blob,
+						index
+					},
+					canisterPrincipal: user.canisters[0]
 				});
 				chunks.push(chunk);
 
