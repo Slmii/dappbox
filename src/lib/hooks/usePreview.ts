@@ -1,13 +1,13 @@
 import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
+import { previewStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { Doc } from 'lib/types/Doc.types';
 
 export const usePreview = () => {
-	const [isLoading, setIsLoading] = useState(false);
-	const [isSuccess, setIsSuccess] = useState(false);
+	const [{ isLoading, isSuccess }, setPreviewState] = useRecoilState(previewStateAtom);
 
 	const { mutateAsync } = useMutation({
 		mutationFn: api.Chunk.getChunksByChunkId
@@ -16,8 +16,10 @@ export const usePreview = () => {
 	const preview = async (assets: Asset[]) => {
 		const docs: Doc[] = [];
 
-		setIsLoading(true);
-		setIsSuccess(false);
+		setPreviewState({
+			isLoading: true,
+			isSuccess: false
+		});
 
 		for (const asset of assets) {
 			const assetsToPreview: Uint8Array[] = [];
@@ -36,8 +38,10 @@ export const usePreview = () => {
 			docs.push({ url, asset });
 		}
 
-		setIsLoading(false);
-		setIsSuccess(true);
+		setPreviewState({
+			isLoading: false,
+			isSuccess: true
+		});
 
 		return docs;
 	};
@@ -46,9 +50,10 @@ export const usePreview = () => {
 		preview,
 		isLoading,
 		isSuccess,
-		reset: () => {
-			setIsLoading(false);
-			setIsSuccess(false);
-		}
+		reset: () =>
+			setPreviewState({
+				isLoading: false,
+				isSuccess: false
+			})
 	};
 };

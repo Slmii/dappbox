@@ -224,11 +224,11 @@ export const AssetsTable = ({
 		setSelectedRows(newSelected);
 	};
 
-	const handleOnDoubleClick = (asset: Asset) => {
+	const handleOnDoubleClick = async (asset: Asset) => {
 		if (asset.type === 'folder') {
 			navigate(`${pathname.split('/').filter(Boolean).join('/')}/${encodeURIComponent(asset.id.toString())}`);
 		} else {
-			onPreview(asset);
+			await onPreview(asset);
 		}
 	};
 

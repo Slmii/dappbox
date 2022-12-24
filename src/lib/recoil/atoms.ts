@@ -20,3 +20,14 @@ export const tableStateAtom = atom<TableState>({
 		orderBy: 'name'
 	}
 });
+
+/**
+ * Atom for preview success/loading state
+ */
+export const previewStateAtom = atom<{ isLoading: boolean; isSuccess: boolean }>({
+	key: 'previewStateAtom',
+	default: {
+		isLoading: false,
+		isSuccess: false
+	}
+});

@@ -136,7 +136,17 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 							alt={docToUse.asset.name}
 						/>
 					) : null}
-					{docToUse && !docToUse.asset.mimeType?.includes('image') ? (
+					{docToUse && docToUse.asset.mimeType?.includes('audio') ? (
+						<audio controls autoPlay>
+							<source src={docToUse.url} />
+						</audio>
+					) : null}
+					{docToUse && docToUse.asset.mimeType?.includes('video') ? (
+						<video autoPlay controls>
+							<source src={docToUse.url} />
+						</video>
+					) : null}
+					{/* {docToUse && !['image', 'audio', 'video'].includes(docToUse.asset.mimeType ?? '') ? (
 						<Paper
 							elevation={10}
 							sx={{
@@ -156,7 +166,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 								</div>
 							</Row>
 						</Paper>
-					) : null}
+					) : null} */}
 				</Box>
 				{docs.length > 1 ? (
 					<IconButton
