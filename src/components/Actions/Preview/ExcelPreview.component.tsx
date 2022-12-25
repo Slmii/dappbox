@@ -1,4 +1,13 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import {
+	DataGrid,
+	GridColDef,
+	gridPageCountSelector,
+	gridPageSelector,
+	useGridApiContext,
+	useGridSelector
+} from '@mui/x-data-grid';
 import { useEffect, useMemo, useState } from 'react';
 import { read, WorkBook } from 'xlsx';
 
@@ -56,20 +65,33 @@ export const ExcelPreview = ({ url }: { url: string; asset: Asset }) => {
 			columns={columns}
 			rows={rows}
 			disableSelectionOnClick
+			rowsPerPageOptions={[]}
 			components={{
-				Footer
+				Pagination: CustomPagination
 			}}
 			componentsProps={{
-				footer: { sheets: excelSheets }
+				pagination: { sheets: excelSheets }
 			}}
 		/>
 	);
 };
 
-const Footer = ({ sheets }: { sheets: { name: string; active: boolean; onClick: (name: string) => void }[] }) => {
+const CustomPagination = ({
+	sheets
+}: {
+	sheets: { name: string; active: boolean; onClick: (name: string) => void }[];
+}) => {
+	const apiRef = useGridApiContext();
+	const page = useGridSelector(apiRef, gridPageSelector);
+	const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+
 	return (
 		<Box
 			sx={{
+				display: 'flex',
+				justifyContent: 'space-between',
+				alignItems: 'center',
+				width: '100%',
 				padding: constants.SPACING
 			}}
 		>
@@ -82,6 +104,15 @@ const Footer = ({ sheets }: { sheets: { name: string; active: boolean; onClick: 
 					/>
 				))}
 			</Column>
+			<Pagination
+				color='primary'
+				shape='rounded'
+				page={page + 1}
+				count={pageCount}
+				// @ts-expect-error
+				renderItem={props2 => <PaginationItem {...props2} disableRipple />}
+				onChange={(_event: React.ChangeEvent<unknown>, value: number) => apiRef.current.setPage(value - 1)}
+			/>
 		</Box>
 	);
 };

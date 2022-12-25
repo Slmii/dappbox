@@ -163,12 +163,6 @@ export type Row = any[];
 export type RowCol = { rows: Row[]; columns: GridColDef[] };
 
 export const getRowsCols = (ws: WorkSheet): RowCol => {
-	// var addr = utils.decode_cell('A1');
-	// console.log(addr);
-	// if (ws['!rows'] && ws['!rows'][addr.r]) {
-	// 	console.log(ws['!rows'][addr.r]);
-	// }
-
 	return {
 		rows: utils.sheet_to_json<Row>(ws, { header: 1, raw: false, blankrows: false }).map((r, id) => ({ ...r, id })),
 		columns: Array.from(
