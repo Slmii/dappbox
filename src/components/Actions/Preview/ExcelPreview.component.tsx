@@ -98,6 +98,7 @@ const CustomPagination = ({
 			<Column>
 				{sheets.map(sheet => (
 					<Button
+						key={sheet.name}
 						label={sheet.name}
 						onClick={() => sheet.onClick(sheet.name)}
 						variant={sheet.active ? 'contained' : 'text'}
@@ -110,7 +111,7 @@ const CustomPagination = ({
 				page={page + 1}
 				count={pageCount}
 				// @ts-expect-error
-				renderItem={props2 => <PaginationItem {...props2} disableRipple />}
+				renderItem={props => <PaginationItem {...props} disableRipple />}
 				onChange={(_event: React.ChangeEvent<unknown>, value: number) => apiRef.current.setPage(value - 1)}
 			/>
 		</Box>

@@ -180,8 +180,7 @@ export const getRowsCols = (ws: WorkSheet): RowCol => {
 					field: String(i),
 					headerName: utils.encode_col(i),
 					editable: false,
-					minWidth: width,
-					resizable: true
+					minWidth: width
 				};
 			}
 		)

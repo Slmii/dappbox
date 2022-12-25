@@ -30,6 +30,50 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 		return typeof docs[previewIndex] !== 'undefined' ? docs[previewIndex] : null;
 	}, [docs, previewIndex]);
 
+	const isNotAnyMimeType = useMemo(() => {
+		if (!docToUse || !docToUse.asset.mimeType) {
+			return false;
+		}
+
+		if (docToUse.asset.mimeType.includes('image')) {
+			return false;
+		}
+
+		if (docToUse.asset.mimeType.includes('audio')) {
+			return false;
+		}
+
+		if (docToUse.asset.mimeType.includes('video')) {
+			return false;
+		}
+
+		if (excelMimeTypes.includes(docToUse.asset.mimeType)) {
+			return false;
+		}
+
+		return true;
+	}, [docToUse]);
+
+	const nonFullScreenPreview = useMemo(() => {
+		if (!docToUse || !docToUse.asset.mimeType) {
+			return true;
+		}
+
+		if (docToUse.asset.mimeType.includes('image')) {
+			return true;
+		}
+
+		if (docToUse.asset.mimeType.includes('audio')) {
+			return true;
+		}
+
+		if (docToUse.asset.mimeType.includes('video')) {
+			return true;
+		}
+
+		return false;
+	}, [docToUse]);
+
 	const handleOnPrevious = () => {
 		if (previewIndex === 0) {
 			setPreviewIndex(docs.length - 1);
@@ -137,7 +181,9 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 						borderRadius: theme => theme.shape.borderRadius,
 						width: '100%',
 						height: '100%',
-						overflowY: 'auto'
+						overflowY: 'auto',
+						background: nonFullScreenPreview ? 'unset' : undefined,
+						backgroundImage: nonFullScreenPreview ? 'unset' : undefined
 					}}
 				>
 					{docToUse.asset.mimeType?.includes('image') ? (
@@ -152,31 +198,19 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 					{docToUse.asset.mimeType && excelMimeTypes.includes(docToUse.asset.mimeType) ? (
 						<ExcelPreview url={docToUse.url} asset={docToUse.asset} />
 					) : null}
-					{/* {docToUse &&
-					docToUse.asset.mimeType &&
-					!['image', 'audio', 'video'].includes(docToUse.asset.mimeType) ? (
-						<Paper
-							elevation={1}
-							sx={{
-								padding: theme => theme.spacing(constants.SPACING),
-								borderRadius: theme => theme.shape.borderRadius,
+					{isNotAnyMimeType ? (
+						<iframe
+							src={docToUse.url}
+							style={{
 								width: '100%',
-								height: '100%'
+								height: '100%',
+								border: 'none',
+								borderRadius: 8
 							}}
-						>
-							<iframe
-								src={docToUse.url}
-								style={{
-									width: '100%',
-									height: '100%',
-									border: 'none',
-									borderRadius: 8
-								}}
-								referrerPolicy='strict-origin'
-								title={docToUse.asset.name}
-							/>
-						</Paper>
-					) : null} */}
+							referrerPolicy='strict-origin'
+							title={docToUse.asset.name}
+						/>
+					) : null}
 				</Paper>
 				{docs.length > 1 ? (
 					<IconButton
