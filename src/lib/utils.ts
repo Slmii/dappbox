@@ -1,3 +1,6 @@
+import { GridColDef } from '@mui/x-data-grid';
+import { utils, WorkSheet } from 'xlsx';
+
 import { ApiError } from 'declarations/users/users.did';
 import { Asset } from 'lib/types/Asset.types';
 import { Order } from 'ui-components/Table';
@@ -154,4 +157,39 @@ export const saveAs = (blob: Blob, name: string) => {
 	downloadLink.addEventListener('click', function () {
 		URL.revokeObjectURL(url);
 	});
+};
+
+export type Row = any[];
+export type RowCol = { rows: Row[]; columns: GridColDef[] };
+
+export const getRowsCols = (ws: WorkSheet): RowCol => {
+	// var addr = utils.decode_cell('A1');
+	// console.log(addr);
+	// if (ws['!rows'] && ws['!rows'][addr.r]) {
+	// 	console.log(ws['!rows'][addr.r]);
+	// }
+
+	return {
+		rows: utils.sheet_to_json<Row>(ws, { header: 1, raw: false, blankrows: false }).map((r, id) => ({ ...r, id })),
+		columns: Array.from(
+			{
+				length: utils.decode_range(ws['!ref'] || 'A1').e.c + 1
+			},
+			(_, i) => {
+				let width = 120;
+
+				if (ws['!cols']) {
+					width = Object.values(ws['!cols'])[i].wpx ?? width;
+				}
+
+				return {
+					field: String(i),
+					headerName: utils.encode_col(i),
+					editable: false,
+					minWidth: width,
+					resizable: true
+				};
+			}
+		)
+	};
 };

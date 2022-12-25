@@ -30,9 +30,9 @@ export const Preview = () => {
 					loading={isLoading}
 				/>
 			) : null}
-			{isSuccess ? (
+			{isSuccess && !!docs.length ? (
 				<PreviewBackdrop
-					open={isSuccess}
+					open={isSuccess && !!docs.length}
 					onClick={() => {
 						reset();
 						setDocs([]);

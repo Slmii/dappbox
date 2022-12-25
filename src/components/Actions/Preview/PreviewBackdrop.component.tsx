@@ -6,10 +6,14 @@ import { useDownload, useKeyPress } from 'lib/hooks';
 import { Asset } from 'lib/types/Asset.types';
 import { Doc } from 'lib/types/Doc.types';
 import { Backdrop } from 'ui-components/Backdrop';
-import { Box, Column, Row } from 'ui-components/Box';
-import { Button } from 'ui-components/Button';
+import { Box, Column } from 'ui-components/Box';
 import { IconButton } from 'ui-components/IconButton';
 import { Paragraph } from 'ui-components/Typography';
+import { AudioPreview } from './AudioPreview.component';
+import { ExcelPreview } from './ExcelPreview.component';
+import { ImagePreview } from './ImagePreview.component';
+import { excelMimeTypes } from './Preview.constants';
+import { VideoPreview } from './VideoPreview.component';
 
 export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: Doc[]; onClick: () => void }) => {
 	const [previewIndex, setPreviewIndex] = useState(0);
@@ -21,6 +25,10 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 		setPreviewIndex(0);
 		onClick();
 	});
+
+	const docToUse = useMemo(() => {
+		return typeof docs[previewIndex] !== 'undefined' ? docs[previewIndex] : null;
+	}, [docs, previewIndex]);
 
 	const handleOnPrevious = () => {
 		if (previewIndex === 0) {
@@ -42,9 +50,9 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 		await download([asset]);
 	};
 
-	const docToUse = useMemo(() => {
-		return docs[previewIndex] ?? null;
-	}, [docs, previewIndex]);
+	if (!docToUse) {
+		return null;
+	}
 
 	return (
 		<Backdrop
@@ -67,7 +75,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
 					<Column>
 						<IconButton icon='close' label='Close' color='inherit' />
-						<Paragraph>{docToUse?.asset.name}</Paragraph>
+						<Paragraph>{docToUse.asset.name}</Paragraph>
 					</Column>
 					<Column>
 						<IconButton
@@ -104,7 +112,9 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 			<Box
 				sx={{
 					display: 'flex',
-					alignItems: 'center'
+					alignItems: 'center',
+					width: 'calc(100% - 200px)',
+					height: 'calc(100% - 150px)'
 				}}
 				onClick={e => e.stopPropagation()}
 			>
@@ -117,57 +127,57 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 						color='inherit'
 					/>
 				) : null}
-				<Box
+				<Paper
+					elevation={1}
 					sx={{
-						maxWidth: 900,
-						maxHeight: 900,
-						overflow: 'hidden',
-						display: 'block'
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						padding: theme => theme.spacing(constants.SPACING),
+						borderRadius: theme => theme.shape.borderRadius,
+						width: '100%',
+						height: '100%',
+						overflowY: 'auto'
 					}}
 				>
-					{docToUse && docToUse.asset.mimeType?.includes('image') ? (
-						<img
-							style={{
-								height: '100%',
-								width: '100%',
-								objectFit: 'contain'
-							}}
-							src={docToUse.url}
-							alt={docToUse.asset.name}
-						/>
+					{docToUse.asset.mimeType?.includes('image') ? (
+						<ImagePreview asset={docToUse.asset} url={docToUse.url} />
 					) : null}
-					{docToUse && docToUse.asset.mimeType?.includes('audio') ? (
-						<audio controls autoPlay>
-							<source src={docToUse.url} />
-						</audio>
+					{docToUse.asset.mimeType?.includes('audio') ? (
+						<AudioPreview asset={docToUse.asset} url={docToUse.url} />
 					) : null}
-					{docToUse && docToUse.asset.mimeType?.includes('video') ? (
-						<video autoPlay controls>
-							<source src={docToUse.url} />
-						</video>
+					{docToUse.asset.mimeType?.includes('video') ? (
+						<VideoPreview asset={docToUse.asset} url={docToUse.url} />
 					) : null}
-					{/* {docToUse && !['image', 'audio', 'video'].includes(docToUse.asset.mimeType ?? '') ? (
+					{docToUse.asset.mimeType && excelMimeTypes.includes(docToUse.asset.mimeType) ? (
+						<ExcelPreview url={docToUse.url} asset={docToUse.asset} />
+					) : null}
+					{/* {docToUse &&
+					docToUse.asset.mimeType &&
+					!['image', 'audio', 'video'].includes(docToUse.asset.mimeType) ? (
 						<Paper
-							elevation={10}
+							elevation={1}
 							sx={{
 								padding: theme => theme.spacing(constants.SPACING),
-								backgroundColor: 'black',
 								borderRadius: theme => theme.shape.borderRadius,
-								color: 'white'
+								width: '100%',
+								height: '100%'
 							}}
 						>
-							<Row>
-								<Paragraph>Non-image assets are not yet supported for preview 😥</Paragraph>
-								<div style={{ textAlign: 'center' }}>
-									<Button
-										label='Open in new window'
-										onClick={() => window.open(docToUse.url, '_blank')}
-									/>
-								</div>
-							</Row>
+							<iframe
+								src={docToUse.url}
+								style={{
+									width: '100%',
+									height: '100%',
+									border: 'none',
+									borderRadius: 8
+								}}
+								referrerPolicy='strict-origin'
+								title={docToUse.asset.name}
+							/>
 						</Paper>
 					) : null} */}
-				</Box>
+				</Paper>
 				{docs.length > 1 ? (
 					<IconButton
 						icon='next'
