@@ -12,8 +12,9 @@ import { Paragraph } from 'ui-components/Typography';
 import { AudioPreview } from './AudioPreview.component';
 import { ExcelPreview } from './ExcelPreview.component';
 import { ImagePreview } from './ImagePreview.component';
-import { excelMimeTypes } from './Preview.constants';
+import { excelMimeTypes, wordMimeTypes } from './Preview.constants';
 import { VideoPreview } from './VideoPreview.component';
+import { WordPreview } from './WordPreview.component';
 
 export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: Doc[]; onClick: () => void }) => {
 	const [previewIndex, setPreviewIndex] = useState(0);
@@ -47,7 +48,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 			return false;
 		}
 
-		if (excelMimeTypes.includes(docToUse.asset.mimeType)) {
+		if ([...excelMimeTypes, ...wordMimeTypes].includes(docToUse.asset.mimeType)) {
 			return false;
 		}
 
@@ -197,6 +198,9 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 					) : null}
 					{docToUse.asset.mimeType && excelMimeTypes.includes(docToUse.asset.mimeType) ? (
 						<ExcelPreview url={docToUse.url} asset={docToUse.asset} />
+					) : null}
+					{docToUse.asset.mimeType && wordMimeTypes.includes(docToUse.asset.mimeType) ? (
+						<WordPreview url={docToUse.url} asset={docToUse.asset} />
 					) : null}
 					{isNotAnyMimeType ? (
 						<iframe

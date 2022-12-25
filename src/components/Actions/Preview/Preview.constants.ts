@@ -8,3 +8,8 @@ export const excelMimeTypes = [
 	'text/csv',
 	'text/comma-separated-values'
 ];
+
+export const wordMimeTypes = [
+	'application/msword',
+	'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+];
