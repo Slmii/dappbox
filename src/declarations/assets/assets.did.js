@@ -73,7 +73,7 @@ export const idlFactory = ({ IDL }) => {
     'add_asset' : IDL.Func([PostAsset], [Result], []),
     'delete_assets' : IDL.Func([IDL.Vec(IDL.Nat32)], [Result_1], []),
     'edit_asset' : IDL.Func([EditAsset], [Result], []),
-    'get_assets' : IDL.Func([], [Result_2], ['query']),
+    'get_all_assets' : IDL.Func([], [Result_2], ['query']),
     'get_user_assets' : IDL.Func([], [Result_2], ['query']),
     'move_assets' : IDL.Func([IDL.Vec(MoveAsset)], [Result_2], []),
   });

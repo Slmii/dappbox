@@ -30,8 +30,8 @@ export interface User {
 }
 export interface _SERVICE {
   'create_user' : ActorMethod<[[] | [string]], Result>,
+  'get_all_chunk_canisters' : ActorMethod<[], Result_1>,
   'get_chunks_wasm' : ActorMethod<[], Uint8Array>,
   'get_user' : ActorMethod<[], Result>,
-  'get_user_canisters' : ActorMethod<[], Result_1>,
   'get_users' : ActorMethod<[], Result_2>,
 }

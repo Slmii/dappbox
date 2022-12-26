@@ -10,7 +10,7 @@ export const usePreview = () => {
 	const [{ isLoading, isSuccess }, setPreviewState] = useRecoilState(previewStateAtom);
 
 	const { mutateAsync } = useMutation({
-		mutationFn: api.Chunk.getChunksByChunkId
+		mutationFn: api.Chunks.getChunksByChunkId
 	});
 
 	const preview = async (assets: Asset[]) => {

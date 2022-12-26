@@ -14,6 +14,11 @@ export interface Chunk {
   'canister' : Principal,
   'index' : number,
 }
+export interface ChunksStore {
+  'canister_owner' : Principal,
+  'chunk_id' : number,
+  'chunks' : Array<[[number, Principal], Uint8Array]>,
+}
 export interface PostChunk { 'blob' : Uint8Array, 'index' : number }
 export type RejectionCode = { 'NoError' : null } |
   { 'CanisterError' : null } |
@@ -24,15 +29,21 @@ export type RejectionCode = { 'NoError' : null } |
   { 'CanisterReject' : null };
 export type Result = { 'Ok' : Chunk } |
   { 'Err' : ApiError };
-export type Result_1 = { 'Ok' : Array<[[number, Principal], Uint8Array]> } |
+export type Result_1 = { 'Ok' : Uint32Array } |
   { 'Err' : ApiError };
-export type Result_2 = { 'Ok' : Uint8Array } |
+export type Result_2 = { 'Ok' : Array<[[number, Principal], Uint8Array]> } |
   { 'Err' : ApiError };
-export type Result_3 = { 'Ok' : bigint } |
+export type Result_3 = { 'Ok' : Uint8Array } |
+  { 'Err' : ApiError };
+export type Result_4 = { 'Ok' : bigint } |
+  { 'Err' : ApiError };
+export type Result_5 = { 'Ok' : ChunksStore } |
   { 'Err' : ApiError };
 export interface _SERVICE {
   'add_chunk' : ActorMethod<[PostChunk], Result>,
-  'get_chunks' : ActorMethod<[], Result_1>,
-  'get_chunks_by_chunk_id' : ActorMethod<[number], Result_2>,
-  'get_size' : ActorMethod<[], Result_3>,
+  'delete_chunks' : ActorMethod<[Uint32Array], Result_1>,
+  'get_all_chunks' : ActorMethod<[], Result_2>,
+  'get_chunks_by_chunk_id' : ActorMethod<[number], Result_3>,
+  'get_size' : ActorMethod<[], Result_4>,
+  'get_state' : ActorMethod<[], Result_5>,
 }

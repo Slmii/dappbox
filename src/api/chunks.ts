@@ -4,7 +4,7 @@ import { _SERVICE, PostChunk } from 'declarations/chunks/chunks.did';
 import { resolve, unwrap } from 'lib/utils';
 import { Actor } from './actor';
 
-export abstract class Chunk {
+export abstract class Chunks {
 	static async addChunk({ chunk, canisterPrincipal }: { chunk: PostChunk; canisterPrincipal?: Principal }) {
 		const actor = await Actor.getActor<_SERVICE>('chunks', canisterPrincipal);
 
@@ -19,6 +19,15 @@ export abstract class Chunk {
 
 		return resolve(async () => {
 			const response = await actor.get_size();
+			return unwrap(response);
+		});
+	}
+
+	static async deleteChunks({ chunkIds, canisterPrincipal }: { chunkIds: number[]; canisterPrincipal: Principal }) {
+		const actor = await Actor.getActor<_SERVICE>('chunks', canisterPrincipal);
+
+		return resolve(async () => {
+			const response = await actor.delete_chunks(Uint32Array.from(chunkIds));
 			return unwrap(response);
 		});
 	}

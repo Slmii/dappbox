@@ -4,7 +4,7 @@ import { Asset as IAsset, AssetType } from 'lib/types/Asset.types';
 import { resolve, uint32ArrayToNumbers, unwrap } from 'lib/utils';
 import { Actor } from './actor';
 
-export abstract class Asset {
+export abstract class Assets {
 	static async addAsset(asset: PostAsset) {
 		const actor = await Actor.getActor<_SERVICE>('assets');
 

@@ -13,7 +13,7 @@ export const useDownload = () => {
 
 	const { getChildAssets } = useUserAssets();
 	const { mutateAsync } = useMutation({
-		mutationFn: api.Chunk.getChunksByChunkId
+		mutationFn: api.Chunks.getChunksByChunkId
 	});
 
 	const assetZip = async (asset: Asset, zip: JSZip) => {

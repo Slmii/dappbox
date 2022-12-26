@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
 import { constants } from 'lib/constants';
+import { AuthContext } from 'lib/context';
 import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { Button } from 'ui-components/Button';
@@ -12,17 +13,15 @@ import { Snackbar } from 'ui-components/Snackbar';
 
 export const Delete = () => {
 	const queryClient = useQueryClient();
+	const { user } = useContext(AuthContext);
 	const [deleteOpenDialog, setDeleteOpenDialog] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [isSuccess, setIsSuccess] = useState(false);
 
 	const [{ selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 
-	const {
-		mutateAsync: deleteAssetsMutate,
-		isSuccess: deleteAssetsIsSuccess,
-		isLoading: deleteAssetsIsLoading,
-		reset: deleteAssetsReset
-	} = useMutation({
-		mutationFn: api.Asset.deleteAssets,
+	const { mutateAsync: deleteAssetsMutate } = useMutation({
+		mutationFn: api.Assets.deleteAssets,
 		onSuccess: async deletedAssets => {
 			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
 				if (!old) {
@@ -31,25 +30,39 @@ export const Delete = () => {
 
 				return old.filter(asset => !deletedAssets.includes(asset.id));
 			});
-
-			await queryClient.invalidateQueries([constants.QUERY_KEYS.USED_SPACE]);
 		}
 	});
 
+	const { mutateAsync: deleteChunksMutate } = useMutation({
+		mutationFn: api.Chunks.deleteChunks
+	});
+
 	const handleOnConfirmDeleteAssets = async () => {
-		if (!selectedAssets.length) {
+		if (!selectedAssets.length || !user) {
 			return;
 		}
 
 		setDeleteOpenDialog(false);
+		setIsLoading(true);
+		setIsSuccess(false);
 
 		await deleteAssetsMutate(selectedAssets.map(asset => asset.id));
+		await deleteChunksMutate({
+			chunkIds: selectedAssets
+				.map(asset => asset.chunks)
+				.flat()
+				.map(chunk => chunk.id),
+			canisterPrincipal: user.canisters[0]
+		});
 
 		// Reset selected rows
 		setTableState(prevState => ({
 			...prevState,
 			selectedAssets: []
 		}));
+
+		setIsLoading(false);
+		setIsSuccess(true);
 	};
 
 	return (
@@ -68,8 +81,15 @@ export const Delete = () => {
 					/>
 				</>
 			) : null}
-			<Snackbar open={deleteAssetsIsLoading} message='Deleting assets' loader />
-			<Snackbar open={deleteAssetsIsSuccess} message='Assets deleted successfully' onClose={deleteAssetsReset} />
+			<Snackbar open={isLoading} message='Deleting assets' loader />
+			<Snackbar
+				open={isSuccess}
+				message='Assets deleted successfully'
+				onClose={() => {
+					setIsLoading(false);
+					setIsSuccess(false);
+				}}
+			/>
 		</>
 	);
 };

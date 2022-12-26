@@ -28,19 +28,30 @@ export const idlFactory = ({ IDL }) => {
     'CanisterFailed' : CanisterFailedError,
   });
   const Result = IDL.Variant({ 'Ok' : Chunk, 'Err' : ApiError });
-  const Result_1 = IDL.Variant({
+  const Result_1 = IDL.Variant({ 'Ok' : IDL.Vec(IDL.Nat32), 'Err' : ApiError });
+  const Result_2 = IDL.Variant({
     'Ok' : IDL.Vec(
       IDL.Tuple(IDL.Tuple(IDL.Nat32, IDL.Principal), IDL.Vec(IDL.Nat8))
     ),
     'Err' : ApiError,
   });
-  const Result_2 = IDL.Variant({ 'Ok' : IDL.Vec(IDL.Nat8), 'Err' : ApiError });
-  const Result_3 = IDL.Variant({ 'Ok' : IDL.Nat64, 'Err' : ApiError });
+  const Result_3 = IDL.Variant({ 'Ok' : IDL.Vec(IDL.Nat8), 'Err' : ApiError });
+  const Result_4 = IDL.Variant({ 'Ok' : IDL.Nat64, 'Err' : ApiError });
+  const ChunksStore = IDL.Record({
+    'canister_owner' : IDL.Principal,
+    'chunk_id' : IDL.Nat32,
+    'chunks' : IDL.Vec(
+      IDL.Tuple(IDL.Tuple(IDL.Nat32, IDL.Principal), IDL.Vec(IDL.Nat8))
+    ),
+  });
+  const Result_5 = IDL.Variant({ 'Ok' : ChunksStore, 'Err' : ApiError });
   return IDL.Service({
     'add_chunk' : IDL.Func([PostChunk], [Result], []),
-    'get_chunks' : IDL.Func([], [Result_1], ['query']),
-    'get_chunks_by_chunk_id' : IDL.Func([IDL.Nat32], [Result_2], ['query']),
-    'get_size' : IDL.Func([], [Result_3], ['query']),
+    'delete_chunks' : IDL.Func([IDL.Vec(IDL.Nat32)], [Result_1], []),
+    'get_all_chunks' : IDL.Func([], [Result_2], ['query']),
+    'get_chunks_by_chunk_id' : IDL.Func([IDL.Nat32], [Result_3], ['query']),
+    'get_size' : IDL.Func([], [Result_4], ['query']),
+    'get_state' : IDL.Func([], [Result_5], ['query']),
   });
 };
 export const init = ({ IDL }) => { return [IDL.Opt(IDL.Principal)]; };

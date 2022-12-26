@@ -33,7 +33,7 @@ export const Move = () => {
 		isSuccess: moveAssetsIsSuccess,
 		reset: moveAssetsReset
 	} = useMutation({
-		mutationFn: api.Asset.moveAssets,
+		mutationFn: api.Assets.moveAssets,
 		onSuccess: movedAssets => {
 			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
 				if (!old) {

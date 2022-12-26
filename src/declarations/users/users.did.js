@@ -32,9 +32,9 @@ export const idlFactory = ({ IDL }) => {
   const Result_2 = IDL.Variant({ 'Ok' : IDL.Vec(User), 'Err' : ApiError });
   return IDL.Service({
     'create_user' : IDL.Func([IDL.Opt(IDL.Text)], [Result], []),
+    'get_all_chunk_canisters' : IDL.Func([], [Result_1], ['query']),
     'get_chunks_wasm' : IDL.Func([], [IDL.Vec(IDL.Nat8)], ['query']),
     'get_user' : IDL.Func([], [Result], ['query']),
-    'get_user_canisters' : IDL.Func([], [Result_1], ['query']),
     'get_users' : IDL.Func([], [Result_2], ['query']),
   });
 };

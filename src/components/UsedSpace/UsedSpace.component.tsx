@@ -18,7 +18,7 @@ export const UsedSpace = () => {
 				throw new Error('User not set');
 			}
 
-			return api.Chunk.getSize(user.canisters[0]);
+			return api.Chunks.getSize(user.canisters[0]);
 		},
 		enabled: !!user,
 		useErrorBoundary: false

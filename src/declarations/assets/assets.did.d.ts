@@ -70,7 +70,7 @@ export interface _SERVICE {
   'add_asset' : ActorMethod<[PostAsset], Result>,
   'delete_assets' : ActorMethod<[Uint32Array], Result_1>,
   'edit_asset' : ActorMethod<[EditAsset], Result>,
-  'get_assets' : ActorMethod<[], Result_2>,
+  'get_all_assets' : ActorMethod<[], Result_2>,
   'get_user_assets' : ActorMethod<[], Result_2>,
   'move_assets' : ActorMethod<[Array<MoveAsset>], Result_2>,
 }

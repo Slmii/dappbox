@@ -32,7 +32,7 @@ export const Rename = () => {
 		isSuccess: editAssetIsSuccess,
 		reset: editAssetReset
 	} = useMutation({
-		mutationFn: api.Asset.editAsset,
+		mutationFn: api.Assets.editAsset,
 		onSuccess: asset => {
 			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
 				if (!old) {

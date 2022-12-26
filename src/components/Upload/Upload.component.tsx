@@ -39,7 +39,7 @@ export const Upload = () => {
 
 	const { mutateAsync: addAssetMutate, reset: addAssetReset } = useAddAsset();
 	const { mutateAsync: addChunkMutate } = useMutation({
-		mutationFn: api.Chunk.addChunk
+		mutationFn: api.Chunks.addChunk
 	});
 
 	// https://github.com/facebook/react/pull/3644#issuecomment-91627671

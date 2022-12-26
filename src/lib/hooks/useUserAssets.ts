@@ -10,7 +10,7 @@ export const useUserAssets = () => {
 	const { isAuthenticated } = useContext(AuthContext);
 
 	const data = useQuery([constants.QUERY_KEYS.USER_ASSETS], {
-		queryFn: api.Asset.getUserAssets,
+		queryFn: api.Assets.getUserAssets,
 		enabled: isAuthenticated
 	});
 

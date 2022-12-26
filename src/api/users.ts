@@ -4,7 +4,7 @@ import { User as IUser } from 'lib/types/User.types';
 import { resolve, unwrap } from 'lib/utils';
 import { Actor } from './actor';
 
-export abstract class User {
+export abstract class Users {
 	static async getUsers() {
 		const actor = await Actor.getActor<_SERVICE>('users');
 
