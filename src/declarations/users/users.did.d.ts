@@ -18,7 +18,9 @@ export type RejectionCode = { 'NoError' : null } |
   { 'CanisterReject' : null };
 export type Result = { 'Ok' : User } |
   { 'Err' : ApiError };
-export type Result_1 = { 'Ok' : Array<User> } |
+export type Result_1 = { 'Ok' : Array<[Principal, Array<Principal>]> } |
+  { 'Err' : ApiError };
+export type Result_2 = { 'Ok' : Array<User> } |
   { 'Err' : ApiError };
 export interface User {
   'username' : [] | [string],
@@ -30,5 +32,6 @@ export interface _SERVICE {
   'create_user' : ActorMethod<[[] | [string]], Result>,
   'get_chunks_wasm' : ActorMethod<[], Uint8Array>,
   'get_user' : ActorMethod<[], Result>,
-  'get_users' : ActorMethod<[], Result_1>,
+  'get_user_canisters' : ActorMethod<[], Result_1>,
+  'get_users' : ActorMethod<[], Result_2>,
 }

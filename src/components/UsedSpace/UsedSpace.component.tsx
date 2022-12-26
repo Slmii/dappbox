@@ -11,10 +11,17 @@ import { Content } from 'ui-components/Container';
 import { Caption } from 'ui-components/Typography';
 
 export const UsedSpace = () => {
-	const { isAuthenticated, user } = useContext(AuthContext);
+	const { user } = useContext(AuthContext);
 	const { data, isLoading } = useQuery([constants.QUERY_KEYS.USED_SPACE], {
-		queryFn: () => user && api.Chunk.getSize(user?.canisters[0]),
-		enabled: user && isAuthenticated
+		queryFn: () => {
+			if (!user) {
+				throw new Error('User not set');
+			}
+
+			return api.Chunk.getSize(user.canisters[0]);
+		},
+		enabled: !!user,
+		useErrorBoundary: false
 	});
 
 	const percentageBytesUsed = useMemo(() => {

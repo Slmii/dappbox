@@ -25,12 +25,17 @@ export const idlFactory = ({ IDL }) => {
     'CanisterFailed' : CanisterFailedError,
   });
   const Result = IDL.Variant({ 'Ok' : User, 'Err' : ApiError });
-  const Result_1 = IDL.Variant({ 'Ok' : IDL.Vec(User), 'Err' : ApiError });
+  const Result_1 = IDL.Variant({
+    'Ok' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(IDL.Principal))),
+    'Err' : ApiError,
+  });
+  const Result_2 = IDL.Variant({ 'Ok' : IDL.Vec(User), 'Err' : ApiError });
   return IDL.Service({
     'create_user' : IDL.Func([IDL.Opt(IDL.Text)], [Result], []),
     'get_chunks_wasm' : IDL.Func([], [IDL.Vec(IDL.Nat8)], ['query']),
     'get_user' : IDL.Func([], [Result], ['query']),
-    'get_users' : IDL.Func([], [Result_1], ['query']),
+    'get_user_canisters' : IDL.Func([], [Result_1], ['query']),
+    'get_users' : IDL.Func([], [Result_2], ['query']),
   });
 };
 export const init = ({ IDL }) => { return []; };
