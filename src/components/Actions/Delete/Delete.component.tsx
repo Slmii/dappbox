@@ -23,7 +23,7 @@ export const Delete = () => {
 		reset: deleteAssetsReset
 	} = useMutation({
 		mutationFn: api.Asset.deleteAssets,
-		onSuccess: deletedAssets => {
+		onSuccess: async deletedAssets => {
 			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
 				if (!old) {
 					return [];
@@ -31,6 +31,8 @@ export const Delete = () => {
 
 				return old.filter(asset => !deletedAssets.includes(asset.id));
 			});
+
+			await queryClient.invalidateQueries([constants.QUERY_KEYS.USED_SPACE]);
 		}
 	});
 

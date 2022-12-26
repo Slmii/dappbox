@@ -14,6 +14,15 @@ export abstract class Chunk {
 		});
 	}
 
+	static async getSize(canisterPrincipal: Principal) {
+		const actor = await Actor.getActor<_SERVICE>('chunks', canisterPrincipal);
+
+		return resolve(async () => {
+			const response = await actor.get_size();
+			return unwrap(response);
+		});
+	}
+
 	static async getChunksByChunkId({
 		chunkId,
 		canisterPrincipal

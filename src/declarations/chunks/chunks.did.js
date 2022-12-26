@@ -35,10 +35,12 @@ export const idlFactory = ({ IDL }) => {
     'Err' : ApiError,
   });
   const Result_2 = IDL.Variant({ 'Ok' : IDL.Vec(IDL.Nat8), 'Err' : ApiError });
+  const Result_3 = IDL.Variant({ 'Ok' : IDL.Nat64, 'Err' : ApiError });
   return IDL.Service({
     'add_chunk' : IDL.Func([PostChunk], [Result], []),
     'get_chunks' : IDL.Func([], [Result_1], ['query']),
     'get_chunks_by_chunk_id' : IDL.Func([IDL.Nat32], [Result_2], ['query']),
+    'get_size' : IDL.Func([], [Result_3], ['query']),
   });
 };
 export const init = ({ IDL }) => { return [IDL.Opt(IDL.Principal)]; };

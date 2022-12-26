@@ -28,8 +28,11 @@ export type Result_1 = { 'Ok' : Array<[[number, Principal], Uint8Array]> } |
   { 'Err' : ApiError };
 export type Result_2 = { 'Ok' : Uint8Array } |
   { 'Err' : ApiError };
+export type Result_3 = { 'Ok' : bigint } |
+  { 'Err' : ApiError };
 export interface _SERVICE {
   'add_chunk' : ActorMethod<[PostChunk], Result>,
   'get_chunks' : ActorMethod<[], Result_1>,
   'get_chunks_by_chunk_id' : ActorMethod<[number], Result_2>,
+  'get_size' : ActorMethod<[], Result_3>,
 }

@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -24,6 +24,7 @@ const Input = styled('input')({
 export const Upload = () => {
 	const { pathname } = useLocation();
 	const { user } = useContext(AuthContext);
+	const queryClient = useQueryClient();
 	const fileRef = useRef<HTMLInputElement | null>(null);
 	const folderRef = useRef<HTMLInputElement | null>(null);
 
@@ -185,6 +186,8 @@ export const Upload = () => {
 			console.log('Done uploading Asset', asset, file);
 			console.log('============');
 		}
+
+		await queryClient.invalidateQueries([constants.QUERY_KEYS.USED_SPACE]);
 
 		// Set state accordingly
 		setIsUploadingFiles(false);

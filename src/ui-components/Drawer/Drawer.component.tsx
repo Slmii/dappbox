@@ -1,24 +1,22 @@
 import Chip from '@mui/material/Chip';
 import Collapse from '@mui/material/Collapse';
 import MuiDrawer from '@mui/material/Drawer';
-import LinearProgress from '@mui/material/LinearProgress';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import { useMemo, useState } from 'react';
 
 import { Upload } from 'components/Upload';
+import { UsedSpace } from 'components/UsedSpace';
 import { constants } from 'lib/constants';
 import { useUserAssets } from 'lib/hooks';
 import { getUrlPathToAsset } from 'lib/url';
-import { Box } from 'ui-components/Box';
-import { Content } from 'ui-components/Container';
 import { Icon } from 'ui-components/Icon';
 import { Link } from 'ui-components/Link';
 import { DrawerLoader } from 'ui-components/Loaders';
-import { Caption } from 'ui-components/Typography';
 
 export const Drawer = () => {
 	const { data: assets, isLoading } = useUserAssets();
@@ -79,14 +77,14 @@ export const Drawer = () => {
 						}}
 					>
 						<Link href='/'>
-							<ListItem button>
+							<ListItemButton>
 								<ListItemText disableTypography primary='Home' />
-							</ListItem>
+							</ListItemButton>
 						</Link>
-						<ListItem button onClick={handleClick}>
+						<ListItemButton onClick={handleClick}>
 							<ListItemText disableTypography primary='Folders' />
 							<Icon icon={foldersOpen ? 'expandLess' : 'expandMore'} />
-						</ListItem>
+						</ListItemButton>
 						{folders.length ? (
 							<Collapse
 								in={foldersOpen}
@@ -129,11 +127,11 @@ export const Drawer = () => {
 							</Collapse>
 						) : null}
 						<Link href='/favorites'>
-							<ListItem button>
+							<ListItemButton>
 								<ListItemText disableTypography primary='Favorites' />
-							</ListItem>
+							</ListItemButton>
 						</Link>
-						<ListItem button disabled>
+						<ListItemButton disabled>
 							<ListItemText
 								disableTypography
 								primary={
@@ -149,21 +147,12 @@ export const Drawer = () => {
 										/>
 									</>
 								}
-							/>{' '}
-						</ListItem>
+							/>
+						</ListItemButton>
 					</List>
 				</>
 			)}
-			<Box
-				sx={{
-					marginTop: 'auto'
-				}}
-			>
-				<Content>
-					<Caption gutter>1.5 GB of 4 GB used</Caption>
-					<LinearProgress variant='determinate' value={50} color='secondary' />
-				</Content>
-			</Box>
+			<UsedSpace />
 		</MuiDrawer>
 	);
 };

@@ -4,7 +4,8 @@ export const constants = {
 	CIRCULAR_PROGRESS_SIZE: 24,
 	QUERY_KEYS: {
 		USER_ASSETS: 'USER_ASSETS',
-		CHUNKS: 'CHUNKS'
+		CHUNKS: 'CHUNKS',
+		USED_SPACE: 'USED_SPACE'
 	},
 	ENVIRONMENT: process.env.REACT_APP_ENV ?? 'local',
 	IS_LOCAL: process.env.REACT_APP_ENV === 'local',
