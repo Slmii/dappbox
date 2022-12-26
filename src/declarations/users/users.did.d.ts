@@ -22,6 +22,8 @@ export type Result_1 = { 'Ok' : Array<[Principal, Array<Principal>]> } |
   { 'Err' : ApiError };
 export type Result_2 = { 'Ok' : Array<User> } |
   { 'Err' : ApiError };
+export type Result_3 = { 'Ok' : Array<[Principal, User]> } |
+  { 'Err' : ApiError };
 export interface User {
   'username' : [] | [string],
   'created_at' : bigint,
@@ -31,7 +33,8 @@ export interface User {
 export interface _SERVICE {
   'create_user' : ActorMethod<[[] | [string]], Result>,
   'get_all_chunk_canisters' : ActorMethod<[], Result_1>,
+  'get_all_users' : ActorMethod<[], Result_2>,
   'get_chunks_wasm' : ActorMethod<[], Uint8Array>,
+  'get_state' : ActorMethod<[], Result_3>,
   'get_user' : ActorMethod<[], Result>,
-  'get_users' : ActorMethod<[], Result_2>,
 }

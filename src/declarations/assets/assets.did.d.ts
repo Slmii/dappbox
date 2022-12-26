@@ -22,6 +22,14 @@ export interface Asset {
 }
 export type AssetType = { 'Folder' : null } |
   { 'File' : null };
+export interface AssetsStore {
+  'shared' : Array<[Principal, Uint32Array]>,
+  'assets' : Array<[number, Asset]>,
+  'user_assets' : Array<[Principal, Uint32Array]>,
+  'asset_invites' : Array<[Principal, Invite]>,
+  'asset_id' : number,
+  'shared_with' : Array<[[Principal, number], Array<SharedWith>]>,
+}
 export interface CanisterFailedError {
   'code' : RejectionCode,
   'message' : string,
@@ -38,6 +46,16 @@ export interface EditAsset {
   'parent_id' : [] | [number],
   'extension' : [] | [string],
 }
+export interface Invite {
+  'status' : InviteStatus,
+  'invited_by_username' : [] | [string],
+  'asset_id' : number,
+  'invited_by_principal' : Principal,
+  'expires_at' : [] | [bigint],
+}
+export type InviteStatus = { 'Accepted' : null } |
+  { 'Declined' : null } |
+  { 'Pending' : null };
 export interface MoveAsset { 'id' : number, 'parent_id' : [] | [number] }
 export interface PostAsset {
   'asset_type' : AssetType,
@@ -65,12 +83,19 @@ export type Result_1 = { 'Ok' : Uint32Array } |
   { 'Err' : ApiError };
 export type Result_2 = { 'Ok' : Array<Asset> } |
   { 'Err' : ApiError };
+export type Result_3 = { 'Ok' : AssetsStore } |
+  { 'Err' : ApiError };
 export interface Settings { 'url' : [] | [string], 'privacy' : Privacy }
+export interface SharedWith {
+  'principal' : Principal,
+  'username' : [] | [string],
+}
 export interface _SERVICE {
   'add_asset' : ActorMethod<[PostAsset], Result>,
   'delete_assets' : ActorMethod<[Uint32Array], Result_1>,
   'edit_asset' : ActorMethod<[EditAsset], Result>,
   'get_all_assets' : ActorMethod<[], Result_2>,
+  'get_state' : ActorMethod<[], Result_3>,
   'get_user_assets' : ActorMethod<[], Result_2>,
   'move_assets' : ActorMethod<[Array<MoveAsset>], Result_2>,
 }

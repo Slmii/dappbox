@@ -9,7 +9,7 @@ export abstract class Users {
 		const actor = await Actor.getActor<_SERVICE>('users');
 
 		return resolve(async () => {
-			const response = await actor.get_users();
+			const response = await actor.get_all_users();
 			const unwrapped = await unwrap(response);
 
 			return unwrapped.map(user => mapToUserInterface(user));

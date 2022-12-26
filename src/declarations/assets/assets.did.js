@@ -65,6 +65,33 @@ export const idlFactory = ({ IDL }) => {
     'extension' : IDL.Opt(IDL.Text),
   });
   const Result_2 = IDL.Variant({ 'Ok' : IDL.Vec(Asset), 'Err' : ApiError });
+  const InviteStatus = IDL.Variant({
+    'Accepted' : IDL.Null,
+    'Declined' : IDL.Null,
+    'Pending' : IDL.Null,
+  });
+  const Invite = IDL.Record({
+    'status' : InviteStatus,
+    'invited_by_username' : IDL.Opt(IDL.Text),
+    'asset_id' : IDL.Nat32,
+    'invited_by_principal' : IDL.Principal,
+    'expires_at' : IDL.Opt(IDL.Nat64),
+  });
+  const SharedWith = IDL.Record({
+    'principal' : IDL.Principal,
+    'username' : IDL.Opt(IDL.Text),
+  });
+  const AssetsStore = IDL.Record({
+    'shared' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(IDL.Nat32))),
+    'assets' : IDL.Vec(IDL.Tuple(IDL.Nat32, Asset)),
+    'user_assets' : IDL.Vec(IDL.Tuple(IDL.Principal, IDL.Vec(IDL.Nat32))),
+    'asset_invites' : IDL.Vec(IDL.Tuple(IDL.Principal, Invite)),
+    'asset_id' : IDL.Nat32,
+    'shared_with' : IDL.Vec(
+      IDL.Tuple(IDL.Tuple(IDL.Principal, IDL.Nat32), IDL.Vec(SharedWith))
+    ),
+  });
+  const Result_3 = IDL.Variant({ 'Ok' : AssetsStore, 'Err' : ApiError });
   const MoveAsset = IDL.Record({
     'id' : IDL.Nat32,
     'parent_id' : IDL.Opt(IDL.Nat32),
@@ -74,6 +101,7 @@ export const idlFactory = ({ IDL }) => {
     'delete_assets' : IDL.Func([IDL.Vec(IDL.Nat32)], [Result_1], []),
     'edit_asset' : IDL.Func([EditAsset], [Result], []),
     'get_all_assets' : IDL.Func([], [Result_2], ['query']),
+    'get_state' : IDL.Func([], [Result_3], ['query']),
     'get_user_assets' : IDL.Func([], [Result_2], ['query']),
     'move_assets' : IDL.Func([IDL.Vec(MoveAsset)], [Result_2], []),
   });
