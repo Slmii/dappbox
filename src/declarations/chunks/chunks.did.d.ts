@@ -14,10 +14,10 @@ export interface Chunk {
   'canister' : Principal,
   'index' : number,
 }
-export interface ChunksStore {
+export interface ChunkStoreState {
   'canister_owner' : Principal,
   'chunk_id' : number,
-  'chunks' : Array<[[number, Principal], Uint8Array]>,
+  'chunks' : Array<[number, Principal]>,
 }
 export interface PostChunk { 'blob' : Uint8Array, 'index' : number }
 export type RejectionCode = { 'NoError' : null } |
@@ -37,7 +37,7 @@ export type Result_3 = { 'Ok' : Uint8Array } |
   { 'Err' : ApiError };
 export type Result_4 = { 'Ok' : bigint } |
   { 'Err' : ApiError };
-export type Result_5 = { 'Ok' : ChunksStore } |
+export type Result_5 = { 'Ok' : ChunkStoreState } |
   { 'Err' : ApiError };
 export interface _SERVICE {
   'add_chunk' : ActorMethod<[PostChunk], Result>,

@@ -47,13 +47,12 @@ export const Delete = () => {
 		setIsSuccess(false);
 
 		await deleteAssetsMutate(selectedAssets.map(asset => asset.id));
-		await deleteChunksMutate({
-			chunkIds: selectedAssets
+		await deleteChunksMutate(
+			selectedAssets
 				.map(asset => asset.chunks)
 				.flat()
-				.map(chunk => chunk.id),
-			canisterPrincipal: user.canisters[0]
-		});
+				.map(chunk => chunk.id)
+		);
 
 		// Reset selected rows
 		setTableState(prevState => ({

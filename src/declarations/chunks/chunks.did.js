@@ -37,14 +37,12 @@ export const idlFactory = ({ IDL }) => {
   });
   const Result_3 = IDL.Variant({ 'Ok' : IDL.Vec(IDL.Nat8), 'Err' : ApiError });
   const Result_4 = IDL.Variant({ 'Ok' : IDL.Nat64, 'Err' : ApiError });
-  const ChunksStore = IDL.Record({
+  const ChunkStoreState = IDL.Record({
     'canister_owner' : IDL.Principal,
     'chunk_id' : IDL.Nat32,
-    'chunks' : IDL.Vec(
-      IDL.Tuple(IDL.Tuple(IDL.Nat32, IDL.Principal), IDL.Vec(IDL.Nat8))
-    ),
+    'chunks' : IDL.Vec(IDL.Tuple(IDL.Nat32, IDL.Principal)),
   });
-  const Result_5 = IDL.Variant({ 'Ok' : ChunksStore, 'Err' : ApiError });
+  const Result_5 = IDL.Variant({ 'Ok' : ChunkStoreState, 'Err' : ApiError });
   return IDL.Service({
     'add_chunk' : IDL.Func([PostChunk], [Result], []),
     'delete_chunks' : IDL.Func([IDL.Vec(IDL.Nat32)], [Result_1], []),

@@ -14,8 +14,9 @@ export abstract class Chunks {
 		});
 	}
 
-	static async getSize(canisterPrincipal: Principal) {
-		const actor = await Actor.getActor<_SERVICE>('chunks', canisterPrincipal);
+	// TODO: implement dynamic canister when going live
+	static async getSize() {
+		const actor = await Actor.getActor<_SERVICE>('chunks');
 
 		return resolve(async () => {
 			const response = await actor.get_size();
@@ -23,8 +24,8 @@ export abstract class Chunks {
 		});
 	}
 
-	static async deleteChunks({ chunkIds, canisterPrincipal }: { chunkIds: number[]; canisterPrincipal: Principal }) {
-		const actor = await Actor.getActor<_SERVICE>('chunks', canisterPrincipal);
+	static async deleteChunks(chunkIds: number[]) {
+		const actor = await Actor.getActor<_SERVICE>('chunks');
 
 		return resolve(async () => {
 			const response = await actor.delete_chunks(Uint32Array.from(chunkIds));
