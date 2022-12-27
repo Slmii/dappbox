@@ -86,7 +86,8 @@ export const Upload = () => {
 					Public: null
 				},
 				url: []
-			}
+			},
+			nft: []
 		});
 
 		// Creating folder finished
@@ -180,7 +181,8 @@ export const Upload = () => {
 						Public: null
 					},
 					url: []
-				}
+				},
+				nft: []
 			});
 
 			console.log('Done uploading Asset', asset, file);

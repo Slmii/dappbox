@@ -7,6 +7,7 @@ export type ApiError = { 'NotFound' : string } |
   { 'CanisterFailed' : CanisterFailedError };
 export interface Asset {
   'id' : number,
+  'nft' : [] | [Nft],
   'updated_at' : bigint,
   'asset_type' : AssetType,
   'name' : string,
@@ -57,7 +58,9 @@ export type InviteStatus = { 'Accepted' : null } |
   { 'Declined' : null } |
   { 'Pending' : null };
 export interface MoveAsset { 'id' : number, 'parent_id' : [] | [number] }
+export interface Nft { 'principal' : Principal, 'index' : number }
 export interface PostAsset {
+  'nft' : [] | [Nft],
   'asset_type' : AssetType,
   'name' : string,
   'size' : number,
