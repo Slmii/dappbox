@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { useDebounce, useUserAssets } from 'lib/hooks';
 import { Asset } from 'lib/types/Asset.types';
@@ -6,8 +7,9 @@ import { Box } from 'ui-components/Box';
 import { StandaloneField } from 'ui-components/Field';
 
 export const Search = ({ onSearch }: { onSearch: (assets: Asset[]) => void }) => {
-	const [search, setSearch] = useState('');
-	const debouncedSearch = useDebounce(search);
+	const [searchParams, setSearchParams] = useSearchParams();
+	const [query, setQuery] = useState('');
+	const debouncedQuery = useDebounce(query);
 
 	const { data: assets } = useUserAssets();
 	useEffect(() => {
@@ -15,11 +17,16 @@ export const Search = ({ onSearch }: { onSearch: (assets: Asset[]) => void }) =>
 			return onSearch([]);
 		}
 
-		if (!debouncedSearch.length) {
+		if (!debouncedQuery.length) {
+			searchParams.delete('q');
+			setSearchParams(searchParams);
+
 			return onSearch(assets);
 		}
 
-		const searchToLowerCase = debouncedSearch.toLowerCase();
+		setSearchParams({ q: debouncedQuery });
+
+		const searchToLowerCase = debouncedQuery.toLowerCase();
 		return onSearch(
 			assets.filter(asset => {
 				const assetNameToLowerCase = asset.name.toLowerCase();
@@ -28,7 +35,7 @@ export const Search = ({ onSearch }: { onSearch: (assets: Asset[]) => void }) =>
 		);
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [assets, debouncedSearch]);
+	}, [assets, debouncedQuery]);
 
 	return (
 		<Box sx={{ marginLeft: 'auto', width: 500, height: '100%' }}>
@@ -37,8 +44,8 @@ export const Search = ({ onSearch }: { onSearch: (assets: Asset[]) => void }) =>
 				placeholder='Search your assets...'
 				size='small'
 				fullWidth
-				value={search}
-				onChange={setSearch}
+				value={query}
+				onChange={setQuery}
 				startIcon='search'
 			/>
 		</Box>

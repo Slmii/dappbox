@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 import { PreviewBackdrop } from 'components/Actions/Preview';
@@ -50,32 +50,31 @@ const columns: Column = {
 
 export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 	const { pathname } = useLocation();
+	const [searchParams] = useSearchParams();
 	const { handleOnFavoritesToggle, isLoading: toggleFavoriteIsLoading, removeOrAdd } = useFavorites();
 	const [{ order, orderBy, selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 	const [docs, setDocs] = useState<Doc[]>([]);
 
 	const { preview, isSuccess, reset } = usePreview();
 
-	const downloadPreviewChunks = async (asset: Asset) => {
-		if (asset.type === 'folder') {
-			return;
-		}
-
-		const docs = await preview([asset]);
-		setDocs(docs);
-	};
-
 	/**
 	 * 1. Render assets that are a child of the current assetId in the URL
 	 * 2. Sort assets asc/desc
 	 */
 	const tableAssets = useMemo(() => {
+		// If in the middle of a search then return all assets
+		if (searchParams.has('q')) {
+			return assets;
+		}
+
 		return getTableAssets({
 			assets,
 			order,
 			orderBy,
 			assetId: getAssetId(pathname)
 		});
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [order, orderBy, pathname, assets]);
 
 	// Reset `selectedAssets` in table state when redirecting
@@ -88,6 +87,15 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pathname]);
+
+	const downloadPreviewChunks = async (asset: Asset) => {
+		if (asset.type === 'folder') {
+			return;
+		}
+
+		const docs = await preview([asset]);
+		setDocs(docs);
+	};
 
 	return (
 		<>
