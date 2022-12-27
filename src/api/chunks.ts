@@ -14,16 +14,7 @@ export abstract class Chunks {
 		});
 	}
 
-	// TODO: implement dynamic canister when going live
-	static async getSize() {
-		const actor = await Actor.getActor<_SERVICE>('chunks');
-
-		return resolve(async () => {
-			const response = await actor.get_size();
-			return unwrap(response);
-		});
-	}
-
+	// static async deleteChunks({ chunkIds, canisterPrincipal }: { chunkIds: number[]; canisterPrincipal: Principal }) {
 	static async deleteChunks(chunkIds: number[]) {
 		const actor = await Actor.getActor<_SERVICE>('chunks');
 

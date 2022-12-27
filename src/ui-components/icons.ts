@@ -23,6 +23,8 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
 import FolderIcon from '@mui/icons-material/Folder';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
+import InfoIcon from '@mui/icons-material/Info';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ListIcon from '@mui/icons-material/List';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
@@ -77,7 +79,9 @@ const icons = {
 	uploadFile: UploadFileIcon,
 	uploadFolder: DriveFolderUploadIcon,
 	feedback: FeedbackIcon,
-	search: SearchIcon
+	search: SearchIcon,
+	info: InfoIcon,
+	infoOutlined: InfoOutlinedIcon
 };
 
 export type Icons = keyof typeof icons;

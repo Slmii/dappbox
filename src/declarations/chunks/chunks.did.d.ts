@@ -35,15 +35,12 @@ export type Result_2 = { 'Ok' : Array<[[number, Principal], Uint8Array]> } |
   { 'Err' : ApiError };
 export type Result_3 = { 'Ok' : Uint8Array } |
   { 'Err' : ApiError };
-export type Result_4 = { 'Ok' : bigint } |
-  { 'Err' : ApiError };
-export type Result_5 = { 'Ok' : ChunkStoreState } |
+export type Result_4 = { 'Ok' : ChunkStoreState } |
   { 'Err' : ApiError };
 export interface _SERVICE {
   'add_chunk' : ActorMethod<[PostChunk], Result>,
   'delete_chunks' : ActorMethod<[Uint32Array], Result_1>,
   'get_all_chunks' : ActorMethod<[], Result_2>,
   'get_chunks_by_chunk_id' : ActorMethod<[number], Result_3>,
-  'get_size' : ActorMethod<[], Result_4>,
-  'get_state' : ActorMethod<[], Result_5>,
+  'get_state' : ActorMethod<[], Result_4>,
 }

@@ -12,4 +12,5 @@ export interface IconProps extends SvgIconProps {
 	 * If there should be spacing on the left side of the icon.
 	 */
 	spacingRight?: boolean;
+	label?: string;
 }

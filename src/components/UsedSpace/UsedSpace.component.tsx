@@ -1,38 +1,32 @@
 import { LinearProgress } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
-import { useContext, useMemo } from 'react';
+import { useMemo } from 'react';
 
-import { api } from 'api';
-import { constants } from 'lib/constants';
-import { AuthContext } from 'lib/context';
+import { useUserAssets } from 'lib/hooks';
 import { formatBytes } from 'lib/utils';
-import { Box } from 'ui-components/Box';
+import { Box, Column } from 'ui-components/Box';
 import { Content } from 'ui-components/Container';
+import { Icon } from 'ui-components/Icon';
 import { Caption } from 'ui-components/Typography';
 
 export const UsedSpace = () => {
-	const { user } = useContext(AuthContext);
-	const { data, isLoading } = useQuery([constants.QUERY_KEYS.USED_SPACE], {
-		queryFn: () => {
-			if (!user) {
-				throw new Error('User not set');
-			}
+	const { data: assets, isLoading } = useUserAssets();
 
-			return api.Chunks.getSize();
-		},
-		enabled: !!user,
-		useErrorBoundary: false
-	});
-
-	const percentageBytesUsed = useMemo(() => {
-		if (data) {
-			return (Number(data) / 4000000000) * 100;
+	const { bytes, percentage } = useMemo(() => {
+		if (assets) {
+			const bytes = assets.reduce((accum, asset) => (accum += asset.size ?? 0), 0);
+			return {
+				percentage: (Number(bytes) / 4000000000) * 100,
+				bytes
+			};
 		}
 
-		return 0;
-	}, [data]);
+		return {
+			percentage: 0,
+			bytes: 0
+		};
+	}, [assets]);
 
-	const isLoaded = !!data && !isLoading;
+	const isLoaded = !!assets && !isLoading;
 
 	return (
 		<Box
@@ -41,10 +35,18 @@ export const UsedSpace = () => {
 			}}
 		>
 			<Content>
-				<Caption gutter>{formatBytes(data ? Number(data) : 0)} of 4 GB used</Caption>
+				<Column>
+					<Caption>{formatBytes(bytes)} of 4 GB used</Caption>
+					<Icon
+						icon='info'
+						fontSize='inherit'
+						sx={{ marginBottom: '2px' }}
+						label='This is an estimate. The actual space used may differ!'
+					/>
+				</Column>
 				<LinearProgress
 					variant={!isLoaded ? 'indeterminate' : 'determinate'}
-					value={percentageBytesUsed}
+					value={percentage}
 					color='secondary'
 				/>
 			</Content>
