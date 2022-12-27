@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil';
 import { api } from 'api';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
+import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types/Asset.types';
 import { Button } from 'ui-components/Button';
@@ -20,6 +21,7 @@ export const Delete = () => {
 
 	const [{ selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 
+	const { getNestedChildAssets } = useUserAssets();
 	const { mutateAsync: deleteAssetsMutate } = useMutation({
 		mutationFn: api.Assets.deleteAssets,
 		onSuccess: async deletedAssets => {
@@ -30,6 +32,8 @@ export const Delete = () => {
 
 				return old.filter(asset => !deletedAssets.includes(asset.id));
 			});
+
+			await queryClient.invalidateQueries([constants.QUERY_KEYS.USED_SPACE]);
 		}
 	});
 
@@ -46,13 +50,10 @@ export const Delete = () => {
 		setIsLoading(true);
 		setIsSuccess(false);
 
-		await deleteAssetsMutate(selectedAssets.map(asset => asset.id));
-		await deleteChunksMutate(
-			selectedAssets
-				.map(asset => asset.chunks)
-				.flat()
-				.map(chunk => chunk.id)
-		);
+		const assetsToDelete = selectedAssets.map(asset => [asset, ...getNestedChildAssets(asset.id)]).flat();
+
+		await deleteAssetsMutate(assetsToDelete.map(asset => asset.id));
+		await deleteChunksMutate(assetsToDelete.map(asset => asset.chunks.map(chunk => chunk.id)).flat());
 
 		// Reset selected rows
 		setTableState(prevState => ({
