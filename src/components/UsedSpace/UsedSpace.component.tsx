@@ -41,7 +41,7 @@ export const UsedSpace = () => {
 						icon='info'
 						fontSize='inherit'
 						sx={{ marginBottom: '2px' }}
-						label='This is an estimate. The actual space used may differ!'
+						label='This is an estimate. The actual used space may differ!'
 					/>
 				</Column>
 				<LinearProgress
