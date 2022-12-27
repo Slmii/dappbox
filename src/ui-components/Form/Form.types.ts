@@ -10,7 +10,7 @@ export interface FormProps<T extends FieldValues> {
 	/**
 	 * Validator schema. Either a joi or yup schema.
 	 */
-	schema: z.ZodObject<any>;
+	schema?: z.ZodObject<any>;
 	/**
 	 * Default values in a form
 	 */

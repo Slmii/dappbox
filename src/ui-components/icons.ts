@@ -30,6 +30,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import PrintIcon from '@mui/icons-material/Print';
+import SearchIcon from '@mui/icons-material/Search';
 import ShareIcon from '@mui/icons-material/Share';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
@@ -75,7 +76,8 @@ const icons = {
 	newWindow: OpenInNewIcon,
 	uploadFile: UploadFileIcon,
 	uploadFolder: DriveFolderUploadIcon,
-	feedback: FeedbackIcon
+	feedback: FeedbackIcon,
+	search: SearchIcon
 };
 
 export type Icons = keyof typeof icons;

@@ -14,7 +14,7 @@ export function Form<T extends FieldValues>({
 	myRef
 }: FormProps<T>) {
 	const methods = useForm<T>({
-		resolver: zodResolver(schema),
+		resolver: schema ? zodResolver(schema) : undefined,
 		defaultValues,
 		mode,
 		shouldFocusError: true
