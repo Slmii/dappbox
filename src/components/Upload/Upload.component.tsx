@@ -223,7 +223,7 @@ export const Upload = () => {
 							size='large'
 							fullWidth
 							disabled={isLoading}
-							tooltip={isLoading ? 'No support for multiple uploads yet' : undefined}
+							tooltip={isLoading ? 'No support for parallel uploads yet' : undefined}
 							sx={{
 								borderRadius: 50
 							}}
@@ -243,8 +243,25 @@ export const Upload = () => {
 						}
 					]}
 				/>
-				<Input id='upload-file' multiple type='file' onChange={handleOnFileUpload} ref={fileRef} />
-				<Input id='upload-folder' type='file' onChange={handleOnFolderUpload} ref={folderRef} />
+				<Input
+					id='upload-file'
+					multiple
+					type='file'
+					onChange={async e => {
+						await handleOnFileUpload(e);
+						e.target.value = '';
+					}}
+					ref={fileRef}
+				/>
+				<Input
+					id='upload-folder'
+					type='file'
+					onChange={async e => {
+						await handleOnFolderUpload(e);
+						e.target.value = '';
+					}}
+					ref={folderRef}
+				/>
 			</Box>
 			<Snackbar
 				open={isLoading}
