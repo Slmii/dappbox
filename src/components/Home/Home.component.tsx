@@ -1,11 +1,12 @@
 import { useState } from 'react';
 
 import { Actions } from 'components/Actions';
+import { Activities } from 'components/Activities';
 import { Search } from 'components/Search';
 import { ViewAssets } from 'components/ViewAssets';
 // import { ViewMode } from 'components/ViewMode';
 import { useUserAssets } from 'lib/hooks';
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 import { Column, Row } from 'ui-components/Box';
 import { Breadcrumbs } from 'ui-components/Breadcrumbs';
 import { Content, FilesContainer, Main } from 'ui-components/Container';
@@ -19,21 +20,24 @@ export const Home = () => {
 	const isLoaded = !!data && !isLoading;
 
 	return (
-		<Main>
-			<Content>
-				<Column>
-					<Breadcrumbs />
-					{/* <ViewMode /> */}
-					<Search onSearch={setAssets} />
-				</Column>
-			</Content>
-			<Divider />
-			<Content>
-				<Row>
-					{isLoaded && <Actions />}
-					<FilesContainer>{!isLoaded ? <TableLoader /> : <ViewAssets assets={assets} />}</FilesContainer>
-				</Row>
-			</Content>
-		</Main>
+		<>
+			<Main>
+				<Content>
+					<Column>
+						<Breadcrumbs />
+						{/* <ViewMode /> */}
+						<Search onSearch={setAssets} />
+					</Column>
+				</Content>
+				<Divider />
+				<Content>
+					<Row>
+						{isLoaded && <Actions />}
+						<FilesContainer>{!isLoaded ? <TableLoader /> : <ViewAssets assets={assets} />}</FilesContainer>
+					</Row>
+				</Content>
+			</Main>
+			<Activities />
+		</>
 	);
 };

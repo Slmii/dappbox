@@ -1,4 +1,4 @@
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 import { Icons } from 'ui-components/icons';
 
 export type Order = 'asc' | 'desc';

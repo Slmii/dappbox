@@ -6,3 +6,4 @@ export * from './useDownload';
 export * from './useKeyPress';
 export * from './usePreview';
 export * from './useDebounce';
+export * from './useActivities';

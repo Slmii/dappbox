@@ -9,5 +9,6 @@ export const constants = {
 	},
 	ENVIRONMENT: process.env.REACT_APP_ENV ?? 'local',
 	IS_LOCAL: process.env.REACT_APP_ENV === 'local',
-	MAX_UPLOAD_LIMIT: 2_097_152
+	MAX_UPLOAD_LIMIT: 2_097_152,
+	ACTIVITIES_HEIGHT: 300
 };

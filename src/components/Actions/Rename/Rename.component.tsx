@@ -7,7 +7,7 @@ import { constants } from 'lib/constants';
 import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 import { getExtension, replaceArrayAtIndex } from 'lib/utils';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';

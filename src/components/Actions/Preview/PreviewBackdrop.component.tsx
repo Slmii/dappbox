@@ -3,8 +3,7 @@ import { useMemo, useState } from 'react';
 
 import { constants } from 'lib/constants';
 import { useDownload, useKeyPress } from 'lib/hooks';
-import { Asset } from 'lib/types/Asset.types';
-import { Doc } from 'lib/types/Doc.types';
+import { Asset, Doc } from 'lib/types';
 import { Backdrop } from 'ui-components/Backdrop';
 import { Box, Column } from 'ui-components/Box';
 import { IconButton } from 'ui-components/IconButton';

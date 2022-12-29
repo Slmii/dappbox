@@ -2,7 +2,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { utils, WorkSheet } from 'xlsx';
 
 import { ApiError } from 'declarations/users/users.did';
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 import { Order } from 'ui-components/Table';
 
 export const getTableAssets = ({

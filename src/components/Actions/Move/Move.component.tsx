@@ -6,7 +6,7 @@ import { api } from 'api';
 import { constants } from 'lib/constants';
 import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 import { getTableAssets, replaceArrayAtIndex } from 'lib/utils';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';

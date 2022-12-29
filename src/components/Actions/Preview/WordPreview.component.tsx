@@ -1,4 +1,4 @@
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 
 export const WordPreview = ({ url, asset }: { url: string; asset: Asset }) => {
 	return (

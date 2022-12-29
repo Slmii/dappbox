@@ -1,6 +1,6 @@
 import { _SERVICE, User as ControllerUser } from 'declarations/users/users.did';
 import { dateFromBigInt } from 'lib/dates';
-import { User as IUser } from 'lib/types/User.types';
+import { User as IUser } from 'lib/types';
 import { resolve, unwrap } from 'lib/utils';
 import { Actor } from './actor';
 

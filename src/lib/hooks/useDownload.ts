@@ -3,7 +3,7 @@ import JSZip from 'jszip';
 import { useState } from 'react';
 
 import { api } from 'api';
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 import { saveAs } from 'lib/utils';
 import { useUserAssets } from './useUserAssets';
 

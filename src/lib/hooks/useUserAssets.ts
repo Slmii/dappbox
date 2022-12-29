@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { api } from 'api';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 
 export const useUserAssets = () => {
 	const { isAuthenticated } = useContext(AuthContext);

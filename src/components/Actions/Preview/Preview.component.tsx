@@ -3,7 +3,7 @@ import { useRecoilValue } from 'recoil';
 
 import { usePreview } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
-import { Doc } from 'lib/types/Doc.types';
+import { Doc } from 'lib/types';
 import { Button } from 'ui-components/Button';
 import { PreviewBackdrop } from './PreviewBackdrop.component';
 

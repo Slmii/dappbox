@@ -2,12 +2,11 @@ import { useMutation } from '@tanstack/react-query';
 import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
-import { previewStateAtom } from 'lib/recoil';
-import { Asset } from 'lib/types/Asset.types';
-import { Doc } from 'lib/types/Doc.types';
+import { previewAtom } from 'lib/recoil';
+import { Asset, Doc } from 'lib/types';
 
 export const usePreview = () => {
-	const [{ isLoading, isSuccess }, setPreviewState] = useRecoilState(previewStateAtom);
+	const [{ isLoading, isSuccess }, setPreviewState] = useRecoilState(previewAtom);
 
 	const { mutateAsync } = useMutation({
 		mutationFn: api.Chunks.getChunksByChunkId

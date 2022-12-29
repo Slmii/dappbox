@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { PreviewBackdrop } from 'components/Actions/Preview';
 import { useDownload, useFavorites, usePreview, useUserAssets } from 'lib/hooks';
-import { Asset } from 'lib/types/Asset.types';
-import { Doc } from 'lib/types/Doc.types';
+import { Asset, Doc } from 'lib/types';
 import { getUrlPathToAsset } from 'lib/url';
 import { Content, Main } from 'ui-components/Container';
 import { Divider } from 'ui-components/Divider';

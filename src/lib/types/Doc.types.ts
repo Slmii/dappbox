@@ -1,4 +1,4 @@
-import { Asset } from './Asset.types';
+import { Asset } from './';
 
 export interface Doc {
 	url: string;

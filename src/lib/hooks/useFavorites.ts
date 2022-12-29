@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { api } from 'api';
 import { constants } from 'lib/constants';
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 import { replaceArrayAtIndex } from 'lib/utils';
 import { useUserAssets } from './useUserAssets';
 

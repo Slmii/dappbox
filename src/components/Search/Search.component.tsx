@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useDebounce, useUserAssets } from 'lib/hooks';
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 import { Box } from 'ui-components/Box';
 import { StandaloneField } from 'ui-components/Field';
 

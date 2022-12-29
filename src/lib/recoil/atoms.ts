@@ -1,13 +1,7 @@
 import { atom } from 'recoil';
 
-import { Asset } from 'lib/types/Asset.types';
-import { Order } from 'ui-components/Table';
-
-export interface TableState {
-	selectedAssets: Asset[];
-	order: Order;
-	orderBy: keyof Asset;
-}
+import { Activity } from 'lib/types';
+import { TableState } from 'lib/types/Table.types';
 
 /**
  * Atom for current table state (order, orderBy and selectedAssets)
@@ -24,10 +18,18 @@ export const tableStateAtom = atom<TableState>({
 /**
  * Atom for preview success/loading state
  */
-export const previewStateAtom = atom<{ isLoading: boolean; isSuccess: boolean }>({
+export const previewAtom = atom<{ isLoading: boolean; isSuccess: boolean }>({
 	key: 'previewStateAtom',
 	default: {
 		isLoading: false,
 		isSuccess: false
 	}
+});
+
+/**
+ * Atom for activities state
+ */
+export const activitiesAtom = atom<Activity[]>({
+	key: 'activitiesAtom',
+	default: []
 });

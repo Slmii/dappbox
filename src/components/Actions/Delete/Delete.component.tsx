@@ -7,7 +7,7 @@ import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
 import { useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { Snackbar } from 'ui-components/Snackbar';

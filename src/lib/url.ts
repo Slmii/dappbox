@@ -1,4 +1,4 @@
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 
 /**
  * Get the page title of the current asset

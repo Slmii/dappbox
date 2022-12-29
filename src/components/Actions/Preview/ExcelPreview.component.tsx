@@ -12,7 +12,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { read, WorkBook } from 'xlsx';
 
 import { constants } from 'lib/constants';
-import { Asset } from 'lib/types/Asset.types';
+import { Asset } from 'lib/types';
 import { getRowsCols, Row } from 'lib/utils';
 import { Box, Column } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
