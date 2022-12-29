@@ -7,8 +7,8 @@ import { api } from 'api';
 import { Chunk } from 'declarations/assets/assets.did';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
-import { useAddAsset } from 'lib/hooks';
-import { getAssetId } from 'lib/url';
+import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
+import { getAssetId, getUrlPathToAsset } from 'lib/url';
 import { formatBytes, getExtension, getImage } from 'lib/utils';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -27,16 +27,11 @@ export const Upload = () => {
 	const queryClient = useQueryClient();
 	const fileRef = useRef<HTMLInputElement | null>(null);
 	const folderRef = useRef<HTMLInputElement | null>(null);
+	const { activities, addActivity, updateActivity } = useActivities();
 
-	const [isUploadingFiles, setIsUploadingFiles] = useState(false);
-	const [filesUploadSuccess, setFilesUploadSucces] = useState(false);
-	const [isUploadingFolder, setIsUploadingFolder] = useState(false);
 	const [uploadError, setUploadError] = useState<string | null>(null);
-	const [totalFiles, setTotalFiles] = useState(0);
-	const [currentFileIndex, setCurrentFileIndex] = useState(0);
-	const [totalChunks, setTotalChunks] = useState(0);
-	const [currentChunkIndex, setCurrentChunkIndex] = useState(0);
 
+	const { data: assets } = useUserAssets();
 	const { mutateAsync: addAssetMutate, reset: addAssetReset } = useAddAsset();
 	const { mutateAsync: addChunkMutate } = useMutation({
 		mutationFn: api.Chunks.addChunk
@@ -63,11 +58,18 @@ export const Upload = () => {
 			return;
 		}
 
-		// Creating folder
-		setIsUploadingFolder(true);
-
 		const [folderName] = files[0].webkitRelativePath.split('/');
 		const parentId = getAssetId(pathname);
+
+		// TODO: fix counter when uploading a folder
+		// Create an ID and insert a new activity
+		const activityId = activities.length + 1;
+		addActivity({
+			id: activityId,
+			name: folderName,
+			type: 'folder',
+			inProgress: true
+		});
 
 		// Upload selected folder as asset
 		const asset = await addAssetMutate({
@@ -90,8 +92,14 @@ export const Upload = () => {
 			nft: []
 		});
 
-		// Creating folder finished
-		setIsUploadingFolder(false);
+		// Update activity
+		updateActivity(activityId, {
+			inProgress: false,
+			progress: 100,
+			href: getUrlPathToAsset(asset.id, [asset, ...(assets ?? [])])
+				.map(asset => encodeURIComponent(asset.id))
+				.join('/')
+		});
 
 		// Upload files inside the selected folder
 		await uploadFiles(files, asset.id);
@@ -119,17 +127,11 @@ export const Upload = () => {
 			return;
 		}
 
-		// Reset state
-		setIsUploadingFiles(true);
-		setFilesUploadSucces(false);
-
 		const filesLength = files.length;
-		setTotalFiles(filesLength);
 
 		let filesCount = 0;
 		for (const file of files) {
 			filesCount += 1;
-			setCurrentFileIndex(filesCount);
 
 			console.log(`Uploading File ${filesCount}/${filesLength}`);
 
@@ -140,14 +142,23 @@ export const Upload = () => {
 				return;
 			}
 
-			setTotalChunks(blobsLength);
+			// Create an ID and insert a new activity
+			const activityId = activities.length + 1;
+			addActivity({
+				id: activityId,
+				name: file.name,
+				type: 'file',
+				inProgress: true,
+				// If there is only 1 chunk to upload then there is no need to show a determinate progress bar
+				progress: blobsLength > 1 ? 0 : undefined
+			});
+
 			console.log('Total chunks to upload', blobsLength);
 
 			// Upload each blob seperatly
 			const chunks: Chunk[] = [];
 			for (const [index, blob] of blobs.entries()) {
 				const counter = index + 1;
-				setCurrentChunkIndex(counter);
 
 				console.log(`Uploading chunk ${counter}/${blobsLength}`);
 
@@ -161,6 +172,11 @@ export const Upload = () => {
 				chunks.push(chunk);
 
 				console.log(`Chunk ${counter} uploaded`, chunk);
+
+				// Update activity
+				updateActivity(activityId, activity => ({
+					progress: (activity.progress ?? 0) + 100 / blobsLength
+				}));
 			}
 
 			console.log('Uploading Asset...');
@@ -187,13 +203,15 @@ export const Upload = () => {
 
 			console.log('Done uploading Asset', asset, file);
 			console.log('============');
+
+			// Update activity
+			updateActivity(activityId, {
+				inProgress: false,
+				progress: 100
+			});
 		}
 
 		await queryClient.invalidateQueries([constants.QUERY_KEYS.USED_SPACE]);
-
-		// Set state accordingly
-		setIsUploadingFiles(false);
-		setFilesUploadSucces(true);
 	};
 
 	const validateUploadSize = (files: FileList) => {
@@ -209,8 +227,6 @@ export const Upload = () => {
 		return true;
 	};
 
-	const isLoading = isUploadingFiles || isUploadingFolder;
-
 	return (
 		<>
 			<Box sx={{ padding: constants.SPACING }}>
@@ -224,8 +240,6 @@ export const Upload = () => {
 							color='primary'
 							size='large'
 							fullWidth
-							disabled={isLoading}
-							tooltip={isLoading ? 'No support for parallel uploads yet' : undefined}
 							sx={{
 								borderRadius: 50
 							}}
@@ -265,31 +279,6 @@ export const Upload = () => {
 					ref={folderRef}
 				/>
 			</Box>
-			<Snackbar
-				open={isLoading}
-				loader
-				message={
-					<>
-						{isUploadingFolder ? (
-							'Creating folder'
-						) : (
-							<>
-								{totalFiles > 1 ? (
-									<>
-										Processing files {currentFileIndex}/{totalFiles}.&nbsp;
-									</>
-								) : null}
-								Uploading chunks {currentChunkIndex}/{totalChunks}
-							</>
-						)}
-					</>
-				}
-			/>
-			<Snackbar
-				open={filesUploadSuccess}
-				message={`${totalFiles > 1 ? 'Assets' : 'Asset'} uploaded successfully`}
-				onClose={() => setFilesUploadSucces(false)}
-			/>
 			<Snackbar
 				open={!!uploadError}
 				message={uploadError ?? ''}

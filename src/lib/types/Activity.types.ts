@@ -1,4 +1,4 @@
-export type ActivityType = 'upload' | 'download' | 'delete' | 'move' | 'folder';
+export type ActivityType = 'file' | 'download' | 'delete' | 'move' | 'folder';
 
 export interface Activity {
 	id: number;

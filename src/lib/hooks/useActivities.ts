@@ -14,13 +14,16 @@ export const useActivities = () => {
 		setActivities(activities => activities.filter(activity => activity.id !== activityId));
 	};
 
-	const updateActivity = (activityId: number, data: Partial<Activity>) => {
+	const updateActivity = (
+		activityId: number,
+		data: Partial<Activity> | ((activity: Activity) => Partial<Activity>)
+	) => {
 		setActivities(activities => {
 			const newActivities = activities.map(activity => {
 				if (activity.id === activityId) {
 					return {
 						...activity,
-						...data
+						...(typeof data === 'function' ? data(activity) : data)
 					};
 				}
 
