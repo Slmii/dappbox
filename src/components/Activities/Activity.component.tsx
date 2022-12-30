@@ -25,7 +25,7 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 		}
 
 		if (type === 'folder') {
-			return 'addFolderOutlined';
+			return 'uploadFolder';
 		}
 
 		if (type === 'move') {

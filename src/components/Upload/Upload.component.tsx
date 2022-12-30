@@ -27,7 +27,7 @@ export const Upload = () => {
 	const queryClient = useQueryClient();
 	const fileRef = useRef<HTMLInputElement | null>(null);
 	const folderRef = useRef<HTMLInputElement | null>(null);
-	const { activities, addActivity, updateActivity } = useActivities();
+	const { addActivity, updateActivity } = useActivities();
 
 	const [uploadError, setUploadError] = useState<string | null>(null);
 
@@ -61,11 +61,8 @@ export const Upload = () => {
 		const [folderName] = files[0].webkitRelativePath.split('/');
 		const parentId = getAssetId(pathname);
 
-		// TODO: fix counter when uploading a folder
-		// Create an ID and insert a new activity
-		const activityId = activities.id + 1;
-		addActivity({
-			id: activityId,
+		// Insert a new activity
+		const activityId = addActivity({
 			name: folderName,
 			type: 'folder',
 			inProgress: true
@@ -141,10 +138,8 @@ export const Upload = () => {
 				return;
 			}
 
-			// Create an ID and insert a new activity
-			const activityId = activities.id + 1;
-			addActivity({
-				id: activityId,
+			// Insert a new activity
+			const activityId = addActivity({
 				name: file.name,
 				type: 'file',
 				inProgress: true,

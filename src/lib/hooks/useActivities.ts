@@ -6,8 +6,15 @@ import { Activity } from 'lib/types';
 export const useActivities = () => {
 	const [activities, setActivities] = useRecoilState(activitiesAtom);
 
-	const addActivity = (activity: Activity) => {
-		setActivities(({ id, activities }) => ({ id: id + 1, activities: [activity, ...activities] }));
+	const addActivity = (activity: Omit<Activity, 'id'>) => {
+		let activityId = 0;
+
+		setActivities(({ id, activities }) => {
+			activityId = id + 1;
+			return { id: activityId, activities: [{ ...activity, id: activityId }, ...activities] };
+		});
+
+		return activityId;
 	};
 
 	const removeActivity = (activityId: number) => {

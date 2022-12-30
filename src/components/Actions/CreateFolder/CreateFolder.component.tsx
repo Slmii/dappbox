@@ -16,7 +16,7 @@ import { CreateFolderFormData } from '../Actions.types';
 export const CreateFolder = () => {
 	const { user } = useContext(AuthContext);
 	const { pathname } = useLocation();
-	const { activities, addActivity, updateActivity } = useActivities();
+	const { addActivity, updateActivity } = useActivities();
 	const createFolderFormRef = useRef<null | HTMLFormElement>(null);
 	const [createFolderOpenDialog, setCreateFolderOpenDialog] = useState(false);
 	const [handleOnConfirmCreateFolderDialog, setHandleOnConfirmCreateFolderDialog] = useState<() => void>(() => null);
@@ -33,10 +33,8 @@ export const CreateFolder = () => {
 
 			setCreateFolderOpenDialog(false);
 
-			// Create an ID and insert a new activity
-			const activityId = activities.id + 1;
-			addActivity({
-				id: activityId,
+			// Insert a new activity
+			const activityId = addActivity({
 				name: data.folderName,
 				type: 'folder',
 				inProgress: true
