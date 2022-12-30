@@ -34,7 +34,7 @@ export const CreateFolder = () => {
 			setCreateFolderOpenDialog(false);
 
 			// Create an ID and insert a new activity
-			const activityId = activities.length + 1;
+			const activityId = activities.id + 1;
 			addActivity({
 				id: activityId,
 				name: data.folderName,

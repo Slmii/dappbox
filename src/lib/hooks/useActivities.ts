@@ -7,18 +7,21 @@ export const useActivities = () => {
 	const [activities, setActivities] = useRecoilState(activitiesAtom);
 
 	const addActivity = (activity: Activity) => {
-		setActivities(activities => [activity, ...activities]);
+		setActivities(({ id, activities }) => ({ id: id + 1, activities: [activity, ...activities] }));
 	};
 
 	const removeActivity = (activityId: number) => {
-		setActivities(activities => activities.filter(activity => activity.id !== activityId));
+		setActivities(({ id, activities }) => ({
+			id,
+			activities: activities.filter(activity => activity.id !== activityId)
+		}));
 	};
 
 	const updateActivity = (
 		activityId: number,
 		data: Partial<Activity> | ((activity: Activity) => Partial<Activity>)
 	) => {
-		setActivities(activities => {
+		setActivities(({ id, activities }) => {
 			const newActivities = activities.map(activity => {
 				if (activity.id === activityId) {
 					return {
@@ -30,7 +33,10 @@ export const useActivities = () => {
 				return activity;
 			});
 
-			return newActivities;
+			return {
+				id,
+				activities: newActivities
+			};
 		});
 	};
 

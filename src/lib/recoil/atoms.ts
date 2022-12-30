@@ -29,7 +29,11 @@ export const previewAtom = atom<{ isLoading: boolean; isSuccess: boolean }>({
 /**
  * Atom for activities state
  */
-export const activitiesAtom = atom<Activity[]>({
+export const activitiesAtom = atom<{ id: number; activities: Activity[] }>({
 	key: 'activitiesAtom',
-	default: []
+	default: {
+		// Keep track of the activity increment ID
+		id: 0,
+		activities: []
+	}
 });

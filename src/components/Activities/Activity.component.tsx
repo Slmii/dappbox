@@ -51,7 +51,7 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 					<Icon icon={getIcon(activity.type)} color='inherit' />
 					<Caption>{activity.name}</Caption>
 				</Column>
-				<div>
+				<Column>
 					{activity.onUndo && !activity.inProgress && activity.progress === 100 ? (
 						<Button label='Undo' onClick={activity.onUndo} />
 					) : null}
@@ -59,7 +59,7 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 						<Button label='View' onClick={() => activity.href && navigate(activity.href)} />
 					) : null}
 					<IconButton icon='close' label='Clear' onClick={() => onRemove(activity.id)} color='inherit' />
-				</div>
+				</Column>
 			</Box>
 			{activity.inProgress ? (
 				<LinearProgress

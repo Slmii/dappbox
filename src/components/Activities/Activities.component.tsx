@@ -18,9 +18,6 @@ export const Activities = () => {
 			sx={{
 				borderRadius: 0,
 				borderTopLeftRadius: theme => theme.shape.borderRadius,
-				padding: constants.SPACING,
-				paddingTop: constants.SPACING / 2,
-				paddingBottom: constants.SPACING / 2,
 				backgroundColor: theme => theme.palette.secondary.main,
 				color: theme => theme.palette.secondary.contrastText,
 				position: 'absolute',
@@ -35,11 +32,17 @@ export const Activities = () => {
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'space-between',
-					cursor: 'pointer'
+					cursor: 'pointer',
+					padding: constants.SPACING,
+					paddingTop: constants.SPACING / 2,
+					paddingBottom: constants.SPACING / 2
 				}}
 				onClick={() => setOpen(!open)}
 			>
-				<SubTitle>Activities</SubTitle>
+				<Box sx={{ display: 'flex', alignItems: 'center' }}>
+					<SubTitle>Activities</SubTitle>&nbsp;
+					{activities.activities.length ? <SubTitle>({activities.activities.length})</SubTitle> : null}
+				</Box>
 				<Icon icon={open ? 'expandMore' : 'expandLess'} />
 			</Box>
 			<Paper
@@ -55,7 +58,7 @@ export const Activities = () => {
 					borderRadius: 0
 				}}
 			>
-				{activities.map(activity => (
+				{activities.activities.map(activity => (
 					<Activity key={activity.id} activity={activity} onRemove={removeActivity} />
 				))}
 			</Paper>

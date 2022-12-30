@@ -63,7 +63,7 @@ export const Upload = () => {
 
 		// TODO: fix counter when uploading a folder
 		// Create an ID and insert a new activity
-		const activityId = activities.length + 1;
+		const activityId = activities.id + 1;
 		addActivity({
 			id: activityId,
 			name: folderName,
@@ -95,7 +95,6 @@ export const Upload = () => {
 		// Update activity
 		updateActivity(activityId, {
 			inProgress: false,
-			progress: 100,
 			href: getUrlPathToAsset(asset.id, [asset, ...(assets ?? [])])
 				.map(asset => encodeURIComponent(asset.id))
 				.join('/')
@@ -143,13 +142,13 @@ export const Upload = () => {
 			}
 
 			// Create an ID and insert a new activity
-			const activityId = activities.length + 1;
+			const activityId = activities.id + 1;
 			addActivity({
 				id: activityId,
 				name: file.name,
 				type: 'file',
 				inProgress: true,
-				// If there is only 1 chunk to upload then there is no need to show a determinate progress bar
+				// If there is only 1 chunk to upload then there is no need to show a determinate (percentual) progress bar
 				progress: blobsLength > 1 ? 0 : undefined
 			});
 
@@ -173,7 +172,7 @@ export const Upload = () => {
 
 				console.log(`Chunk ${counter} uploaded`, chunk);
 
-				// Update activity
+				// Update activity progressbar
 				updateActivity(activityId, activity => ({
 					progress: (activity.progress ?? 0) + 100 / blobsLength
 				}));
@@ -181,6 +180,7 @@ export const Upload = () => {
 
 			console.log('Uploading Asset...');
 
+			// Add asset linked to the chunks
 			const asset = await addAssetMutate({
 				asset_type: {
 					File: null
