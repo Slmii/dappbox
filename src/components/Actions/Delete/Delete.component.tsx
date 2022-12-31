@@ -10,14 +10,11 @@ import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
-import { Snackbar } from 'ui-components/Snackbar';
 
 export const Delete = () => {
 	const queryClient = useQueryClient();
 	const { user } = useContext(AuthContext);
 	const [deleteOpenDialog, setDeleteOpenDialog] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
-	const [isSuccess, setIsSuccess] = useState(false);
 
 	const { addActivity, updateActivity } = useActivities();
 	const [{ selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
@@ -48,8 +45,6 @@ export const Delete = () => {
 		}
 
 		setDeleteOpenDialog(false);
-		setIsLoading(true);
-		setIsSuccess(false);
 
 		// Add activities for all selected assets to be deleted
 		const activityIds = selectedAssets.map(asset =>
@@ -68,9 +63,6 @@ export const Delete = () => {
 			...prevState,
 			selectedAssets: []
 		}));
-
-		setIsLoading(false);
-		setIsSuccess(true);
 	};
 
 	return (
@@ -89,15 +81,6 @@ export const Delete = () => {
 					/>
 				</>
 			) : null}
-			<Snackbar open={isLoading} message='Deleting assets' loader />
-			<Snackbar
-				open={isSuccess}
-				message='Assets deleted successfully'
-				onClose={() => {
-					setIsLoading(false);
-					setIsSuccess(false);
-				}}
-			/>
 		</>
 	);
 };
