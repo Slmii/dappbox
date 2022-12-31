@@ -4,7 +4,7 @@ import { constants } from 'lib/constants';
 import { useActivities } from 'lib/hooks';
 import { Box, Column } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
-import { Icon } from 'ui-components/Icon';
+import { IconButton } from 'ui-components/IconButton';
 import { SubTitle } from 'ui-components/Typography';
 import { Activity } from './Activity.component';
 
@@ -62,7 +62,12 @@ export const Activities = () => {
 							}}
 						/>
 					) : null}
-					<Icon icon={open ? 'expandMore' : 'expandLess'} />
+					<IconButton
+						size='small'
+						label={open ? 'Close' : 'Open'}
+						icon={open ? 'expandMore' : 'expandLess'}
+						color='inherit'
+					/>
 				</Column>
 			</Box>
 			<Box

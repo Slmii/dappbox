@@ -51,7 +51,7 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 					<Icon icon={getIcon(activity.type)} color='inherit' fontSize='small' />
 					<Caption>{activity.name}</Caption>
 				</Column>
-				<Column>
+				<Column spacing={0}>
 					{activity.onUndo && activity.isFinished ? <Button label='Undo' onClick={activity.onUndo} /> : null}
 					{activity.href && activity.isFinished ? (
 						<Button label='View' onClick={() => activity.href && navigate(activity.href)} />

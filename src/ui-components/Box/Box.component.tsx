@@ -7,13 +7,13 @@ export const Box = ({ children, ...props }: PropsWithChildren<BoxProps>) => {
 	return <MuiBox {...props}>{children}</MuiBox>;
 };
 
-export const Row = ({ children }: PropsWithChildren) => {
+export const Row = ({ children, spacing }: PropsWithChildren<{ spacing?: number }>) => {
 	return (
 		<Box
 			sx={{
 				display: 'flex',
 				flexDirection: 'column',
-				rowGap: constants.SPACING
+				rowGap: spacing ?? constants.SPACING
 			}}
 		>
 			{children}
@@ -21,14 +21,14 @@ export const Row = ({ children }: PropsWithChildren) => {
 	);
 };
 
-export const Column = ({ children }: PropsWithChildren) => {
+export const Column = ({ children, spacing }: PropsWithChildren<{ spacing?: number }>) => {
 	return (
 		<Box
 			sx={{
 				display: 'flex',
 				flexDirection: 'row',
 				alignItems: 'center',
-				columnGap: constants.SPACING
+				columnGap: spacing ?? constants.SPACING
 			}}
 		>
 			{children}
