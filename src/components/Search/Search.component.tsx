@@ -38,7 +38,7 @@ export const Search = ({ onSearch }: { onSearch: (assets: Asset[]) => void }) =>
 	}, [assets, debouncedQuery]);
 
 	return (
-		<Box sx={{ marginLeft: 'auto', width: 500, height: '100%' }}>
+		<Box sx={{ marginLeft: 'auto', width: 300, height: '100%' }}>
 			<StandaloneField
 				name='search'
 				placeholder='Search your assets...'

@@ -11,22 +11,22 @@ export const useActivities = () => {
 
 		setActivities(({ id, activities }) => {
 			activityId = id + 1;
-			return { id: activityId, activities: [{ ...activity, id: activityId }, ...activities] };
+			return { open: true, id: activityId, activities: [{ ...activity, id: activityId }, ...activities] };
 		});
 
 		return activityId;
 	};
 
 	const removeActivity = (activityId: number) => {
-		setActivities(({ id, activities }) => ({
-			id,
+		setActivities(({ activities, ...rest }) => ({
+			...rest,
 			activities: activities.filter(activity => activity.id !== activityId)
 		}));
 	};
 
 	const removeAllActivities = () => {
-		setActivities(({ id, activities }) => ({
-			id,
+		setActivities(({ activities, ...rest }) => ({
+			...rest,
 			activities: activities.filter(activity => !activity.isFinished)
 		}));
 	};
@@ -35,7 +35,7 @@ export const useActivities = () => {
 		activityId: number,
 		data: Partial<Activity> | ((activity: Activity) => Partial<Activity>)
 	) => {
-		setActivities(({ id, activities }) => {
+		setActivities(({ open, id, activities }) => {
 			const newActivities = activities.map(activity => {
 				if (activity.id === activityId) {
 					return {
@@ -48,6 +48,7 @@ export const useActivities = () => {
 			});
 
 			return {
+				open,
 				id,
 				activities: newActivities
 			};
@@ -55,6 +56,8 @@ export const useActivities = () => {
 	};
 
 	return {
+		open: activities.open,
+		setOpen: (open: boolean) => setActivities(activities => ({ ...activities, open })),
 		activities,
 		addActivity,
 		updateActivity,

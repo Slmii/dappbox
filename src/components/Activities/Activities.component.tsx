@@ -1,5 +1,4 @@
 import Paper from '@mui/material/Paper';
-import React, { useState } from 'react';
 
 import { constants } from 'lib/constants';
 import { useActivities } from 'lib/hooks';
@@ -10,8 +9,9 @@ import { SubTitle } from 'ui-components/Typography';
 import { Activity } from './Activity.component';
 
 export const Activities = () => {
-	const [open, setOpen] = useState(false);
 	const {
+		open,
+		setOpen,
 		activities: { activities },
 		removeActivity,
 		removeAllActivities
