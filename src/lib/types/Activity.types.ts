@@ -1,4 +1,4 @@
-export type ActivityType = 'file' | 'download' | 'delete' | 'move' | 'folder';
+export type ActivityType = 'file' | 'download' | 'delete' | 'move' | 'folder' | 'rename';
 
 export interface Activity {
 	id: number;
@@ -6,7 +6,13 @@ export interface Activity {
 	type: ActivityType;
 	inProgress: boolean;
 	isFinished: boolean;
-	onUndo?: () => void | Promise<void>;
+	/**
+	 * The created activity's ID as an argument in the callback
+	 */
+	onUndo?: (activityId: number) => void | Promise<void>;
+	/**
+	 * Redirect to a URL
+	 */
 	href?: string;
 }
 

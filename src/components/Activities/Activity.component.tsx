@@ -32,6 +32,10 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 			return 'folderMoveOutlined';
 		}
 
+		if (type === 'rename') {
+			return 'editOutlined';
+		}
+
 		return 'uploadFile';
 	};
 
@@ -44,7 +48,7 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 					paddingBottom: constants.SPACING / 2,
 					display: 'flex',
 					justifyContent: 'space-between',
-					minHeight: 56
+					minHeight: constants.ACTIVITIES.ITEM
 				}}
 			>
 				<Column>
@@ -52,7 +56,9 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 					<Caption>{activity.name}</Caption>
 				</Column>
 				<Column spacing={0}>
-					{activity.onUndo && activity.isFinished ? <Button label='Undo' onClick={activity.onUndo} /> : null}
+					{activity.onUndo && activity.isFinished ? (
+						<Button label='Undo' onClick={() => activity.onUndo?.(activity.id)} />
+					) : null}
 					{activity.href && activity.isFinished ? (
 						<Button label='View' onClick={() => activity.href && navigate(activity.href)} />
 					) : null}

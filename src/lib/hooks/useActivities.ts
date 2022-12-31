@@ -25,11 +25,15 @@ export const useActivities = () => {
 	};
 
 	const removeAllActivities = () => {
-		setActivities(({ activities, open, id }) => ({
-			id,
-			open: false,
-			activities: activities.filter(activity => !activity.isFinished)
-		}));
+		setActivities(({ activities, id }) => {
+			const newActivities = activities.filter(activity => !activity.isFinished);
+
+			return {
+				id,
+				open: !!newActivities.length,
+				activities: newActivities
+			};
+		});
 	};
 
 	const updateActivity = (

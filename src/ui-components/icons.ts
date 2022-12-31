@@ -14,6 +14,7 @@ import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import DriveFileMoveOutlinedIcon from '@mui/icons-material/DriveFileMoveOutlined';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import EditIcon from '@mui/icons-material/Edit';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -70,6 +71,7 @@ const icons = {
 	print: PrintIcon,
 	share: ShareIcon,
 	edit: EditIcon,
+	editOutlined: EditOutlinedIcon,
 	expandMore: ExpandMoreIcon,
 	expandLess: ExpandLessIcon,
 	next: NavigateNextIcon,

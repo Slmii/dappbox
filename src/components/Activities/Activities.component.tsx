@@ -26,8 +26,8 @@ export const Activities = () => {
 				position: 'absolute',
 				bottom: 0,
 				right: 0,
-				width: constants.ACTIVITIES_WIDTH,
-				height: open ? constants.ACTIVITIES_HEIGHT : constants.ACTIVITIES_HEIGHT_COLLAPSED,
+				width: constants.ACTIVITIES.WIDTH,
+				height: open ? constants.ACTIVITIES.HEIGHT : constants.ACTIVITIES.HEIGHT_COLLAPSED,
 				transition: 'height 0.25s ease',
 				zIndex: 2
 			}}
@@ -38,7 +38,7 @@ export const Activities = () => {
 					alignItems: 'center',
 					justifyContent: 'space-between',
 					cursor: 'pointer',
-					minHeight: constants.ACTIVITIES_HEIGHT_COLLAPSED,
+					minHeight: constants.ACTIVITIES.HEIGHT_COLLAPSED,
 					paddingLeft: constants.SPACING,
 					paddingRight: constants.SPACING,
 					borderTopLeftRadius: theme => theme.shape.borderRadius,
@@ -70,17 +70,21 @@ export const Activities = () => {
 					/>
 				</Column>
 			</Box>
-			<Box
+			<Paper
+				elevation={10}
 				sx={{
-					maxHeight: constants.ACTIVITIES_HEIGHT - constants.ACTIVITIES_HEIGHT_COLLAPSED,
+					maxHeight: constants.ACTIVITIES.HEIGHT - constants.ACTIVITIES.HEIGHT_COLLAPSED,
+					height: open ? '100%' : 0,
 					overflowY: 'auto',
-					borderLeft: theme => `1px solid ${theme.palette.divider}`
+					border: 0,
+					borderLeft: theme => `1px solid ${theme.palette.divider}`,
+					borderRadius: 0
 				}}
 			>
 				{activities.map(activity => (
 					<Activity key={activity.id} activity={activity} onRemove={removeActivity} />
 				))}
-			</Box>
+			</Paper>
 		</Paper>
 	);
 };

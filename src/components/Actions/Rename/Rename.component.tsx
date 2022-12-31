@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
 import { constants } from 'lib/constants';
-import { useUserAssets } from 'lib/hooks';
+import { useActivities, useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
 import { Asset } from 'lib/types';
@@ -14,7 +14,6 @@ import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { Field } from 'ui-components/Field';
 import { Form } from 'ui-components/Form';
-import { Snackbar } from 'ui-components/Snackbar';
 import { RenameAssetFormData } from '../Actions.types';
 
 export const Rename = () => {
@@ -22,16 +21,11 @@ export const Rename = () => {
 	const renameFolderFormRef = useRef<null | HTMLFormElement>(null);
 	const [renameOpenDialog, setRenameOpenDialog] = useState(false);
 	const [handleOnConfirmRenameDialog, setHandleOnConfirmRenameDialog] = useState<() => void>(() => null);
-	const [undoAsset, setUndoAsset] = useState<Asset | null>(null);
 	const [{ selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 
+	const { addActivity, updateActivity } = useActivities();
 	const { data: assets } = useUserAssets();
-	const {
-		mutateAsync: editAssetMutate,
-		isLoading: editAssetIsLoading,
-		isSuccess: editAssetIsSuccess,
-		reset: editAssetReset
-	} = useMutation({
+	const { mutateAsync: editAssetMutate } = useMutation({
 		mutationFn: api.Assets.editAsset,
 		onSuccess: asset => {
 			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
@@ -72,9 +66,14 @@ export const Rename = () => {
 			// for the rename functionality
 			const asset = selectedAssets[0];
 
-			// Store assets in the state before the renaming happens
-			// This will be used to undo the renaming
-			setUndoAsset(asset);
+			// Add rename activity
+			const activityId = addActivity({
+				inProgress: true,
+				isFinished: false,
+				name: data.folderName,
+				type: 'rename',
+				onUndo: activityId => handleOnUndo(asset, activityId)
+			});
 
 			await editAssetMutate({
 				id: asset.id,
@@ -83,7 +82,35 @@ export const Rename = () => {
 				is_favorite: [asset.isFavorite],
 				parent_id: asset.parentId ? [asset.parentId] : []
 			});
+
+			// Mark rename activity as finished
+			updateActivity(activityId, { isFinished: true, inProgress: false });
 		});
+	};
+
+	const handleOnUndo = async (asset: Asset, activityId: number) => {
+		// Reset the current activity's onUndo button
+		updateActivity(activityId, { onUndo: undefined });
+
+		// Add onUndo activity
+		const undoActivityId = addActivity({
+			inProgress: true,
+			isFinished: false,
+			name: asset.name,
+			type: 'rename'
+		});
+
+		// Apply `undo` assets
+		await editAssetMutate({
+			id: asset.id,
+			name: [asset.name],
+			extension: [getExtension(asset.name)],
+			is_favorite: [asset.isFavorite],
+			parent_id: asset.parentId ? [asset.parentId] : []
+		});
+
+		// Mark the onUndo as finished
+		updateActivity(undoActivityId, { isFinished: true, inProgress: false });
 	};
 
 	return (
@@ -132,33 +159,6 @@ export const Rename = () => {
 					</Dialog>
 				</>
 			) : null}
-			<Snackbar open={editAssetIsLoading} message='Renaming asset' loader />
-			<Snackbar
-				open={editAssetIsSuccess}
-				message='Asset renamed successfully'
-				onUndo={async () => {
-					if (!undoAsset) {
-						return;
-					}
-
-					// Apply `undo` assets
-					await editAssetMutate({
-						id: undoAsset.id,
-						name: [undoAsset.name],
-						extension: [getExtension(undoAsset.name)],
-						is_favorite: [undoAsset.isFavorite],
-						parent_id: undoAsset.parentId ? [undoAsset.parentId] : []
-					});
-
-					// Reset assets for `undo` functionality
-					setUndoAsset(null);
-					editAssetReset();
-				}}
-				onClose={() => {
-					setUndoAsset(null);
-					editAssetReset();
-				}}
-			/>
 		</>
 	);
 };
