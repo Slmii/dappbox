@@ -22,15 +22,14 @@ export const Activities = () => {
 			elevation={10}
 			sx={{
 				borderRadius: 0,
-				borderTopLeftRadius: theme => theme.shape.borderRadius,
-				backgroundColor: theme => theme.palette.secondary.main,
 				color: theme => theme.palette.secondary.contrastText,
 				position: 'absolute',
-				bottom: open ? constants.ACTIVITIES_HEIGHT : 0,
+				bottom: 0,
 				right: 0,
-				width: 400,
-				transition: 'bottom 0.25s ease',
-				zIndex: 2
+				width: constants.ACTIVITIES_WIDTH,
+				height: open ? constants.ACTIVITIES_HEIGHT : constants.ACTIVITIES_HEIGHT_COLLAPSED,
+				transition: 'height 0.25s ease',
+				zIndex: theme => theme.zIndex.tooltip
 			}}
 		>
 			<Box
@@ -39,10 +38,11 @@ export const Activities = () => {
 					alignItems: 'center',
 					justifyContent: 'space-between',
 					cursor: 'pointer',
-					minHeight: 50,
-					padding: constants.SPACING,
-					paddingTop: constants.SPACING / 2,
-					paddingBottom: constants.SPACING / 2
+					minHeight: constants.ACTIVITIES_HEIGHT_COLLAPSED,
+					paddingLeft: constants.SPACING,
+					paddingRight: constants.SPACING,
+					borderTopLeftRadius: theme => theme.shape.borderRadius,
+					backgroundColor: theme => theme.palette.secondary.main
 				}}
 				onClick={() => setOpen(!open)}
 			>
@@ -65,23 +65,17 @@ export const Activities = () => {
 					<Icon icon={open ? 'expandMore' : 'expandLess'} />
 				</Column>
 			</Box>
-			<Paper
-				elevation={10}
+			<Box
 				sx={{
-					position: 'absolute',
-					top: '100%',
-					left: 0,
-					width: '100%',
-					height: !open ? 0 : constants.ACTIVITIES_HEIGHT,
-					borderLeft: theme => `1px solid ${theme.palette.divider}`,
+					maxHeight: constants.ACTIVITIES_HEIGHT - constants.ACTIVITIES_HEIGHT_COLLAPSED,
 					overflowY: 'auto',
-					borderRadius: 0
+					borderLeft: theme => `1px solid ${theme.palette.divider}`
 				}}
 			>
 				{activities.map(activity => (
 					<Activity key={activity.id} activity={activity} onRemove={removeActivity} />
 				))}
-			</Paper>
+			</Box>
 		</Paper>
 	);
 };
