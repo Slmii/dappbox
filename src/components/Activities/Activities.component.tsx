@@ -29,7 +29,7 @@ export const Activities = () => {
 				width: constants.ACTIVITIES_WIDTH,
 				height: open ? constants.ACTIVITIES_HEIGHT : constants.ACTIVITIES_HEIGHT_COLLAPSED,
 				transition: 'height 0.25s ease',
-				zIndex: theme => theme.zIndex.tooltip
+				zIndex: 2
 			}}
 		>
 			<Box
