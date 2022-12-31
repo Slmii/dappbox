@@ -48,7 +48,7 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 				}}
 			>
 				<Column>
-					<Icon icon={getIcon(activity.type)} color='inherit' />
+					<Icon icon={getIcon(activity.type)} color='inherit' fontSize='small' />
 					<Caption>{activity.name}</Caption>
 				</Column>
 				<Column>

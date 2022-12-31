@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { api } from 'api';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
-import { useUserAssets } from 'lib/hooks';
+import { useActivities, useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Asset } from 'lib/types';
 import { Button } from 'ui-components/Button';
@@ -19,6 +19,7 @@ export const Delete = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isSuccess, setIsSuccess] = useState(false);
 
+	const { addActivity, updateActivity } = useActivities();
 	const [{ selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 
 	const { getNestedChildAssets } = useUserAssets();
@@ -50,10 +51,17 @@ export const Delete = () => {
 		setIsLoading(true);
 		setIsSuccess(false);
 
-		const assetsToDelete = selectedAssets.map(asset => [asset, ...getNestedChildAssets(asset.id)]).flat();
+		// Add activities for all selected assets to be deleted
+		const activityIds = selectedAssets.map(asset =>
+			addActivity({ inProgress: true, isFinished: false, name: asset.name, type: 'delete' })
+		);
 
+		const assetsToDelete = selectedAssets.map(asset => [asset, ...getNestedChildAssets(asset.id)]).flat();
 		await deleteAssetsMutate(assetsToDelete.map(asset => asset.id));
 		await deleteChunksMutate(assetsToDelete.map(asset => asset.chunks.map(chunk => chunk.id)).flat());
+
+		// Mark all as finished
+		activityIds.forEach(activityId => updateActivity(activityId, { inProgress: false, isFinished: true }));
 
 		// Reset selected rows
 		setTableState(prevState => ({
