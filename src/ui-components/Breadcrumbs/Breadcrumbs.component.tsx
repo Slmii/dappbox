@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import { useUserAssets } from 'lib/hooks';
-import { getUrlPathToAsset } from 'lib/url';
+import { getUrlBreadcrumbs } from 'lib/url';
 
 export const Breadcrumbs = () => {
 	const { data: assets } = useUserAssets();
@@ -33,9 +33,7 @@ export const Breadcrumbs = () => {
 			return '';
 		}
 
-		return getUrlPathToAsset(assetId, assets)
-			.map(asset => encodeURIComponent(asset.id))
-			.join('/');
+		return getUrlBreadcrumbs(assetId, assets);
 	};
 
 	return (

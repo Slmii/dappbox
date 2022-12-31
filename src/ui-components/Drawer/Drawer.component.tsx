@@ -13,7 +13,7 @@ import { Upload } from 'components/Upload';
 import { UsedSpace } from 'components/UsedSpace';
 import { constants } from 'lib/constants';
 import { useUserAssets } from 'lib/hooks';
-import { getUrlPathToAsset } from 'lib/url';
+import { getUrlBreadcrumbs } from 'lib/url';
 import { Icon } from 'ui-components/Icon';
 import { Link } from 'ui-components/Link';
 import { DrawerLoader } from 'ui-components/Loaders';
@@ -40,9 +40,7 @@ export const Drawer = () => {
 				return '';
 			}
 
-			return getUrlPathToAsset(assetId, assets)
-				.map(asset => encodeURIComponent(asset.id))
-				.join('/');
+			return getUrlBreadcrumbs(assetId, assets);
 		},
 		[assets]
 	);

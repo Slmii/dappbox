@@ -5,7 +5,7 @@ import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
 import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
 import { createFolderSchema } from 'lib/schemas';
-import { getAssetId, getUrlPathToAsset } from 'lib/url';
+import { getAssetId, getUrlBreadcrumbs } from 'lib/url';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
@@ -37,7 +37,8 @@ export const CreateFolder = () => {
 			const activityId = addActivity({
 				name: data.folderName,
 				type: 'folder',
-				inProgress: true
+				inProgress: true,
+				isFinished: false
 			});
 
 			const parentId = getAssetId(pathname);
@@ -64,10 +65,8 @@ export const CreateFolder = () => {
 			// Update activity
 			updateActivity(activityId, {
 				inProgress: false,
-				progress: 100,
-				href: getUrlPathToAsset(asset.id, [asset, ...(assets ?? [])])
-					.map(asset => encodeURIComponent(asset.id))
-					.join('/')
+				isFinished: true,
+				href: getUrlBreadcrumbs(asset.id, [asset, ...(assets ?? [])])
 			});
 		});
 	};

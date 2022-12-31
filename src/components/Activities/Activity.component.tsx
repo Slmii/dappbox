@@ -52,25 +52,16 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 					<Caption>{activity.name}</Caption>
 				</Column>
 				<Column>
-					{activity.onUndo && !activity.inProgress && activity.progress === 100 ? (
-						<Button label='Undo' onClick={activity.onUndo} />
-					) : null}
-					{activity.href && !activity.inProgress && activity.progress === 100 ? (
+					{activity.onUndo && activity.isFinished ? <Button label='Undo' onClick={activity.onUndo} /> : null}
+					{activity.href && activity.isFinished ? (
 						<Button label='View' onClick={() => activity.href && navigate(activity.href)} />
 					) : null}
-					<IconButton icon='close' label='Clear' onClick={() => onRemove(activity.id)} color='inherit' />
+					{activity.isFinished ? (
+						<IconButton icon='close' label='Clear' onClick={() => onRemove(activity.id)} color='inherit' />
+					) : null}
 				</Column>
 			</Box>
-			{activity.inProgress ? (
-				<LinearProgress
-					variant={
-						typeof activity.progress !== 'undefined' && activity.progress !== 100
-							? 'determinate'
-							: 'indeterminate'
-					}
-					value={activity.progress ?? undefined}
-				/>
-			) : null}
+			{activity.inProgress ? <LinearProgress variant='indeterminate' /> : null}
 			<Divider />
 		</>
 	);

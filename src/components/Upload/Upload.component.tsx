@@ -8,7 +8,8 @@ import { Chunk } from 'declarations/assets/assets.did';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
 import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
-import { getAssetId, getUrlPathToAsset } from 'lib/url';
+import { FileWithActivity } from 'lib/types';
+import { getAssetId, getUrlBreadcrumbs } from 'lib/url';
 import { formatBytes, getExtension, getImage } from 'lib/utils';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -61,12 +62,16 @@ export const Upload = () => {
 		const [folderName] = files[0].webkitRelativePath.split('/');
 		const parentId = getAssetId(pathname);
 
-		// Insert a new activity
+		// Add folder activity
 		const activityId = addActivity({
 			name: folderName,
 			type: 'folder',
-			inProgress: true
+			inProgress: true,
+			isFinished: false
 		});
+
+		// Add activities for all files within the uploaded folder
+		const filesWithActivityId = addActivities(files);
 
 		// Upload selected folder as asset
 		const asset = await addAssetMutate({
@@ -89,16 +94,15 @@ export const Upload = () => {
 			nft: []
 		});
 
-		// Update activity
+		// Update folder activity
 		updateActivity(activityId, {
 			inProgress: false,
-			href: getUrlPathToAsset(asset.id, [asset, ...(assets ?? [])])
-				.map(asset => encodeURIComponent(asset.id))
-				.join('/')
+			isFinished: true,
+			href: getUrlBreadcrumbs(asset.id, [asset, ...(assets ?? [])])
 		});
 
 		// Upload files inside the selected folder
-		await uploadFiles(files, asset.id);
+		await uploadFiles(filesWithActivityId, asset.id);
 	};
 
 	const handleOnFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,20 +117,28 @@ export const Upload = () => {
 			return;
 		}
 
+		// Add activities for selected files
+		const filesWithActivityId = addActivities(files);
+
 		// Upload selected files
 		const parentId = getAssetId(pathname);
-		await uploadFiles(files, parentId ? Number(parentId) : undefined);
+		await uploadFiles(filesWithActivityId, parentId ? Number(parentId) : undefined);
 	};
 
-	const uploadFiles = async (files: FileList, parentId?: number) => {
+	const uploadFiles = async (filesWithActivityId: FileWithActivity[], parentId?: number) => {
 		if (!user) {
 			return;
 		}
 
-		const filesLength = files.length;
+		const filesLength = filesWithActivityId.length;
 
 		let filesCount = 0;
-		for (const file of files) {
+		for (const { file, activityId } of filesWithActivityId) {
+			// Update activity to be in progress
+			updateActivity(activityId, {
+				inProgress: true
+			});
+
 			filesCount += 1;
 
 			console.log(`Uploading File ${filesCount}/${filesLength}`);
@@ -137,15 +149,6 @@ export const Upload = () => {
 			if (!blobsLength) {
 				return;
 			}
-
-			// Insert a new activity
-			const activityId = addActivity({
-				name: file.name,
-				type: 'file',
-				inProgress: true,
-				// If there is only 1 chunk to upload then there is no need to show a determinate (percentual) progress bar
-				progress: blobsLength > 1 ? 0 : undefined
-			});
 
 			console.log('Total chunks to upload', blobsLength);
 
@@ -166,11 +169,6 @@ export const Upload = () => {
 				chunks.push(chunk);
 
 				console.log(`Chunk ${counter} uploaded`, chunk);
-
-				// Update activity progressbar
-				updateActivity(activityId, activity => ({
-					progress: (activity.progress ?? 0) + 100 / blobsLength
-				}));
 			}
 
 			console.log('Uploading Asset...');
@@ -202,7 +200,7 @@ export const Upload = () => {
 			// Update activity
 			updateActivity(activityId, {
 				inProgress: false,
-				progress: 100
+				isFinished: true
 			});
 		}
 
@@ -220,6 +218,26 @@ export const Upload = () => {
 		}
 
 		return true;
+	};
+
+	const addActivities = (files: FileList) => {
+		// Add activities for all files within the uploaded folder
+		const filesWithActivityId: FileWithActivity[] = Array.from(files).map(file => {
+			// Insert a new activity
+			const activityId = addActivity({
+				name: file.name,
+				type: 'file',
+				inProgress: false,
+				isFinished: false
+			});
+
+			return {
+				file,
+				activityId
+			};
+		});
+
+		return filesWithActivityId;
 	};
 
 	return (

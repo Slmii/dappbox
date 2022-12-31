@@ -5,7 +5,12 @@ export interface Activity {
 	name: string;
 	type: ActivityType;
 	inProgress: boolean;
-	progress?: number;
+	isFinished: boolean;
 	onUndo?: () => void | Promise<void>;
 	href?: string;
+}
+
+export interface FileWithActivity {
+	file: File;
+	activityId: number;
 }

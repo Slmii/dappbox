@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { PreviewBackdrop } from 'components/Actions/Preview';
 import { useDownload, useFavorites, usePreview, useUserAssets } from 'lib/hooks';
 import { Asset, Doc } from 'lib/types';
-import { getUrlPathToAsset } from 'lib/url';
+import { getUrlBreadcrumbs } from 'lib/url';
 import { Content, Main } from 'ui-components/Container';
 import { Divider } from 'ui-components/Divider';
 import { IconButton } from 'ui-components/IconButton';
@@ -46,9 +46,7 @@ export const Favorites = () => {
 				return '';
 			}
 
-			return getUrlPathToAsset(assetId, assets)
-				.map(asset => encodeURIComponent(asset.id))
-				.join('/');
+			return getUrlBreadcrumbs(assetId, assets);
 		},
 
 		[assets]

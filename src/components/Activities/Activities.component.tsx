@@ -3,14 +3,19 @@ import React, { useState } from 'react';
 
 import { constants } from 'lib/constants';
 import { useActivities } from 'lib/hooks';
-import { Box } from 'ui-components/Box';
+import { Box, Column } from 'ui-components/Box';
+import { Button } from 'ui-components/Button';
 import { Icon } from 'ui-components/Icon';
 import { SubTitle } from 'ui-components/Typography';
 import { Activity } from './Activity.component';
 
 export const Activities = () => {
 	const [open, setOpen] = useState(false);
-	const { activities, removeActivity } = useActivities();
+	const {
+		activities: { activities },
+		removeActivity,
+		removeAllActivities
+	} = useActivities();
 
 	return (
 		<Paper
@@ -24,7 +29,8 @@ export const Activities = () => {
 				bottom: open ? constants.ACTIVITIES_HEIGHT : 0,
 				right: 0,
 				width: 400,
-				transition: 'bottom 0.25s ease'
+				transition: 'bottom 0.25s ease',
+				zIndex: 2
 			}}
 		>
 			<Box
@@ -33,6 +39,7 @@ export const Activities = () => {
 					alignItems: 'center',
 					justifyContent: 'space-between',
 					cursor: 'pointer',
+					minHeight: 50,
 					padding: constants.SPACING,
 					paddingTop: constants.SPACING / 2,
 					paddingBottom: constants.SPACING / 2
@@ -41,9 +48,22 @@ export const Activities = () => {
 			>
 				<Box sx={{ display: 'flex', alignItems: 'center' }}>
 					<SubTitle>Activities</SubTitle>&nbsp;
-					{activities.activities.length ? <SubTitle>({activities.activities.length})</SubTitle> : null}
+					{activities.length ? <SubTitle>({activities.length})</SubTitle> : null}
 				</Box>
-				<Icon icon={open ? 'expandMore' : 'expandLess'} />
+				<Column>
+					{activities.length ? (
+						<Button
+							label='Clear all'
+							size='small'
+							color='inherit'
+							onClick={e => {
+								e.stopPropagation();
+								removeAllActivities();
+							}}
+						/>
+					) : null}
+					<Icon icon={open ? 'expandMore' : 'expandLess'} />
+				</Column>
 			</Box>
 			<Paper
 				elevation={10}
@@ -58,7 +78,7 @@ export const Activities = () => {
 					borderRadius: 0
 				}}
 			>
-				{activities.activities.map(activity => (
+				{activities.map(activity => (
 					<Activity key={activity.id} activity={activity} onRemove={removeActivity} />
 				))}
 			</Paper>

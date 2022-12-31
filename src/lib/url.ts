@@ -35,6 +35,15 @@ export const getUrlPathToAsset = (assetId: number, assets: Asset[]) => {
 };
 
 /**
+ * Get breadcrumbs URL
+ */
+export const getUrlBreadcrumbs = (assetId: number, assets: Asset[]) => {
+	return getUrlPathToAsset(assetId, assets)
+		.map(asset => encodeURIComponent(asset.id))
+		.join('/');
+};
+
+/**
  * Get the last assetId param in the URL
  */
 export const getAssetId = (pathname: string) => {

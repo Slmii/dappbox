@@ -24,6 +24,13 @@ export const useActivities = () => {
 		}));
 	};
 
+	const removeAllActivities = () => {
+		setActivities(({ id, activities }) => ({
+			id,
+			activities: activities.filter(activity => !activity.isFinished)
+		}));
+	};
+
 	const updateActivity = (
 		activityId: number,
 		data: Partial<Activity> | ((activity: Activity) => Partial<Activity>)
@@ -51,6 +58,7 @@ export const useActivities = () => {
 		activities,
 		addActivity,
 		updateActivity,
-		removeActivity
+		removeActivity,
+		removeAllActivities
 	};
 };
