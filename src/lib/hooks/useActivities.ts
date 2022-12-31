@@ -25,8 +25,9 @@ export const useActivities = () => {
 	};
 
 	const removeAllActivities = () => {
-		setActivities(({ activities, ...rest }) => ({
-			...rest,
+		setActivities(({ activities, open, id }) => ({
+			id,
+			open: false,
 			activities: activities.filter(activity => !activity.isFinished)
 		}));
 	};
