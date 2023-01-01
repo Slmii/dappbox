@@ -1,3 +1,4 @@
+import Badge from '@mui/material/Badge';
 import LinearProgress from '@mui/material/LinearProgress';
 import { useNavigate } from 'react-router-dom';
 
@@ -61,6 +62,7 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 						width: activity.isFinished && activity.onUndo ? '55%' : activity.inProgress ? '85%' : '75%'
 					}}
 				>
+					<Badge variant='dot' color={activity.isFinished ? 'success' : 'warning'} />
 					<Icon icon={getIcon(activity.type)} color='inherit' fontSize='small' />
 					<Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
 						<Caption noWrap>{activity.name}</Caption>
