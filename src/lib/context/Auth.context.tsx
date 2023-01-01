@@ -142,7 +142,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 		try {
 			const response = await actor.get_user();
 			const user = await unwrap(response);
-
 			setUser(mapToUserInterface(user));
 
 			return true;
@@ -150,12 +149,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 			try {
 				const response = await actor.create_user([]);
 				const user = await unwrap(response);
-
 				setUser(mapToUserInterface(user));
+
 				return true;
 			} catch (error) {
 				console.log('Init user Error', { error });
 				setErrorSnackarOpen(true);
+
 				return false;
 			}
 		}

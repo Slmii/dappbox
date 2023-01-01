@@ -12,7 +12,7 @@ export const constants = {
 	MAX_UPLOAD_LIMIT: 2_097_152,
 	ACTIVITIES: {
 		HEIGHT_COLLAPSED: 50,
-		HEIGHT: 400,
+		HEIGHT: 420,
 		WIDTH: 400,
 		ITEM: 60
 	}

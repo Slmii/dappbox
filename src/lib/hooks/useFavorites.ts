@@ -1,18 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
 
 import { api } from 'api';
 import { constants } from 'lib/constants';
-import { Asset } from 'lib/types';
+import { Activity, Asset } from 'lib/types';
 import { replaceArrayAtIndex } from 'lib/utils';
+import { useActivities } from './useActivities';
 import { useUserAssets } from './useUserAssets';
 
 export const useFavorites = () => {
 	const queryClient = useQueryClient();
-	const [removeOrAdd, setRemoveOrAdd] = useState<'add' | 'remove'>('add');
 
+	const { addActivity, updateActivity } = useActivities();
 	const { data: assets } = useUserAssets();
-	const [onUndoAsset, setOnUndoAsset] = useState<Asset | null>(null);
 
 	const {
 		mutateAsync: editAssetMutate,
@@ -47,15 +46,18 @@ export const useFavorites = () => {
 		}
 
 		const asset = assets.find(asset => asset.id === assetId);
-
 		if (!asset) {
 			return;
 		}
 
-		// Keep track of the assetId in case
-		// the user is making use of the `Undo` button
-		setOnUndoAsset(asset);
-		setRemoveOrAdd(asset.isFavorite ? 'remove' : 'add');
+		// Add activity for favorite
+		const activityId = addActivity({
+			inProgress: true,
+			isFinished: false,
+			name: asset.name,
+			type: asset.isFavorite ? 'favorite-remove' : 'favorite-add',
+			onUndo: activity => handleOnUndo(asset, activity)
+		});
 
 		await editAssetMutate({
 			id: asset.id,
@@ -64,25 +66,41 @@ export const useFavorites = () => {
 			name: [asset.name],
 			parent_id: asset.parentId ? [asset.parentId] : []
 		});
+
+		// Update activity for favorite
+		updateActivity(activityId, { inProgress: false, isFinished: true });
 	};
 
-	const handleOnUndo = async () => {
-		if (onUndoAsset) {
-			setRemoveOrAdd(onUndoAsset.isFavorite ? 'remove' : 'add');
+	const handleOnUndo = async (asset: Asset, previousActivity: Activity) => {
+		// Reset the previous activity's onUndo button
+		updateActivity(previousActivity.id, { onUndo: undefined });
 
-			await handleOnFavoritesToggle(onUndoAsset.id);
+		// Add onUndo activity
+		const undoActivityId = addActivity({
+			inProgress: true,
+			isFinished: false,
+			name: asset.name,
+			// Reverse because this is an undo
+			type: asset.isFavorite ? 'favorite-add' : 'favorite-remove'
+		});
 
-			// Remove asset from state after pressing `Undo`
-			setOnUndoAsset(null);
-		}
+		await editAssetMutate({
+			id: asset.id,
+			extension: asset.type === 'file' && asset.extension ? [asset.extension] : [],
+			// Reverse because this is an undo
+			is_favorite: asset.isFavorite ? [true] : [false],
+			name: [asset.name],
+			parent_id: asset.parentId ? [asset.parentId] : []
+		});
+
+		// Mark the onUndo activity as finished
+		updateActivity(undoActivityId, { isFinished: true, inProgress: false });
 	};
 
 	return {
 		handleOnFavoritesToggle,
-		handleOnUndo,
 		isLoading,
 		isSuccess,
-		reset,
-		removeOrAdd
+		reset
 	};
 };

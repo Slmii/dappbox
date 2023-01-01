@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { Actions } from 'components/Actions';
-import { Activities } from 'components/Activities';
 import { Search } from 'components/Search';
 import { ViewAssets } from 'components/ViewAssets';
 // import { ViewMode } from 'components/ViewMode';
@@ -37,7 +36,6 @@ export const Home = () => {
 					</Row>
 				</Content>
 			</Main>
-			<Activities />
 		</>
 	);
 };

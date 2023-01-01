@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
+import { Activities } from 'components/Activities';
 import { Layout } from 'components/Layout';
 import { RequireAuthentication } from 'components/RequireAuthentication';
 import { AuthenticatePage, FavoritesPage, HomePage } from 'pages';
@@ -14,6 +15,7 @@ function App() {
 						element={
 							<RequireAuthentication>
 								<HomePage />
+								<Activities />
 							</RequireAuthentication>
 						}
 					/>
@@ -22,6 +24,7 @@ function App() {
 						element={
 							<RequireAuthentication>
 								<FavoritesPage />
+								<Activities />
 							</RequireAuthentication>
 						}
 					/>

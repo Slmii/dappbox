@@ -9,7 +9,6 @@ import { Asset, Doc } from 'lib/types';
 import { getAssetId } from 'lib/url';
 import { getTableAssets } from 'lib/utils';
 import { Box } from 'ui-components/Box';
-import { Snackbar } from 'ui-components/Snackbar';
 import { AssetsTable, Column } from 'ui-components/Table';
 
 const columns: Column = {
@@ -50,11 +49,11 @@ const columns: Column = {
 export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 	const { pathname } = useLocation();
 	const [searchParams] = useSearchParams();
-	const { handleOnFavoritesToggle, isLoading: toggleFavoriteIsLoading, removeOrAdd } = useFavorites();
 	const [{ order, orderBy, selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 	const [docs, setDocs] = useState<Doc[]>([]);
 
 	const { preview, isSuccess, reset } = usePreview();
+	const { handleOnFavoritesToggle } = useFavorites();
 
 	/**
 	 * 1. Render assets that are a child of the current assetId in the URL
@@ -113,15 +112,10 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 					setOrder={order => setTableState(prevState => ({ ...prevState, order }))}
 					setOrderBy={orderBy => setTableState(prevState => ({ ...prevState, orderBy }))}
 					setSelectedRows={selectedAssets => setTableState(prevState => ({ ...prevState, selectedAssets }))}
-					onFavoriteToggle={assetId => handleOnFavoritesToggle(assetId)}
+					onFavoriteToggle={handleOnFavoritesToggle}
 					onPreview={downloadPreviewChunks}
 				/>
 			</Box>
-			<Snackbar
-				open={toggleFavoriteIsLoading}
-				message={`${removeOrAdd === 'add' ? 'Adding asset to' : 'Removing asset from'} favorites`}
-				loader
-			/>
 			{isSuccess ? (
 				<PreviewBackdrop
 					open={isSuccess}

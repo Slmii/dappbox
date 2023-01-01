@@ -38,6 +38,14 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 			return 'editOutlined';
 		}
 
+		if (type === 'favorite-add') {
+			return 'favorite';
+		}
+
+		if (type === 'favorite-remove') {
+			return 'favoriteOutlined';
+		}
+
 		return 'uploadFile';
 	};
 

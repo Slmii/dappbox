@@ -10,7 +10,6 @@ import { Divider } from 'ui-components/Divider';
 import { IconButton } from 'ui-components/IconButton';
 import { AssetsList } from 'ui-components/List';
 import { TableLoader } from 'ui-components/Loaders';
-import { Snackbar } from 'ui-components/Snackbar';
 import { PageTitle } from 'ui-components/Typography';
 
 export const Favorites = () => {
@@ -18,19 +17,12 @@ export const Favorites = () => {
 	const [docs, setDocs] = useState<Doc[]>([]);
 	const [assetIdToPreview, setAssetIdToPreview] = useState(0);
 	const [assetIdToDownload, setAssetIdToDownload] = useState(0);
-	const [assetIdToFavorite, setAssetIdToFavorite] = useState(0);
+	const [assetIdsToFavorite, setAssetIdsToFavorite] = useState<number[]>([]);
 
-	const { preview, isSuccess, reset } = usePreview();
+	const { preview, isSuccess: previewIsSuccess, reset: previewReset } = usePreview();
 	const { download } = useDownload();
 	const { data: assets, isLoading: useAssetsIsLoading } = useUserAssets();
-	const {
-		handleOnFavoritesToggle,
-		handleOnUndo,
-		isSuccess: toggleFavoriteIsSuccess,
-		reset: toggleFavoriteReset,
-		isLoading: toggleFavoriteIsLoading,
-		removeOrAdd
-	} = useFavorites();
+	const { handleOnFavoritesToggle } = useFavorites();
 
 	const favoriteAssets = useMemo(() => {
 		if (!assets) {
@@ -94,11 +86,13 @@ export const Favorites = () => {
 											<IconButton
 												icon='favorite'
 												label='Remove from favorites'
-												loading={assetIdToFavorite === asset.id}
+												loading={assetIdsToFavorite.includes(asset.id)}
 												onClick={async () => {
-													setAssetIdToFavorite(asset.id);
+													setAssetIdsToFavorite(prevState => [...prevState, asset.id]);
 													await handleOnFavoritesToggle(asset.id);
-													setAssetIdToFavorite(0);
+													setAssetIdsToFavorite(prevState =>
+														prevState.filter(id => id !== asset.id)
+													);
 												}}
 											/>
 											<IconButton
@@ -123,23 +117,12 @@ export const Favorites = () => {
 						)}
 					</>
 				</Content>
-				<Snackbar
-					open={toggleFavoriteIsLoading}
-					message={`${removeOrAdd === 'add' ? 'Adding asset to' : 'Removing asset from'} favorites`}
-					loader
-				/>
-				<Snackbar
-					open={toggleFavoriteIsSuccess}
-					onClose={toggleFavoriteReset}
-					message={`Asset is successfully ${removeOrAdd === 'add' ? 'added to' : 'removed from'} favorites`}
-					onUndo={handleOnUndo}
-				/>
 			</Main>
-			{isSuccess ? (
+			{previewIsSuccess ? (
 				<PreviewBackdrop
-					open={isSuccess}
+					open={previewIsSuccess}
 					onClick={() => {
-						reset();
+						previewReset();
 						setDocs([]);
 					}}
 					docs={docs}
