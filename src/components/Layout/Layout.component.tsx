@@ -1,6 +1,5 @@
 import { Outlet, useLocation } from 'react-router-dom';
 
-import { ErrorBoundary } from 'components/Error';
 import { Header } from 'components/Header';
 import { PageTitle } from 'components/PageTitle';
 import { Providers } from 'lib/providers';
@@ -12,11 +11,9 @@ export const Layout = () => {
 	return (
 		<Providers>
 			<PageTitle />
-			<ErrorBoundary>
-				<Header />
-				{!pathname.includes('authenticate') ? <Drawer /> : null}
-				<Outlet />
-			</ErrorBoundary>
+			<Header />
+			{!pathname.includes('authenticate') ? <Drawer /> : null}
+			<Outlet />
 		</Providers>
 	);
 };

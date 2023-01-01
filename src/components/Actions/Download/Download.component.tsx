@@ -6,7 +6,7 @@ import { Button } from 'ui-components/Button';
 
 export const Download = () => {
 	const { selectedAssets } = useRecoilValue(tableStateAtom);
-	const { download, isLoading } = useDownload();
+	const { download } = useDownload();
 
 	return (
 		<>
@@ -16,7 +16,6 @@ export const Download = () => {
 					startIcon='download'
 					variant='outlined'
 					color='inherit'
-					loading={isLoading}
 					onClick={async () => {
 						await download(selectedAssets);
 					}}

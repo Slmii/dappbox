@@ -81,7 +81,8 @@ export const useFavorites = () => {
 			isFinished: false,
 			name: asset.name,
 			// Reverse because this is an undo
-			type: asset.isFavorite ? 'favorite-add' : 'favorite-remove'
+			type: asset.isFavorite ? 'favorite-add' : 'favorite-remove',
+			isUndo: true
 		});
 
 		await editAssetMutate({

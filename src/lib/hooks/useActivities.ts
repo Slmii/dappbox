@@ -31,7 +31,17 @@ export const useActivities = () => {
 
 	const removeAllActivities = () => {
 		setActivities(({ activities, id }) => {
-			const newActivities = activities.filter(activity => !activity.isFinished);
+			const newActivities = activities.filter(activity => {
+				if (activity.isFinished) {
+					return false;
+				}
+
+				if (activity.error) {
+					return false;
+				}
+
+				return true;
+			});
 
 			return {
 				id,

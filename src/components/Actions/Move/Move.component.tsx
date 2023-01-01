@@ -69,13 +69,18 @@ export const Move = () => {
 
 	// Filter out assets who cannot be moved to the same folder or if the folder asset is being moved to a child
 	const assetsToMove = useMemo(() => {
-		// Moving asset to home
-		if (selectedFolderAssetId === 0) {
-			return selectedAssets;
-		}
-
 		return selectedAssets.filter(asset => {
 			const parentId = getParentId(asset.id);
+
+			// If the asset is already in home
+			if (selectedFolderAssetId === parentId) {
+				return false;
+			}
+
+			// Moving asset to home
+			if (selectedFolderAssetId === 0) {
+				return true;
+			}
 
 			// Asset's parentId cannot be the same as the selected folder's assetId
 			// This means that an asset cannot be moved to the current position of the tree, because
@@ -124,7 +129,7 @@ export const Move = () => {
 		});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedFolderAssetId, selectedAssets]);
+	}, [moveFolderDialogOpen, selectedFolderAssetId]);
 
 	const handleOnMoveFolder = () => {
 		setMoveFolderDialogOpen(selectedAssets.length > 0);
@@ -161,21 +166,28 @@ export const Move = () => {
 			});
 		});
 
-		await moveAssetMutate(
-			assetsToMove.map(asset => ({
-				id: asset.id,
-				parent_id: [selectedFolderAssetId]
-			}))
-		);
+		try {
+			await moveAssetMutate(
+				assetsToMove.map(asset => ({
+					id: asset.id,
+					parent_id: [selectedFolderAssetId]
+				}))
+			);
 
-		// Mark move activities as finished
-		activityIds.forEach(activityId => updateActivity(activityId, { isFinished: true, inProgress: false }));
+			// Mark move activities as finished
+			activityIds.forEach(activityId => updateActivity(activityId, { isFinished: true, inProgress: false }));
 
-		// Reset selected rows
-		setTableState(prevState => ({
-			...prevState,
-			selectedAssets: []
-		}));
+			// Reset selected rows
+			setTableState(prevState => ({
+				...prevState,
+				selectedAssets: []
+			}));
+		} catch (error) {
+			// Mark move activities as error
+			activityIds.forEach(activityId =>
+				updateActivity(activityId, { inProgress: false, error: (error as Error).message })
+			);
+		}
 	};
 
 	const handleOnUndo = async (asset: Asset, previousActivity: Activity) => {
@@ -193,7 +205,8 @@ export const Move = () => {
 			isFinished: false,
 			name: previousActivity.name,
 			newFolder: moveTo?.name ?? 'Home',
-			type: 'move'
+			type: 'move',
+			isUndo: true
 		});
 
 		// Apply `undo` asset

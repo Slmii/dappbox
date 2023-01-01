@@ -49,7 +49,7 @@ export const useUserAssets = () => {
 			return asset.parentId;
 		}
 
-		return undefined;
+		return 0;
 	};
 
 	const getRootParent = (assetId: number): Asset | undefined => {

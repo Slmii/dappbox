@@ -28,7 +28,12 @@ export abstract class Actor {
 			return this.authClient;
 		}
 
-		return AuthClient.create();
+		return AuthClient.create({
+			idleOptions: {
+				disableDefaultIdleCallback: true,
+				disableIdle: true
+			}
+		});
 	}
 
 	static async getActor<T>(controller: Controller, canisterPrincipal?: Principal): Promise<ActorSubclass<T>> {

@@ -34,7 +34,6 @@ export const Delete = () => {
 			await queryClient.invalidateQueries([constants.QUERY_KEYS.USED_SPACE]);
 		}
 	});
-
 	const { mutateAsync: deleteChunksMutate } = useMutation({
 		mutationFn: api.Chunks.deleteChunks
 	});
@@ -52,17 +51,24 @@ export const Delete = () => {
 		);
 
 		const assetsToDelete = selectedAssets.map(asset => [asset, ...getNestedChildAssets(asset.id)]).flat();
-		await deleteAssetsMutate(assetsToDelete.map(asset => asset.id));
-		await deleteChunksMutate(assetsToDelete.map(asset => asset.chunks.map(chunk => chunk.id)).flat());
+		try {
+			await deleteAssetsMutate(assetsToDelete.map(asset => asset.id));
+			await deleteChunksMutate(assetsToDelete.map(asset => asset.chunks.map(chunk => chunk.id)).flat());
 
-		// Mark all as finished
-		activityIds.forEach(activityId => updateActivity(activityId, { inProgress: false, isFinished: true }));
+			// Mark all as finished
+			activityIds.forEach(activityId => updateActivity(activityId, { inProgress: false, isFinished: true }));
 
-		// Reset selected rows
-		setTableState(prevState => ({
-			...prevState,
-			selectedAssets: []
-		}));
+			// Reset selected rows
+			setTableState(prevState => ({
+				...prevState,
+				selectedAssets: []
+			}));
+		} catch (error) {
+			// Mark all as error
+			activityIds.forEach(activityId =>
+				updateActivity(activityId, { inProgress: false, error: (error as Error).message })
+			);
+		}
 	};
 
 	return (

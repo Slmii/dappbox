@@ -39,6 +39,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import ShareIcon from '@mui/icons-material/Share';
+import UndoIcon from '@mui/icons-material/Undo';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -91,7 +92,8 @@ const icons = {
 	settings: SettingsIcon,
 	settingsOutlined: SettingsOutlinedIcon,
 	profile: FaceIcon,
-	menu: MenuIcon
+	menu: MenuIcon,
+	undo: UndoIcon
 };
 
 export type Icons = keyof typeof icons;

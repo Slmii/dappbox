@@ -76,16 +76,24 @@ export const Rename = () => {
 				onUndo: activity => handleOnUndo(asset, activity)
 			});
 
-			await editAssetMutate({
-				id: asset.id,
-				name: [data.folderName],
-				extension: asset.type === 'file' ? [getExtension(data.folderName)] : [],
-				is_favorite: [asset.isFavorite],
-				parent_id: asset.parentId ? [asset.parentId] : []
-			});
+			try {
+				await editAssetMutate({
+					id: asset.id,
+					name: [data.folderName],
+					extension: asset.type === 'file' ? [getExtension(data.folderName)] : [],
+					is_favorite: [asset.isFavorite],
+					parent_id: asset.parentId ? [asset.parentId] : []
+				});
 
-			// Mark rename activity as finished
-			updateActivity(activityId, { isFinished: true, inProgress: false });
+				// Mark rename activity as finished
+				updateActivity(activityId, { isFinished: true, inProgress: false });
+			} catch (error) {
+				// Mark rename activity as error
+				updateActivity(activityId, {
+					inProgress: false,
+					error: (error as Error).message
+				});
+			}
 		});
 	};
 
@@ -99,7 +107,8 @@ export const Rename = () => {
 			isFinished: false,
 			name: asset.name,
 			oldName: previousActivity.name,
-			type: 'rename'
+			type: 'rename',
+			isUndo: true
 		});
 
 		// Apply `undo` assets

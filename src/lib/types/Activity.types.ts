@@ -11,6 +11,9 @@ export type ActivityType =
 export interface Activity {
 	id: number;
 	name: string;
+	type: ActivityType;
+	inProgress: boolean;
+	isFinished: boolean;
 	/**
 	 * Used for renaming asset. The old name will be shown as strike-through
 	 */
@@ -20,9 +23,7 @@ export interface Activity {
 	 * moved to
 	 */
 	newFolder?: string;
-	type: ActivityType;
-	inProgress: boolean;
-	isFinished: boolean;
+	isUndo?: boolean;
 	/**
 	 * The created activity's ID as an argument in the callback
 	 */
@@ -31,6 +32,7 @@ export interface Activity {
 	 * Redirect to a URL
 	 */
 	href?: string;
+	error?: string;
 }
 
 export interface FileWithActivity {
