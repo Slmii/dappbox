@@ -63,7 +63,7 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 						width: activity.isFinished && activity.onUndo ? '55%' : activity.inProgress ? '85%' : '75%'
 					}}
 				>
-					<Tooltip label={activity.isFinished ? 'Done' : 'In queue'}>
+					<Tooltip label={activity.isFinished ? 'Done' : activity.inProgress ? 'In progress' : 'In queue'}>
 						<Badge variant='dot' color={activity.isFinished ? 'success' : 'warning'} />
 					</Tooltip>
 					<Icon icon={getIcon(activity.type)} color='inherit' fontSize='small' />
