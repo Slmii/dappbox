@@ -90,7 +90,7 @@ export const Rename = () => {
 	};
 
 	const handleOnUndo = async (asset: Asset, previousActivity: Activity) => {
-		// Reset the current activity's onUndo button
+		// Reset the previous activity's onUndo button
 		updateActivity(previousActivity.id, { onUndo: undefined });
 
 		// Add onUndo activity
@@ -111,7 +111,7 @@ export const Rename = () => {
 			parent_id: asset.parentId ? [asset.parentId] : []
 		});
 
-		// Mark the onUndo as finished
+		// Mark the onUndo activity as finished
 		updateActivity(undoActivityId, { isFinished: true, inProgress: false });
 	};
 
