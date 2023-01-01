@@ -1,9 +1,9 @@
 import MuiButton from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 
 import { constants } from 'lib/constants';
 import { icons } from 'ui-components/icons';
 import { CircularProgress } from 'ui-components/Progress';
+import { Tooltip } from 'ui-components/Tooltip';
 import { CustomButtonProps } from './Button.types';
 
 export const Button = ({
@@ -56,9 +56,7 @@ export const Button = ({
 	return (
 		<>
 			{tooltip ? (
-				<Tooltip arrow title={tooltip}>
-					{props.disabled ? <span>{button}</span> : button}
-				</Tooltip>
+				<Tooltip label={tooltip}>{props.disabled ? <span>{button}</span> : button}</Tooltip>
 			) : (
 				<>{button}</>
 			)}

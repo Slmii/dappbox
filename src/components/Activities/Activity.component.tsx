@@ -10,6 +10,7 @@ import { Divider } from 'ui-components/Divider';
 import { Icon } from 'ui-components/Icon';
 import { IconButton } from 'ui-components/IconButton';
 import { Icons } from 'ui-components/icons';
+import { Tooltip } from 'ui-components/Tooltip';
 import { Caption } from 'ui-components/Typography';
 import { ActivityProps } from './Activity.types';
 
@@ -62,7 +63,9 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 						width: activity.isFinished && activity.onUndo ? '55%' : activity.inProgress ? '85%' : '75%'
 					}}
 				>
-					<Badge variant='dot' color={activity.isFinished ? 'success' : 'warning'} />
+					<Tooltip label={activity.isFinished ? 'Done' : 'In queue'}>
+						<Badge variant='dot' color={activity.isFinished ? 'success' : 'warning'} />
+					</Tooltip>
 					<Icon icon={getIcon(activity.type)} color='inherit' fontSize='small' />
 					<Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
 						<Caption noWrap>{activity.name}</Caption>

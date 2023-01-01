@@ -1,8 +1,8 @@
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import Tooltip from '@mui/material/Tooltip';
 
 import { Icon } from 'ui-components/Icon';
+import { Tooltip } from 'ui-components/Tooltip';
 import { ToggleGroupProps } from './ToggleGroup.types';
 
 export const ToggleGroup = ({ selected, onChange, options }: ToggleGroupProps) => {
@@ -15,7 +15,7 @@ export const ToggleGroup = ({ selected, onChange, options }: ToggleGroupProps) =
 			color='primary'
 		>
 			{options.map(option => (
-				<Tooltip key={option.value} arrow title={option.label}>
+				<Tooltip key={option.value} label={option.label}>
 					<ToggleButton value={option.value} aria-label={option.value} selected={selected === option.value}>
 						<Icon icon={option.icon} fontSize='small' />
 					</ToggleButton>
