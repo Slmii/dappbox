@@ -1,33 +1,35 @@
 import Typography from '@mui/material/Typography';
 import { PropsWithChildren } from 'react';
 
-export const Caption = ({ children, gutter }: PropsWithChildren<{ gutter?: boolean }>) => {
+import { TypographyProps } from 'lib/types';
+
+export const Caption = ({ children, gutter, noWrap }: PropsWithChildren<TypographyProps>) => {
 	return (
-		<Typography color='inherit' variant='caption' gutterBottom={gutter}>
+		<Typography color='inherit' variant='caption' gutterBottom={gutter} noWrap={noWrap}>
 			{children}
 		</Typography>
 	);
 };
 
-export const PageTitle = ({ children, gutter }: PropsWithChildren<{ gutter?: boolean }>) => {
+export const PageTitle = ({ children, gutter, noWrap }: PropsWithChildren<TypographyProps>) => {
 	return (
-		<Typography color='inherit' variant='h4' fontWeight='bold' gutterBottom={gutter}>
+		<Typography color='inherit' variant='h4' fontWeight='bold' gutterBottom={gutter} noWrap={noWrap}>
 			{children}
 		</Typography>
 	);
 };
 
-export const SubTitle = ({ children, gutter }: PropsWithChildren<{ gutter?: boolean }>) => {
+export const SubTitle = ({ children, gutter, noWrap }: PropsWithChildren<TypographyProps>) => {
 	return (
-		<Typography color='inherit' variant='subtitle2' gutterBottom={gutter}>
+		<Typography color='inherit' variant='subtitle2' gutterBottom={gutter} noWrap={noWrap}>
 			{children}
 		</Typography>
 	);
 };
 
-export const Paragraph = ({ children, gutter }: PropsWithChildren<{ gutter?: boolean }>) => {
+export const Paragraph = ({ children, gutter, noWrap }: PropsWithChildren<TypographyProps>) => {
 	return (
-		<Typography variant='body2' gutterBottom={gutter}>
+		<Typography variant='body2' gutterBottom={gutter} noWrap={noWrap}>
 			{children}
 		</Typography>
 	);

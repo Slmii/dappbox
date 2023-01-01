@@ -3,13 +3,14 @@ export type ActivityType = 'file' | 'download' | 'delete' | 'move' | 'folder' | 
 export interface Activity {
 	id: number;
 	name: string;
+	oldName?: string;
 	type: ActivityType;
 	inProgress: boolean;
 	isFinished: boolean;
 	/**
 	 * The created activity's ID as an argument in the callback
 	 */
-	onUndo?: (activityId: number) => void | Promise<void>;
+	onUndo?: (activity: Activity) => void | Promise<void>;
 	/**
 	 * Redirect to a URL
 	 */

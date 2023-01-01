@@ -51,13 +51,40 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 					minHeight: constants.ACTIVITIES.ITEM
 				}}
 			>
-				<Column>
+				<Box
+					sx={{
+						display: 'flex',
+						flexDirection: 'row',
+						alignItems: 'center',
+						columnGap: constants.SPACING,
+						// Calculate the width based on the activity's state, in order to get correct ellipses
+						width: activity.isFinished && activity.onUndo ? '55%' : activity.inProgress ? '85%' : '75%'
+					}}
+				>
 					<Icon icon={getIcon(activity.type)} color='inherit' fontSize='small' />
-					<Caption>{activity.name}</Caption>
-				</Column>
+					<Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+						<Caption noWrap>{activity.name}</Caption>
+						{activity.oldName ? (
+							<Box
+								component='span'
+								sx={{
+									fontSize: 10,
+									textDecoration: 'line-through',
+									textDecorationColor: theme => theme.palette.error.main,
+									whiteSpace: 'nowrap',
+									overflow: 'hidden',
+									textOverflow: 'ellipsis',
+									color: theme => theme.palette.text.disabled
+								}}
+							>
+								{activity.oldName}
+							</Box>
+						) : null}
+					</Box>
+				</Box>
 				<Column spacing={0}>
 					{activity.onUndo && activity.isFinished ? (
-						<Button label='Undo' onClick={() => activity.onUndo?.(activity.id)} />
+						<Button label='Undo' onClick={() => activity.onUndo?.(activity)} />
 					) : null}
 					{activity.href && activity.isFinished ? (
 						<Button label='View' onClick={() => activity.href && navigate(activity.href)} />

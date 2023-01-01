@@ -7,7 +7,7 @@ import { constants } from 'lib/constants';
 import { useActivities, useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
-import { Asset } from 'lib/types';
+import { Activity, Asset } from 'lib/types';
 import { getExtension, replaceArrayAtIndex } from 'lib/utils';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -71,8 +71,9 @@ export const Rename = () => {
 				inProgress: true,
 				isFinished: false,
 				name: data.folderName,
+				oldName: asset.name,
 				type: 'rename',
-				onUndo: activityId => handleOnUndo(asset, activityId)
+				onUndo: activity => handleOnUndo(asset, activity)
 			});
 
 			await editAssetMutate({
@@ -88,15 +89,16 @@ export const Rename = () => {
 		});
 	};
 
-	const handleOnUndo = async (asset: Asset, activityId: number) => {
+	const handleOnUndo = async (asset: Asset, previousActivity: Activity) => {
 		// Reset the current activity's onUndo button
-		updateActivity(activityId, { onUndo: undefined });
+		updateActivity(previousActivity.id, { onUndo: undefined });
 
 		// Add onUndo activity
 		const undoActivityId = addActivity({
 			inProgress: true,
 			isFinished: false,
 			name: asset.name,
+			oldName: previousActivity.name,
 			type: 'rename'
 		});
 

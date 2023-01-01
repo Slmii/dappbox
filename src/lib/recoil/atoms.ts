@@ -1,7 +1,6 @@
-import { atom } from 'recoil';
+import { atom, selectorFamily } from 'recoil';
 
-import { Activity } from 'lib/types';
-import { TableState } from 'lib/types/Table.types';
+import { Activity, TableState } from 'lib/types';
 
 /**
  * Atom for current table state (order, orderBy and selectedAssets)
@@ -37,4 +36,15 @@ export const activitiesAtom = atom<{ open: boolean; id: number; activities: Acti
 		id: 0,
 		activities: []
 	}
+});
+
+/**
+ * Get a single activity
+ */
+export const activityAtom = selectorFamily({
+	key: 'activityAtom',
+	get:
+		(activityId: number) =>
+		({ get }) =>
+			get(activitiesAtom).activities.find(activity => activity.id === activityId)
 });

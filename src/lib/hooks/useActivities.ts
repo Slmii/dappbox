@@ -18,10 +18,15 @@ export const useActivities = () => {
 	};
 
 	const removeActivity = (activityId: number) => {
-		setActivities(({ activities, ...rest }) => ({
-			...rest,
-			activities: activities.filter(activity => activity.id !== activityId)
-		}));
+		setActivities(({ activities, id }) => {
+			const newActivities = activities.filter(activity => activity.id !== activityId);
+
+			return {
+				id,
+				open: !!newActivities.length,
+				activities: activities.filter(activity => activity.id !== activityId)
+			};
+		});
 	};
 
 	const removeAllActivities = () => {
