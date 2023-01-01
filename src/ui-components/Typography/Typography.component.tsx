@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography';
 import { PropsWithChildren } from 'react';
 
-import { TypographyProps } from 'lib/types';
+import { TypographyProps } from './Typograpgy.types';
 
 export const Caption = ({ children, gutter, noWrap }: PropsWithChildren<TypographyProps>) => {
 	return (
