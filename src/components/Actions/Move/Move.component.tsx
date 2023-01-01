@@ -4,15 +4,14 @@ import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
 import { constants } from 'lib/constants';
-import { useUserAssets } from 'lib/hooks';
+import { useActivities, useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
-import { Asset } from 'lib/types';
+import { Activity, Asset } from 'lib/types';
 import { getTableAssets, replaceArrayAtIndex } from 'lib/utils';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { IconButton } from 'ui-components/IconButton';
 import { AssetsList } from 'ui-components/List';
-import { Snackbar } from 'ui-components/Snackbar';
 import { MoveFolderBreadcrumbs } from './Breadcrumbs.component';
 
 export const Move = () => {
@@ -22,17 +21,12 @@ export const Move = () => {
 	const [selectedFolderAssetId, setSelectedFolderAssetId] = useState<number>(0);
 	// State for showing children of the selected folder
 	const [parentAssetId, setParentAssetId] = useState<number>(0);
-	const [undoAssets, setUndoAssets] = useState<Asset[]>([]);
 
 	const { data: assets, getChildAssets, getParentId, getRootParent } = useUserAssets();
 	const [{ selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 
-	const {
-		mutateAsync: moveAssetMutate,
-		isLoading: moveAssetsIsLoading,
-		isSuccess: moveAssetsIsSuccess,
-		reset: moveAssetsReset
-	} = useMutation({
+	const { addActivity, updateActivity } = useActivities();
+	const { mutateAsync: moveAssetMutate } = useMutation({
 		mutationFn: api.Assets.moveAssets,
 		onSuccess: movedAssets => {
 			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
@@ -75,6 +69,11 @@ export const Move = () => {
 
 	// Filter out assets who cannot be moved to the same folder or if the folder asset is being moved to a child
 	const assetsToMove = useMemo(() => {
+		// Moving asset to home
+		if (selectedFolderAssetId === 0) {
+			return selectedAssets;
+		}
+
 		return selectedAssets.filter(asset => {
 			const parentId = getParentId(asset.id);
 
@@ -125,7 +124,7 @@ export const Move = () => {
 		});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selectedFolderAssetId]);
+	}, [selectedFolderAssetId, selectedAssets]);
 
 	const handleOnMoveFolder = () => {
 		setMoveFolderDialogOpen(selectedAssets.length > 0);
@@ -148,7 +147,19 @@ export const Move = () => {
 		}
 
 		resetState();
-		setUndoAssets(assets);
+
+		// Add move activities for each asset to be moved
+		const moveTo = assets.find(asset => asset.id === selectedFolderAssetId);
+		const activityIds = assetsToMove.map(asset => {
+			return addActivity({
+				inProgress: true,
+				isFinished: false,
+				name: asset.name,
+				newFolder: moveTo?.name ?? 'Home',
+				type: 'move',
+				onUndo: activity => handleOnUndo(asset, activity)
+			});
+		});
 
 		await moveAssetMutate(
 			assetsToMove.map(asset => ({
@@ -157,11 +168,44 @@ export const Move = () => {
 			}))
 		);
 
+		// Mark move activities as finished
+		activityIds.forEach(activityId => updateActivity(activityId, { isFinished: true, inProgress: false }));
+
 		// Reset selected rows
 		setTableState(prevState => ({
 			...prevState,
 			selectedAssets: []
 		}));
+	};
+
+	const handleOnUndo = async (asset: Asset, previousActivity: Activity) => {
+		if (!assets?.length) {
+			return;
+		}
+
+		// Reset the previous activity's onUndo button
+		updateActivity(previousActivity.id, { onUndo: undefined });
+
+		// Add onUndo activity
+		const moveTo = assets.find(({ id }) => id === asset.parentId);
+		const undoActivityId = addActivity({
+			inProgress: true,
+			isFinished: false,
+			name: previousActivity.name,
+			newFolder: moveTo?.name ?? 'Home',
+			type: 'move'
+		});
+
+		// Apply `undo` asset
+		await moveAssetMutate([
+			{
+				id: asset.id,
+				parent_id: asset.parentId ? [asset.parentId] : []
+			}
+		]);
+
+		// Mark the onUndo activity as finished
+		updateActivity(undoActivityId, { isFinished: true, inProgress: false });
 	};
 
 	return (
@@ -181,7 +225,7 @@ export const Move = () => {
 						open={moveFolderDialogOpen}
 						onConfirm={handleOnConfirmMoveAssets}
 						// Disable if no parent folder has been selected
-						onConfirmDisabled={selectedFolderAssetId === 0 || !assetsToMove.length}
+						onConfirmDisabled={!assetsToMove.length}
 						onConfirmText='Move here'
 					>
 						<MoveFolderBreadcrumbs
@@ -195,6 +239,7 @@ export const Move = () => {
 								name: asset.name,
 								icon: 'folder',
 								onClick: setSelectedFolderAssetId,
+								// Show button only if there are nested assets with the type folder
 								secondaryAction: getChildAssets(asset.id).filter(asset => asset.type === 'folder')
 									.length ? (
 									<IconButton
@@ -208,30 +253,6 @@ export const Move = () => {
 					</Dialog>
 				</>
 			) : null}
-			<Snackbar open={moveAssetsIsLoading} message='Moving assets' loader />
-			<Snackbar
-				open={moveAssetsIsSuccess}
-				message='Assets moved successfully'
-				onUndo={async () => {
-					if (!undoAssets.length) {
-						return;
-					}
-
-					await moveAssetMutate(
-						undoAssets.map(asset => ({
-							id: asset.id,
-							parent_id: asset.parentId ? [asset.parentId] : []
-						}))
-					);
-
-					setUndoAssets([]);
-					moveAssetsReset();
-				}}
-				onClose={() => {
-					setUndoAssets([]);
-					moveAssetsReset();
-				}}
-			/>
 		</>
 	);
 };

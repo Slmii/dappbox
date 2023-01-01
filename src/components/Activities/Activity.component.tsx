@@ -64,20 +64,44 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 					<Icon icon={getIcon(activity.type)} color='inherit' fontSize='small' />
 					<Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
 						<Caption noWrap>{activity.name}</Caption>
+						{activity.newFolder ? (
+							<Box
+								component='span'
+								sx={{
+									fontSize: 10,
+									whiteSpace: 'nowrap',
+									overflow: 'hidden',
+									textOverflow: 'ellipsis',
+									color: theme => theme.palette.text.primary
+								}}
+							>
+								{activity.inProgress ? (
+									<>Moving...</>
+								) : (
+									<>
+										Moved to: <b>{activity.newFolder}</b>
+									</>
+								)}
+							</Box>
+						) : null}
 						{activity.oldName ? (
 							<Box
 								component='span'
 								sx={{
 									fontSize: 10,
-									textDecoration: 'line-through',
-									textDecorationColor: theme => theme.palette.error.main,
 									whiteSpace: 'nowrap',
 									overflow: 'hidden',
 									textOverflow: 'ellipsis',
-									color: theme => theme.palette.text.disabled
+									color: theme => theme.palette.text.primary
 								}}
 							>
-								{activity.oldName}
+								{activity.inProgress ? (
+									<>Renaming...</>
+								) : (
+									<>
+										Renamed from: <b>{activity.oldName}</b>
+									</>
+								)}{' '}
 							</Box>
 						) : null}
 					</Box>

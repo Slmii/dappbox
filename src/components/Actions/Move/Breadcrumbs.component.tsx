@@ -52,7 +52,7 @@ export const MoveFolderBreadcrumbs = ({
 				}}
 				onClick={() => onBreadcrumbClick(0)}
 			>
-				<Caption>DappBox</Caption>
+				<Caption>Home</Caption>
 				{parentAssetId > 0 ? (
 					<Icon
 						icon='next'

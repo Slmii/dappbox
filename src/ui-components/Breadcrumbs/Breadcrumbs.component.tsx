@@ -44,7 +44,7 @@ export const Breadcrumbs = () => {
 				color={isHomePage ? 'text.primary' : 'inherit'}
 				to='/'
 			>
-				DappBox
+				Home
 			</MuiLink>
 			{breadcrumbs.map((breadcrumb, idx) => {
 				if (breadcrumbs.length === idx + 1) {
