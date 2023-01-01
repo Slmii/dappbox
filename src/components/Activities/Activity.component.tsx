@@ -76,7 +76,9 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 								}}
 							>
 								{activity.inProgress ? (
-									<>Moving...</>
+									<>
+										Moving to: <b>{activity.newFolder}</b>
+									</>
 								) : (
 									<>
 										Moved to: <b>{activity.newFolder}</b>
@@ -96,7 +98,9 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 								}}
 							>
 								{activity.inProgress ? (
-									<>Renaming...</>
+									<>
+										Renaming from: <b>{activity.oldName}</b>
+									</>
 								) : (
 									<>
 										Renamed from: <b>{activity.oldName}</b>
