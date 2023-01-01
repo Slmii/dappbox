@@ -17,6 +17,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FaceIcon from '@mui/icons-material/Face';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FeedbackIcon from '@mui/icons-material/Feedback';
@@ -27,6 +28,7 @@ import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import InfoIcon from '@mui/icons-material/Info';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ListIcon from '@mui/icons-material/List';
+import MenuIcon from '@mui/icons-material/Menu';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -34,6 +36,8 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import PrintIcon from '@mui/icons-material/Print';
 import SearchIcon from '@mui/icons-material/Search';
+import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import ShareIcon from '@mui/icons-material/Share';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import ViewComfyIcon from '@mui/icons-material/ViewComfy';
@@ -83,7 +87,11 @@ const icons = {
 	feedback: FeedbackIcon,
 	search: SearchIcon,
 	info: InfoIcon,
-	infoOutlined: InfoOutlinedIcon
+	infoOutlined: InfoOutlinedIcon,
+	settings: SettingsIcon,
+	settingsOutlined: SettingsOutlinedIcon,
+	profile: FaceIcon,
+	menu: MenuIcon
 };
 
 export type Icons = keyof typeof icons;

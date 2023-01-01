@@ -49,7 +49,6 @@ export const Header = () => {
 						tooltip='Copy principal'
 					/>
 				) : null}
-
 				<IconButton
 					icon={colorMode === 'dark' ? 'lightMode' : 'darkMode'}
 					label={colorMode === 'dark' ? 'Lights on' : 'Lights off'}
@@ -57,13 +56,14 @@ export const Header = () => {
 				/>
 				{isAuthenticated ? (
 					<Menu
-						label={<IconButton icon='account' label='Profile' loading={isLogOutLoading} />}
+						label={<IconButton icon='menu' label='Menu' loading={isLogOutLoading} />}
 						id='profile'
 						menu={[
-							{
-								label: 'Set username (Soon)',
-								disabled: true
-							},
+							// {
+							// 	label: 'Profile',
+							// 	icon: 'profile',
+							// 	action: () => setProfileOpen(true)
+							// },
 							{
 								label: 'Bug/Feedback',
 								action: () =>
