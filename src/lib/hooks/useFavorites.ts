@@ -59,16 +59,21 @@ export const useFavorites = () => {
 			onUndo: activity => handleOnUndo(asset, activity)
 		});
 
-		await editAssetMutate({
-			id: asset.id,
-			extension: asset.type === 'file' && asset.extension ? [asset.extension] : [],
-			is_favorite: asset.isFavorite ? [false] : [true],
-			name: [asset.name],
-			parent_id: asset.parentId ? [asset.parentId] : []
-		});
+		try {
+			await editAssetMutate({
+				id: asset.id,
+				extension: asset.type === 'file' && asset.extension ? [asset.extension] : [],
+				is_favorite: asset.isFavorite ? [false] : [true],
+				name: [asset.name],
+				parent_id: asset.parentId ? [asset.parentId] : []
+			});
 
-		// Update activity for favorite
-		updateActivity(activityId, { inProgress: false, isFinished: true });
+			// Update activity for favorite
+			updateActivity(activityId, { inProgress: false, isFinished: true });
+		} catch (error) {
+			// Update activity as error
+			updateActivity(activityId, { inProgress: false, error: (error as Error).message });
+		}
 	};
 
 	const handleOnUndo = async (asset: Asset, previousActivity: Activity) => {
