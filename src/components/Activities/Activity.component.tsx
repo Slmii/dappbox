@@ -128,14 +128,16 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 									fontSize: 14
 								}}
 							>
-								<Icon icon='undo' color='info' fontSize='inherit' sx={{ zIndex: 2 }} />
+								<Icon icon='undo' color='action' fontSize='inherit' sx={{ zIndex: 2 }} />
 							</Box>
 						) : null}
 					</Box>
 					<Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
 						<Caption noWrap>{activity.name}</Caption>
 						{activity.error ? (
-							<SubText color='error'>Error: {activity.error}</SubText>
+							<SubText color='error'>
+								Error: <b>{activity.error}</b>
+							</SubText>
 						) : (
 							<>
 								{activity.newFolder ? (
