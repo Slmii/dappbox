@@ -3,7 +3,6 @@ import { useRecoilValue } from 'recoil';
 import { useDownload } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Button } from 'ui-components/Button';
-import { Snackbar } from 'ui-components/Snackbar';
 
 export const Download = () => {
 	const { selectedAssets } = useRecoilValue(tableStateAtom);
@@ -17,12 +16,12 @@ export const Download = () => {
 					startIcon='download'
 					variant='outlined'
 					color='inherit'
+					loading={isLoading}
 					onClick={async () => {
 						await download(selectedAssets);
 					}}
 				/>
 			) : null}
-			<Snackbar open={isLoading} message='Download assets' loader />
 		</>
 	);
 };
