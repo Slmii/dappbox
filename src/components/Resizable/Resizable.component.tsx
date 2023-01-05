@@ -12,6 +12,7 @@ export const Resizeable = ({
 	onResize
 }: PropsWithChildren<ResizableProps>) => {
 	const [heightSize, setHeightSize] = useState(0);
+	const [isDragging, setIsDragging] = useState(false);
 
 	useEffect(() => {
 		setHeightSize(height);
@@ -32,6 +33,7 @@ export const Resizeable = ({
 				y = window.innerHeight;
 			}
 
+			setIsDragging(true);
 			setHeightSize(y);
 			onResize?.(y);
 		}
@@ -39,6 +41,8 @@ export const Resizeable = ({
 		function onMouseUp() {
 			document.body.removeEventListener('mousemove', onMouseMove);
 			// document.body.removeEventListener('mouseup', onMouseUp);
+
+			setIsDragging(false);
 		}
 
 		document.body.addEventListener('mousemove', onMouseMove);
@@ -52,7 +56,7 @@ export const Resizeable = ({
 				width: fullScreen ? window.innerWidth : width,
 				height: fullScreen ? window.innerHeight : heightSize,
 				position: 'relative',
-				transition: !isDraggable && !fullScreen ? 'height 0.25s ease' : undefined
+				transition: !isDragging ? 'width 0.25s, height 0.25s' : undefined
 			}}
 		>
 			{isDraggable ? (
