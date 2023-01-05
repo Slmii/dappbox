@@ -108,7 +108,15 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 					<Tooltip label={getTooltipLabel(activity)}>
 						<Badge
 							variant='dot'
-							color={activity.error ? 'error' : activity.isFinished ? 'success' : 'warning'}
+							color={
+								activity.error
+									? 'error'
+									: activity.isFinished
+									? 'success'
+									: activity.inProgress
+									? 'secondary'
+									: 'warning'
+							}
 						/>
 					</Tooltip>
 					<Box

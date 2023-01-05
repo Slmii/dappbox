@@ -25,6 +25,8 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import FileCopyOutlinedIcon from '@mui/icons-material/FileCopyOutlined';
 import FolderIcon from '@mui/icons-material/Folder';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import InfoIcon from '@mui/icons-material/Info';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ListIcon from '@mui/icons-material/List';
@@ -93,7 +95,9 @@ const icons = {
 	settingsOutlined: SettingsOutlinedIcon,
 	profile: FaceIcon,
 	menu: MenuIcon,
-	undo: UndoIcon
+	undo: UndoIcon,
+	fullScreen: FullscreenIcon,
+	fullScreenExit: FullscreenExitIcon
 };
 
 export type Icons = keyof typeof icons;

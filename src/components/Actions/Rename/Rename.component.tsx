@@ -9,7 +9,8 @@ import { tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
 import { Activity, Asset } from 'lib/types';
 import { getExtension, replaceArrayAtIndex } from 'lib/utils';
-import { Box } from 'ui-components/Box';
+import { Alert } from 'ui-components/Alert';
+import { Box, Row } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { Field } from 'ui-components/Field';
@@ -164,7 +165,13 @@ export const Rename = () => {
 								myRef={renameFolderFormRef}
 								mode='onSubmit'
 							>
-								<Field name='folderName' label='Asset name' autoFocus />
+								<Row>
+									<Alert>
+										Changing the file extention (<b>{selectedAssets[0].name.split('.').pop()}</b>)
+										will change the file type
+									</Alert>
+									<Field name='folderName' label='Asset name' autoFocus />
+								</Row>
 							</Form>
 						</Box>
 					</Dialog>
