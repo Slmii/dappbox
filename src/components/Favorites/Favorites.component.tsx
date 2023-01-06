@@ -5,7 +5,7 @@ import { PreviewBackdrop } from 'components/Actions/Preview';
 import { useDownload, useFavorites, usePreview, useUserAssets } from 'lib/hooks';
 import { Asset, Doc } from 'lib/types';
 import { getUrlBreadcrumbs } from 'lib/url';
-import { Content, Main } from 'ui-components/Container';
+import { Content, FavoritesContainer, Main } from 'ui-components/Container';
 import { Divider } from 'ui-components/Divider';
 import { IconButton } from 'ui-components/IconButton';
 import { AssetsList } from 'ui-components/List';
@@ -66,8 +66,8 @@ export const Favorites = () => {
 					<PageTitle>Favorites</PageTitle>
 				</Content>
 				<Divider />
-				<Content>
-					<>
+				<FavoritesContainer>
+					<Content>
 						{!isLoaded ? (
 							<TableLoader />
 						) : (
@@ -115,8 +115,8 @@ export const Favorites = () => {
 								}))}
 							/>
 						)}
-					</>
-				</Content>
+					</Content>
+				</FavoritesContainer>
 			</Main>
 			{previewIsSuccess ? (
 				<PreviewBackdrop

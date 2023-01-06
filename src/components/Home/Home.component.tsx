@@ -19,23 +19,21 @@ export const Home = () => {
 	const isLoaded = !!data && !isLoading;
 
 	return (
-		<>
-			<Main>
-				<Content>
-					<Column>
-						<Breadcrumbs />
-						{/* <ViewMode /> */}
-						<Search onSearch={setAssets} />
-					</Column>
-				</Content>
-				<Divider />
-				<Content>
-					<Row>
-						{isLoaded && <Actions />}
-						<FilesContainer>{!isLoaded ? <TableLoader /> : <ViewAssets assets={assets} />}</FilesContainer>
-					</Row>
-				</Content>
-			</Main>
-		</>
+		<Main>
+			<Content>
+				<Column>
+					<Breadcrumbs />
+					{/* <ViewMode /> */}
+					<Search onSearch={setAssets} />
+				</Column>
+			</Content>
+			<Divider />
+			<Content>
+				<Row>
+					{isLoaded && <Actions />}
+					<FilesContainer>{!isLoaded ? <TableLoader /> : <ViewAssets assets={assets} />}</FilesContainer>
+				</Row>
+			</Content>
+		</Main>
 	);
 };

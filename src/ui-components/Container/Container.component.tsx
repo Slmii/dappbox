@@ -16,6 +16,19 @@ export const FilesContainer = ({ children }: PropsWithChildren) => {
 	);
 };
 
+export const FavoritesContainer = ({ children }: PropsWithChildren) => {
+	return (
+		<Box
+			sx={{
+				overflowY: 'auto',
+				height: 'calc(100vh - 145px)'
+			}}
+		>
+			{children}
+		</Box>
+	);
+};
+
 export const Content = ({ children }: PropsWithChildren) => {
 	return (
 		<Box
