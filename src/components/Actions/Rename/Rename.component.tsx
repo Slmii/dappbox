@@ -166,10 +166,12 @@ export const Rename = () => {
 								mode='onSubmit'
 							>
 								<Row>
-									<Alert>
-										Changing the file extention (<b>{selectedAssets[0].name.split('.').pop()}</b>)
-										will change the file type
-									</Alert>
+									{selectedAssets[0].type === 'file' ? (
+										<Alert>
+											Changing the file extention (
+											<b>{selectedAssets[0].name.split('.').pop()}</b>) will change the file type
+										</Alert>
+									) : null}
 									<Field name='folderName' label='Asset name' autoFocus />
 								</Row>
 							</Form>

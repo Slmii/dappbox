@@ -1,5 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 
+import { constants } from 'lib/constants';
 import { Box } from 'ui-components/Box';
 import { ResizableProps } from './Resizable.types';
 
@@ -25,8 +26,8 @@ export const Resizeable = ({
 
 		function onMouseMove(mouseMoveEvent: MouseEvent) {
 			let y = heightSize + mouseDownEvent.pageY - mouseMoveEvent.pageY;
-			if (y <= 100) {
-				y = 100;
+			if (y <= constants.ACTIVITIES.ITEM + constants.ACTIVITIES.HEIGHT_COLLAPSED) {
+				y = constants.ACTIVITIES.ITEM + constants.ACTIVITIES.HEIGHT_COLLAPSED;
 			}
 
 			if (y >= window.innerHeight) {
