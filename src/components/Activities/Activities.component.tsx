@@ -116,7 +116,19 @@ export const Activities = () => {
 					}}
 				>
 					{activities.map(activity => (
-						<Activity key={activity.id} activity={activity} onRemove={removeActivity} />
+						<Activity
+							key={activity.id}
+							activity={activity}
+							onRemove={removeActivity}
+							onClose={
+								activity.type === 'folder'
+									? () => {
+											setOpen(false);
+											setIsFullScreen(false);
+									  }
+									: undefined
+							}
+						/>
 					))}
 				</Paper>
 			</Resizeable>

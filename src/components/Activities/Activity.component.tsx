@@ -79,7 +79,7 @@ const getTooltipLabel = (activity: IActivity) => {
 	return 'In queue';
 };
 
-export const Activity = ({ activity, onRemove }: ActivityProps) => {
+export const Activity = ({ activity, onRemove, onClose }: ActivityProps) => {
 	const navigate = useNavigate();
 
 	return (
@@ -188,7 +188,13 @@ export const Activity = ({ activity, onRemove }: ActivityProps) => {
 								/>
 							) : null}
 							{activity.href && activity.isFinished ? (
-								<Button label='View' onClick={() => activity.href && navigate(activity.href)} />
+								<Button
+									label='View'
+									onClick={() => {
+										activity.href && navigate(activity.href);
+										onClose?.();
+									}}
+								/>
 							) : null}
 						</>
 					) : null}
