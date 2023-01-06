@@ -27,13 +27,32 @@ export const useDownload = () => {
 
 		// Create a new Blob object from the file data
 		const blob = new Blob(assetsToDownload, { type: 'application/octet-stream' });
-		zip.file(asset.name, blob, { base64: true });
+
+		const re = new RegExp(`${asset.name}`);
+		const filesWithSameName = zip.file(re)?.length ?? 0;
+		let fileName = asset.name;
+
+		// In case of same naming then append a counter at the and of the file. Ex. File (1)
+		if (filesWithSameName > 0) {
+			fileName = `${asset.name} (${filesWithSameName})`;
+		}
+
+		zip.file(fileName, blob, { base64: true });
 	};
 
 	const folderZip = async (assets: Asset[], zip: JSZip) => {
 		for (const asset of assets) {
 			if (asset.type === 'folder') {
-				const folder = zip.folder(asset.name);
+				const re = new RegExp(`${asset.name}`);
+				const foldersWithSameName = zip.folder(re)?.length ?? 0;
+				let folder: JSZip | null = null;
+
+				// In case of same naming then append a counter at the and of the folder. Ex. Folder (1)
+				if (foldersWithSameName > 0) {
+					folder = zip.folder(`${asset.name} (${foldersWithSameName})`);
+				} else {
+					folder = zip.folder(asset.name);
+				}
 
 				if (folder) {
 					const childAssets = getChildAssets(asset.id);
