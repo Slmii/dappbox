@@ -74,6 +74,6 @@ const mapToAssetInterface = (asset: ControllerAsset): IAsset => {
 		size: Number(asset.size),
 		chunks: asset.chunks,
 		createdAt: dateFromBigInt(asset.created_at),
-		updatedAt: dateFromBigInt(asset.created_at)
+		updatedAt: dateFromBigInt(asset.updated_at)
 	};
 };
