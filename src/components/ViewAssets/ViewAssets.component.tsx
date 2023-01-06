@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
 import { PreviewBackdrop } from 'components/Actions/Preview';
@@ -47,6 +47,7 @@ const columns: Column = {
 };
 
 export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
+	const navigate = useNavigate();
 	const { pathname } = useLocation();
 	const [searchParams] = useSearchParams();
 	const [{ order, orderBy, selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
@@ -65,11 +66,18 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 			return assets;
 		}
 
+		const assetId = getAssetId(pathname);
+		// If the current assetId in the URL is a file then redirect to homr
+		if (!!assets.find(asset => asset.id === Number(assetId) && asset.type === 'file')) {
+			navigate('/');
+			return [];
+		}
+
 		return getTableAssets({
 			assets,
 			order,
 			orderBy,
-			assetId: getAssetId(pathname)
+			assetId
 		});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
