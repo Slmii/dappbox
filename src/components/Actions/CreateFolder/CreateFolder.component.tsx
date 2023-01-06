@@ -6,7 +6,8 @@ import { AuthContext } from 'lib/context';
 import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
 import { createFolderSchema } from 'lib/schemas';
 import { getAssetId, getUrlBreadcrumbs } from 'lib/url';
-import { Box } from 'ui-components/Box';
+import { Alert } from 'ui-components/Alert';
+import { Box, Row } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { Field } from 'ui-components/Field';
@@ -107,7 +108,15 @@ export const CreateFolder = () => {
 						myRef={createFolderFormRef}
 						mode='onSubmit'
 					>
-						<Field name='folderName' label='Folder name' autoFocus />
+						<Row>
+							<Alert>
+								This folder will be created inside{' '}
+								<b>
+									{assets?.find(asset => asset.id === Number(getAssetId(pathname)))?.name ?? 'Home'}
+								</b>
+							</Alert>
+							<Field name='folderName' label='Folder name' autoFocus />
+						</Row>
 					</Form>
 				</Box>
 			</Dialog>
