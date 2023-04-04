@@ -150,7 +150,7 @@ export const Upload = () => {
 			}
 
 			console.log('Total chunks to upload', blobsLength);
-			if (blobsLength > 2) {
+			if (blobsLength > 1) {
 				// Update activity with total chunks
 				updateActivity(activityId, {
 					totalChunks: blobsLength
