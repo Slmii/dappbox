@@ -12,6 +12,7 @@ export interface Asset {
 	mimeType?: string;
 	extension?: string;
 	isFavorite: boolean;
+	placeholder: boolean;
 	chunks: Chunk[];
 	createdAt: Date;
 	updatedAt: Date;

@@ -5,7 +5,9 @@ import { resolve, uint32ArrayToNumbers, unwrap } from 'lib/utils';
 import { Actor } from './actor';
 
 export abstract class Assets {
-	static async addAsset(asset: PostAsset) {
+	// Placeholder assets are used to show a preview of the asset before it's uploaded
+	// Only used in updating cached assets
+	static async addAsset(asset: PostAsset & { placeholderId: number }) {
 		const actor = await Actor.getActor<_SERVICE>('assets');
 
 		return resolve(async () => {
@@ -61,7 +63,7 @@ export abstract class Assets {
 	}
 }
 
-const mapToAssetInterface = (asset: ControllerAsset): IAsset => {
+export const mapToAssetInterface = (asset: ControllerAsset): IAsset => {
 	return {
 		id: asset.id,
 		type: 'File' in asset.asset_type ? ('file' as AssetType) : ('folder' as AssetType),
@@ -73,6 +75,7 @@ const mapToAssetInterface = (asset: ControllerAsset): IAsset => {
 		parentId: asset.parent_id.length ? asset.parent_id[0] : undefined,
 		size: Number(asset.size),
 		chunks: asset.chunks,
+		placeholder: false,
 		createdAt: dateFromBigInt(asset.created_at),
 		updatedAt: dateFromBigInt(asset.updated_at)
 	};

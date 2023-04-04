@@ -23,7 +23,7 @@ export const CreateFolder = () => {
 	const [handleOnConfirmCreateFolderDialog, setHandleOnConfirmCreateFolderDialog] = useState<() => void>(() => null);
 
 	const { data: assets } = useUserAssets();
-	const { mutateAsync: addAssetMutate } = useAddAsset();
+	const { mutateAsync: addAssetMutate, updateCache } = useAddAsset();
 
 	const handleOnCreateFolder = () => {
 		setCreateFolderOpenDialog(true);
@@ -42,8 +42,11 @@ export const CreateFolder = () => {
 				isFinished: false
 			});
 
+			const placeholderId = Date.now();
+
 			const parentId = getAssetId(pathname);
 			const asset = await addAssetMutate({
+				placeholderId,
 				asset_type: {
 					Folder: null
 				},
@@ -61,6 +64,9 @@ export const CreateFolder = () => {
 					url: []
 				}
 			});
+
+			// Update cache with folder asset
+			updateCache(placeholderId, asset);
 
 			// Update activity
 			updateActivity(activityId, {

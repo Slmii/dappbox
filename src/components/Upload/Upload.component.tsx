@@ -33,7 +33,7 @@ export const Upload = () => {
 	const [uploadError, setUploadError] = useState<string | null>(null);
 
 	const { data: assets } = useUserAssets();
-	const { mutateAsync: addAssetMutate, reset: addAssetReset } = useAddAsset();
+	const { mutateAsync: addAssetMutate, reset: addAssetReset, updateCache } = useAddAsset();
 	const { mutateAsync: addChunkMutate } = useMutation({
 		mutationFn: api.Chunks.addChunk
 	});
@@ -48,6 +48,8 @@ export const Upload = () => {
 	}, [folderRef]);
 
 	const handleOnFolderUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		// TODO: upload nested folder
+
 		const files = e.target.files;
 
 		if (!files || !files.length || !user) {
@@ -73,8 +75,11 @@ export const Upload = () => {
 		// Add activities for all files within the uploaded folder
 		const filesWithActivityId = addActivities(files);
 
+		const placeholderId = Date.now();
+
 		// Upload selected folder as asset
 		const asset = await addAssetMutate({
+			placeholderId,
 			asset_type: {
 				Folder: null
 			},
@@ -92,6 +97,9 @@ export const Upload = () => {
 				url: []
 			}
 		});
+
+		// Update cache with folder asset
+		updateCache(placeholderId, asset);
 
 		// Update folder activity
 		updateActivity(activityId, {
@@ -149,6 +157,30 @@ export const Upload = () => {
 				return;
 			}
 
+			console.log('Uploading Asset...');
+			const placeholderId = Date.now();
+
+			// Add asset
+			const asset = await addAssetMutate({
+				placeholderId,
+				asset_type: {
+					File: null
+				},
+				extension: getExtension(file.name),
+				name: file.name,
+				parent_id: parentId ? [parentId] : [],
+				user_id: user?.id,
+				mime_type: file.type,
+				chunks: [],
+				size: file.size,
+				settings: {
+					privacy: {
+						Public: null
+					},
+					url: []
+				}
+			});
+
 			console.log('Total chunks to upload', blobsLength);
 			if (blobsLength > 1) {
 				// Update activity with total chunks
@@ -180,27 +212,8 @@ export const Upload = () => {
 				console.log(`Chunk ${counter} uploaded`, chunk);
 			}
 
-			console.log('Uploading Asset...');
-
-			// Add asset linked to the chunks
-			const asset = await addAssetMutate({
-				asset_type: {
-					File: null
-				},
-				extension: getExtension(file.name),
-				name: file.name,
-				parent_id: parentId ? [parentId] : [],
-				user_id: user?.id,
-				mime_type: file.type,
-				chunks,
-				size: file.size,
-				settings: {
-					privacy: {
-						Public: null
-					},
-					url: []
-				}
-			});
+			// Update asset with chunks
+			updateCache(placeholderId, asset);
 
 			console.log('Done uploading Asset', asset, file);
 			console.log('============');
