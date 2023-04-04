@@ -34,7 +34,7 @@ export interface _SERVICE {
   'create_user' : ActorMethod<[[] | [string]], Result>,
   'get_all_chunk_canisters' : ActorMethod<[], Result_1>,
   'get_all_users' : ActorMethod<[], Result_2>,
-  'get_chunks_wasm' : ActorMethod<[], Uint8Array>,
+  'get_chunks_wasm' : ActorMethod<[], Uint8Array | number[]>,
   'get_state' : ActorMethod<[], Result_3>,
   'get_user' : ActorMethod<[], Result>,
 }

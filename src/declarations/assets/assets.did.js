@@ -1,6 +1,10 @@
 export const idlFactory = ({ IDL }) => {
   const Nft = IDL.Record({ 'principal' : IDL.Principal, 'index' : IDL.Nat32 });
-  const AssetType = IDL.Variant({ 'Folder' : IDL.Null, 'File' : IDL.Null });
+  const AssetType = IDL.Variant({
+    'NFT' : Nft,
+    'Folder' : IDL.Null,
+    'File' : IDL.Null,
+  });
   const Privacy = IDL.Variant({ 'Private' : IDL.Null, 'Public' : IDL.Null });
   const Settings = IDL.Record({
     'url' : IDL.Opt(IDL.Text),
@@ -12,7 +16,6 @@ export const idlFactory = ({ IDL }) => {
     'index' : IDL.Nat32,
   });
   const PostAsset = IDL.Record({
-    'nft' : IDL.Opt(Nft),
     'asset_type' : AssetType,
     'name' : IDL.Text,
     'size' : IDL.Nat32,
@@ -25,7 +28,6 @@ export const idlFactory = ({ IDL }) => {
   });
   const Asset = IDL.Record({
     'id' : IDL.Nat32,
-    'nft' : IDL.Opt(Nft),
     'updated_at' : IDL.Nat64,
     'asset_type' : AssetType,
     'name' : IDL.Text,

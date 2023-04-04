@@ -59,8 +59,7 @@ export const CreateFolder = () => {
 						Public: null
 					},
 					url: []
-				},
-				nft: []
+				}
 			});
 
 			// Update activity

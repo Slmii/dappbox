@@ -138,7 +138,22 @@ export const getExtension = (name: string) => {
 	return name.split('.').pop() ?? '';
 };
 
-export const uint32ArrayToNumbers = (value: Uint32Array) => {
+export const uint32ArrayToNumbers = (value: Uint32Array | number[]) => {
+	if (Array.isArray(value)) {
+		return value;
+	}
+
+	return value.reduce((accum, value) => {
+		accum.push(value);
+		return accum;
+	}, [] as number[]);
+};
+
+export const uint8ArrayToNumbers = (value: Uint8Array | number[]) => {
+	if (Array.isArray(value)) {
+		return value;
+	}
+
 	return value.reduce((accum, value) => {
 		accum.push(value);
 		return accum;

@@ -35,7 +35,9 @@ export abstract class Chunks {
 
 		return resolve(async () => {
 			const response = await actor.get_chunks_by_chunk_id(chunkId);
-			return unwrap(response);
+			const unwrapped = await unwrap(response);
+
+			return unwrapped as Uint8Array;
 		});
 	}
 }

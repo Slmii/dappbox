@@ -90,8 +90,7 @@ export const Upload = () => {
 					Public: null
 				},
 				url: []
-			},
-			nft: []
+			}
 		});
 
 		// Update folder activity
@@ -190,8 +189,7 @@ export const Upload = () => {
 						Public: null
 					},
 					url: []
-				},
-				nft: []
+				}
 			});
 
 			console.log('Done uploading Asset', asset, file);

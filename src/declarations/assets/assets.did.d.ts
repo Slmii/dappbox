@@ -7,7 +7,6 @@ export type ApiError = { 'NotFound' : string } |
   { 'CanisterFailed' : CanisterFailedError };
 export interface Asset {
   'id' : number,
-  'nft' : [] | [Nft],
   'updated_at' : bigint,
   'asset_type' : AssetType,
   'name' : string,
@@ -21,12 +20,13 @@ export interface Asset {
   'chunks' : Array<Chunk>,
   'extension' : string,
 }
-export type AssetType = { 'Folder' : null } |
+export type AssetType = { 'NFT' : Nft } |
+  { 'Folder' : null } |
   { 'File' : null };
 export interface AssetsStore {
-  'shared' : Array<[Principal, Uint32Array]>,
+  'shared' : Array<[Principal, Uint32Array | number[]]>,
   'assets' : Array<[number, Asset]>,
-  'user_assets' : Array<[Principal, Uint32Array]>,
+  'user_assets' : Array<[Principal, Uint32Array | number[]]>,
   'asset_invites' : Array<[Principal, Invite]>,
   'asset_id' : number,
   'shared_with' : Array<[[Principal, number], Array<SharedWith>]>,
@@ -60,7 +60,6 @@ export type InviteStatus = { 'Accepted' : null } |
 export interface MoveAsset { 'id' : number, 'parent_id' : [] | [number] }
 export interface Nft { 'principal' : Principal, 'index' : number }
 export interface PostAsset {
-  'nft' : [] | [Nft],
   'asset_type' : AssetType,
   'name' : string,
   'size' : number,
@@ -82,7 +81,7 @@ export type RejectionCode = { 'NoError' : null } |
   { 'CanisterReject' : null };
 export type Result = { 'Ok' : Asset } |
   { 'Err' : ApiError };
-export type Result_1 = { 'Ok' : Uint32Array } |
+export type Result_1 = { 'Ok' : Uint32Array | number[] } |
   { 'Err' : ApiError };
 export type Result_2 = { 'Ok' : Array<Asset> } |
   { 'Err' : ApiError };
@@ -95,7 +94,7 @@ export interface SharedWith {
 }
 export interface _SERVICE {
   'add_asset' : ActorMethod<[PostAsset], Result>,
-  'delete_assets' : ActorMethod<[Uint32Array], Result_1>,
+  'delete_assets' : ActorMethod<[Uint32Array | number[]], Result_1>,
   'edit_asset' : ActorMethod<[EditAsset], Result>,
   'get_all_assets' : ActorMethod<[], Result_2>,
   'get_state' : ActorMethod<[], Result_3>,
