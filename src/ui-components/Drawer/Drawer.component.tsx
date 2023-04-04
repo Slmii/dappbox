@@ -1,4 +1,3 @@
-import Chip from '@mui/material/Chip';
 import Collapse from '@mui/material/Collapse';
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -129,7 +128,7 @@ export const Drawer = () => {
 								<ListItemText disableTypography primary='Favorites' />
 							</ListItemButton>
 						</Link>
-						<ListItemButton disabled>
+						{/* <ListItemButton disabled>
 							<ListItemText
 								disableTypography
 								primary={
@@ -147,6 +146,42 @@ export const Drawer = () => {
 								}
 							/>
 						</ListItemButton>
+						<ListItemButton disabled>
+							<ListItemText
+								disableTypography
+								primary={
+									<>
+										NFT
+										<Chip
+											size='small'
+											label='Soon'
+											sx={{
+												marginLeft: constants.SPACING
+											}}
+											color='secondary'
+										/>
+									</>
+								}
+							/>
+						</ListItemButton>
+						<ListItemButton disabled>
+							<ListItemText
+								disableTypography
+								primary={
+									<>
+										Buy canister
+										<Chip
+											size='small'
+											label='Soon'
+											sx={{
+												marginLeft: constants.SPACING
+											}}
+											color='secondary'
+										/>
+									</>
+								}
+							/>
+						</ListItemButton> */}
 					</List>
 				</>
 			)}
