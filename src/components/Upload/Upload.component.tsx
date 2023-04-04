@@ -157,6 +157,15 @@ export const Upload = () => {
 				return;
 			}
 
+			console.log('Total chunks to upload', blobsLength);
+			if (blobsLength > 1) {
+				// Update activity with total chunks
+				updateActivity(activityId, {
+					totalChunks: blobsLength,
+					currentChunk: 1
+				});
+			}
+
 			console.log('Uploading Asset...');
 			const placeholderId = Date.now();
 
@@ -180,14 +189,6 @@ export const Upload = () => {
 					url: []
 				}
 			});
-
-			console.log('Total chunks to upload', blobsLength);
-			if (blobsLength > 1) {
-				// Update activity with total chunks
-				updateActivity(activityId, {
-					totalChunks: blobsLength
-				});
-			}
 
 			// Upload each blob seperatly
 			const chunks: Chunk[] = [];

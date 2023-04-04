@@ -45,6 +45,7 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle, onNavig
 							e.stopPropagation();
 							onFavoriteToggle(row.id);
 						}}
+						disabled={row.placeholder}
 						label={value ? 'Remove from favorites' : 'Add to favorites'}
 					/>
 				);
@@ -92,7 +93,11 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle, onNavig
 				}}
 			>
 				{columnId === 'name' ? (
-					<Icon icon={row.type === 'folder' ? 'folder' : 'download'} color='info' spacingRight />
+					<Icon
+						icon={row.type === 'folder' ? 'folder' : 'download'}
+						color={row.placeholder ? 'disabled' : 'info'}
+						spacingRight
+					/>
 				) : null}
 				{renderValue()}
 			</Box>
@@ -188,7 +193,7 @@ export const AssetsTable = ({
 
 	const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.checked) {
-			setSelectedRows(rows);
+			setSelectedRows(rows.filter(row => !row.placeholder));
 			return;
 		}
 
@@ -259,17 +264,25 @@ export const AssetsTable = ({
 						return (
 							<TableRow
 								hover
-								onClick={event => !isItemSelected && handleOnRowClick(event, asset)}
-								onDoubleClick={() => handleOnDoubleClick(asset)}
+								onClick={event =>
+									!isItemSelected && !asset.placeholder && handleOnRowClick(event, asset)
+								}
+								onDoubleClick={() => !asset.placeholder && handleOnDoubleClick(asset)}
 								role='checkbox'
 								aria-checked={isItemSelected}
 								tabIndex={-1}
 								key={asset.id}
 								selected={isItemSelected}
+								sx={{
+									'& > *': {
+										color: theme => (asset.placeholder ? theme.palette.grey[800] : undefined)
+									}
+								}}
 							>
 								<MuiTableCell padding='checkbox'>
 									<Checkbox
 										color='primary'
+										disabled={asset.placeholder}
 										checked={isItemSelected}
 										inputProps={{
 											'aria-labelledby': labelId

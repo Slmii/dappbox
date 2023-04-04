@@ -17,7 +17,10 @@ export const useAddAsset = () => {
 			// Update the placeholder with the actual asset
 			return old.map(asset => {
 				if (asset.id === assetId) {
-					return updatedAsset;
+					return {
+						...updatedAsset,
+						placeholder: false
+					};
 				}
 
 				return asset;
@@ -37,7 +40,7 @@ export const useAddAsset = () => {
 					{
 						id: asset.placeholderId,
 						userId: Principal.fromText('aaaaa-aa'),
-						parentId: undefined,
+						parentId: asset.parent_id[0] ? asset.parent_id[0] : undefined,
 						type: 'Folder' in asset.asset_type ? 'folder' : 'file',
 						name: asset.name,
 						size: asset.size,
