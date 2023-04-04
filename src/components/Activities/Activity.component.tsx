@@ -203,7 +203,33 @@ export const Activity = ({ activity, onRemove, onClose }: ActivityProps) => {
 					) : null}
 				</Column>
 			</Box>
-			{activity.inProgress ? <LinearProgress variant='indeterminate' /> : null}
+			{activity.inProgress ? (
+				<Box
+					sx={{
+						position: 'relative'
+					}}
+				>
+					<LinearProgress
+						sx={{
+							width: typeof activity.totalChunks !== 'undefined' ? '87.5%' : undefined
+						}}
+						variant='indeterminate'
+					/>
+					{typeof activity.totalChunks !== 'undefined' ? (
+						<Box
+							sx={{
+								position: 'absolute',
+								right: 10,
+								bottom: -5
+							}}
+						>
+							<Caption>
+								{activity.currentChunk}/{activity.totalChunks}
+							</Caption>
+						</Box>
+					) : null}
+				</Box>
+			) : null}
 			<Divider />
 		</>
 	);

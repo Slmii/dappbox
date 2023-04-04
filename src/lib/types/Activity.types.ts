@@ -15,6 +15,14 @@ export interface Activity {
 	inProgress: boolean;
 	isFinished: boolean;
 	/**
+	 * The total number of chunks that will be uploaded
+	 */
+	totalChunks?: number;
+	/**
+	 * The current chunk that is being uploaded
+	 */
+	currentChunk?: number;
+	/**
 	 * Used for renaming asset. The old name will be shown as strike-through
 	 */
 	oldName?: string;

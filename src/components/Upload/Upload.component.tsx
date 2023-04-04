@@ -150,13 +150,23 @@ export const Upload = () => {
 			}
 
 			console.log('Total chunks to upload', blobsLength);
+			if (blobsLength > 2) {
+				// Update activity with total chunks
+				updateActivity(activityId, {
+					totalChunks: blobsLength
+				});
+			}
 
 			// Upload each blob seperatly
 			const chunks: Chunk[] = [];
 			for (const [index, blob] of blobs.entries()) {
 				const counter = index + 1;
-
 				console.log(`Uploading chunk ${counter}/${blobsLength}`);
+
+				// Update activity with current chunk
+				updateActivity(activityId, {
+					currentChunk: counter
+				});
 
 				const chunk = await addChunkMutate({
 					chunk: {
