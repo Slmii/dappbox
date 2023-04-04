@@ -1,6 +1,7 @@
 import { useContext, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { PostAsset } from 'declarations/assets/assets.did';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
 import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
@@ -23,7 +24,7 @@ export const CreateFolder = () => {
 	const [handleOnConfirmCreateFolderDialog, setHandleOnConfirmCreateFolderDialog] = useState<() => void>(() => null);
 
 	const { data: assets } = useUserAssets();
-	const { mutateAsync: addAssetMutate, updateCache } = useAddAsset();
+	const { mutateAsync: addAssetMutate, updateCache, addPlaceholder } = useAddAsset();
 
 	const handleOnCreateFolder = () => {
 		setCreateFolderOpenDialog(true);
@@ -42,10 +43,12 @@ export const CreateFolder = () => {
 				isFinished: false
 			});
 
+			// Create placeholderId
 			const placeholderId = Date.now();
 
+			// Create PostAsset data
 			const parentId = getAssetId(pathname);
-			const asset = await addAssetMutate({
+			const postData: PostAsset & { placeholderId: number } = {
 				placeholderId,
 				asset_type: {
 					Folder: null
@@ -63,10 +66,16 @@ export const CreateFolder = () => {
 					},
 					url: []
 				}
-			});
+			};
+
+			// Add placeholder
+			addPlaceholder(postData);
+
+			// Upload selected folder as asset
+			const asset = await addAssetMutate(postData);
 
 			// Update cache with folder asset
-			updateCache(placeholderId, asset);
+			updateCache(placeholderId, () => ({ ...asset, placeholder: false }));
 
 			// Update activity
 			updateActivity(activityId, {

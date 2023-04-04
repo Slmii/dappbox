@@ -5,9 +5,7 @@ import { resolve, uint32ArrayToNumbers, unwrap } from 'lib/utils';
 import { Actor } from './actor';
 
 export abstract class Assets {
-	// Placeholder assets are used to show a preview of the asset before it's uploaded
-	// Only used in updating cached assets
-	static async addAsset(asset: PostAsset & { placeholderId: number }) {
+	static async addAsset(asset: PostAsset) {
 		const actor = await Actor.getActor<_SERVICE>('assets');
 
 		return resolve(async () => {

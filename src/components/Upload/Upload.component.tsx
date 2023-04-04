@@ -4,7 +4,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { api } from 'api';
-import { Chunk } from 'declarations/assets/assets.did';
+import { Chunk, PostAsset } from 'declarations/assets/assets.did';
 import { constants } from 'lib/constants';
 import { AuthContext } from 'lib/context';
 import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
@@ -33,7 +33,7 @@ export const Upload = () => {
 	const [uploadError, setUploadError] = useState<string | null>(null);
 
 	const { data: assets } = useUserAssets();
-	const { mutateAsync: addAssetMutate, reset: addAssetReset, updateCache } = useAddAsset();
+	const { mutateAsync: addAssetMutate, reset: addAssetReset, updateCache, addPlaceholder } = useAddAsset();
 	const { mutateAsync: addChunkMutate } = useMutation({
 		mutationFn: api.Chunks.addChunk
 	});
@@ -58,6 +58,7 @@ export const Upload = () => {
 
 		const isValid = validateUploadSize(files);
 		if (!isValid) {
+			setUploadError(`Max upload size is ${formatBytes(constants.MAX_UPLOAD_LIMIT)}`);
 			return;
 		}
 
@@ -75,10 +76,11 @@ export const Upload = () => {
 		// Add activities for all files within the uploaded folder
 		const filesWithActivityId = addActivities(files);
 
+		// Create placeholderId
 		const placeholderId = Date.now();
 
-		// Upload selected folder as asset
-		const asset = await addAssetMutate({
+		// Create PostAsset data
+		const postData: PostAsset & { placeholderId: number } = {
 			placeholderId,
 			asset_type: {
 				Folder: null
@@ -96,10 +98,16 @@ export const Upload = () => {
 				},
 				url: []
 			}
-		});
+		};
+
+		// Add placeholder
+		addPlaceholder(postData);
+
+		// Upload selected folder as asset
+		const asset = await addAssetMutate(postData);
 
 		// Update cache with folder asset
-		updateCache(placeholderId, asset);
+		updateCache(placeholderId, () => ({ ...asset, placeholder: false }));
 
 		// Update folder activity
 		updateActivity(activityId, {
@@ -168,10 +176,12 @@ export const Upload = () => {
 			}
 
 			console.log('Uploading Asset...');
+
+			// Create placeholderId
 			const placeholderId = Date.now();
 
-			// Add asset
-			const asset = await addAssetMutate({
+			// Create PostAsset data
+			const postData: PostAsset & { placeholderId: number } = {
 				placeholderId,
 				asset_type: {
 					File: null
@@ -179,7 +189,7 @@ export const Upload = () => {
 				extension: getExtension(file.name),
 				name: file.name,
 				parent_id: parentId ? [parentId] : [],
-				user_id: user?.id,
+				user_id: user.id,
 				mime_type: file.type,
 				chunks: [],
 				size: file.size,
@@ -189,7 +199,10 @@ export const Upload = () => {
 					},
 					url: []
 				}
-			});
+			};
+
+			// Add placeholder
+			addPlaceholder(postData);
 
 			// Upload each blob seperatly
 			const chunks: Chunk[] = [];
@@ -214,8 +227,14 @@ export const Upload = () => {
 				console.log(`Chunk ${counter} uploaded`, chunk);
 			}
 
-			// Update asset with chunks
-			updateCache(placeholderId, asset);
+			// Add asset
+			const asset = await addAssetMutate({
+				...postData,
+				chunks
+			});
+
+			// Update cache with asset
+			updateCache(placeholderId, () => ({ ...asset, chunks, placeholder: false }));
 
 			console.log('Done uploading Asset', asset, file);
 			console.log('============');
