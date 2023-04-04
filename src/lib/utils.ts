@@ -4,6 +4,7 @@ import { utils, WorkSheet } from 'xlsx';
 import { ApiError } from 'declarations/users/users.did';
 import { Asset } from 'lib/types';
 import { Order } from 'ui-components/Table';
+import { constants } from './constants';
 
 export const getTableAssets = ({
 	assets,
@@ -212,4 +213,16 @@ export const getRowsCols = (ws: WorkSheet): RowCol => {
 			}
 		)
 	};
+};
+
+export const validateUploadSize = (files: FileList) => {
+	// Convert FilesList to array
+	const filesAsArray = Array.from(files);
+
+	// Max size validation
+	if (filesAsArray.some(file => file.size > constants.MAX_UPLOAD_LIMIT)) {
+		return false;
+	}
+
+	return true;
 };

@@ -107,10 +107,16 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 		<>
 			<Box
 				sx={{
+					// border: theme =>
+					// 	isDragActive ? `1px solid ${theme.palette.primary.dark}` : '1px solid transparent',
+					// borderRadius: theme => theme.shape.borderRadius,
+					// backgroundColor: theme => (isDragActive ? `${theme.palette.primary.main}20` : undefined),
 					position: 'relative',
 					height: '100%'
 				}}
 			>
+				{/* <div {...getRootProps({ className: 'dropzone' })}>
+					<input {...getInputProps()} /> */}
 				<AssetsTable
 					rows={tableAssets}
 					columns={columns}
@@ -123,6 +129,7 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 					onFavoriteToggle={handleOnFavoritesToggle}
 					onPreview={downloadPreviewChunks}
 				/>
+				{/* </div> */}
 			</Box>
 			{isSuccess ? (
 				<PreviewBackdrop

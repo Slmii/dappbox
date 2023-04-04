@@ -7,8 +7,8 @@ export const constants = {
 		CHUNKS: 'CHUNKS',
 		USED_SPACE: 'USED_SPACE'
 	},
-	ENVIRONMENT: process.env.REACT_APP_ENV ?? 'local',
-	IS_LOCAL: process.env.REACT_APP_ENV === 'local',
+	ENVIRONMENT: import.meta.env.VITE_ENV ?? 'local',
+	IS_LOCAL: import.meta.env.VITE_ENV === 'local',
 	MAX_UPLOAD_LIMIT: 2_097_152,
 	ACTIVITIES: {
 		HEIGHT_COLLAPSED: 50,

@@ -10,7 +10,7 @@ import { AuthContext } from 'lib/context';
 import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
 import { FileWithActivity } from 'lib/types';
 import { getAssetId, getUrlBreadcrumbs } from 'lib/url';
-import { formatBytes, getExtension, getImage } from 'lib/utils';
+import { formatBytes, getExtension, getImage, validateUploadSize } from 'lib/utils';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Menu } from 'ui-components/Menu';
@@ -121,6 +121,7 @@ export const Upload = () => {
 
 		const isValid = validateUploadSize(files);
 		if (!isValid) {
+			setUploadError(`Max upload size is ${formatBytes(constants.MAX_UPLOAD_LIMIT)}`);
 			return;
 		}
 
@@ -227,19 +228,6 @@ export const Upload = () => {
 		}
 
 		await queryClient.invalidateQueries([constants.QUERY_KEYS.USED_SPACE]);
-	};
-
-	const validateUploadSize = (files: FileList) => {
-		// Convert FilesList to array
-		const filesAsArray = Array.from(files);
-
-		// Max size validation
-		if (filesAsArray.some(file => file.size > constants.MAX_UPLOAD_LIMIT)) {
-			setUploadError(`Max upload size is ${formatBytes(constants.MAX_UPLOAD_LIMIT)}`);
-			return false;
-		}
-
-		return true;
 	};
 
 	const addActivities = (files: FileList) => {
