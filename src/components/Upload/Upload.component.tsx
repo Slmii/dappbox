@@ -20,8 +20,6 @@ const Input = styled('input')({
 	display: 'none'
 });
 
-// TODO: overrwrite exising files
-
 export const Upload = () => {
 	const { pathname } = useLocation();
 	const { user } = useContext(AuthContext);
