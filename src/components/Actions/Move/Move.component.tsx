@@ -3,11 +3,12 @@ import { useMemo, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
-import { constants } from 'lib/constants';
+import { QUERY_USER_ASSETS } from 'lib/constants/query-keys.constants';
 import { useActivities, useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Activity, Asset } from 'lib/types';
-import { getTableAssets, replaceArrayAtIndex } from 'lib/utils';
+import { getTableAssets } from 'lib/utils/asset.utils';
+import { replaceArrayAtIndex } from 'lib/utils/conversion.utils';
 import { Button } from 'ui-components/Button';
 import { Dialog } from 'ui-components/Dialog';
 import { IconButton } from 'ui-components/IconButton';
@@ -29,7 +30,7 @@ export const Move = () => {
 	const { mutateAsync: moveAssetMutate } = useMutation({
 		mutationFn: api.Assets.moveAssets,
 		onSuccess: movedAssets => {
-			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
+			queryClient.setQueriesData<Asset[]>([QUERY_USER_ASSETS], old => {
 				if (!old) {
 					return [];
 				}

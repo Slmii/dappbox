@@ -1,7 +1,8 @@
 import Box from '@mui/material/Box';
 import { PropsWithChildren } from 'react';
 
-import { constants } from 'lib/constants';
+import { DRAWER_WIDTH } from 'lib/constants/sizes.constants';
+import { SPACING } from 'lib/constants/spacing.constants';
 
 export const FilesContainer = ({ children }: PropsWithChildren) => {
 	return (
@@ -33,7 +34,7 @@ export const Content = ({ children }: PropsWithChildren) => {
 	return (
 		<Box
 			sx={{
-				padding: constants.SPACING
+				padding: SPACING
 			}}
 		>
 			{children}
@@ -46,7 +47,7 @@ export const Main = ({ children }: PropsWithChildren) => {
 		<Box
 			component='main'
 			sx={{
-				marginLeft: `${constants.DRAWER_WIDTH}px`
+				marginLeft: `${DRAWER_WIDTH}px`
 			}}
 		>
 			{children}

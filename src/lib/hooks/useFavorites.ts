@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from 'api';
-import { constants } from 'lib/constants';
+import { QUERY_USER_ASSETS } from 'lib/constants/query-keys.constants';
 import { Activity, Asset } from 'lib/types';
-import { replaceArrayAtIndex } from 'lib/utils';
+import { replaceArrayAtIndex } from 'lib/utils/conversion.utils';
 import { useActivities } from './useActivities';
 import { useUserAssets } from './useUserAssets';
 
@@ -21,7 +21,7 @@ export const useFavorites = () => {
 	} = useMutation({
 		mutationFn: api.Assets.editAsset,
 		onSuccess: asset => {
-			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
+			queryClient.setQueriesData<Asset[]>([QUERY_USER_ASSETS], old => {
 				if (!old) {
 					return [];
 				}

@@ -7,7 +7,7 @@ import { useFavorites, usePreview } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { Asset, Doc } from 'lib/types';
 import { getAssetId } from 'lib/url';
-import { getTableAssets } from 'lib/utils';
+import { getTableAssets } from 'lib/utils/asset.utils';
 import { Box } from 'ui-components/Box';
 import { AssetsTable, Column } from 'ui-components/Table';
 
@@ -53,7 +53,7 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 	const [{ order, orderBy, selectedAssets }, setTableState] = useRecoilState(tableStateAtom);
 	const [docs, setDocs] = useState<Doc[]>([]);
 
-	const { preview, isSuccess, reset } = usePreview();
+	const { preview, isSuccess: previewIsSuccess, reset: previewReset } = usePreview();
 	const { handleOnFavoritesToggle } = useFavorites();
 
 	/**
@@ -131,11 +131,11 @@ export const ViewAssets = ({ assets }: { assets: Asset[] }) => {
 				/>
 				{/* </div> */}
 			</Box>
-			{isSuccess ? (
+			{previewIsSuccess ? (
 				<PreviewBackdrop
-					open={isSuccess}
+					open={previewIsSuccess}
 					onClick={() => {
-						reset();
+						previewReset();
 						setDocs([]);
 					}}
 					docs={docs}

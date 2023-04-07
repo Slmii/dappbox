@@ -6,7 +6,7 @@ import { Principal } from '@dfinity/principal';
 import { idlFactory as idlFactoryAssets } from 'declarations/assets';
 import { idlFactory as idlFactoryChunks } from 'declarations/chunks';
 import { idlFactory as idlFactoryUsers } from 'declarations/users';
-import { constants } from 'lib/constants';
+import { ENVIRONMENT, IS_LOCAL } from 'lib/constants/env.constants';
 import canisters from './canister_ids.json';
 
 type Controller = keyof typeof canisters;
@@ -40,11 +40,11 @@ export abstract class Actor {
 		const authClient = await this.getAuthClient();
 
 		const canisterEnv = canisters[controller];
-		const canisterId = canisterPrincipal ?? canisterEnv[constants.ENVIRONMENT as keyof typeof canisterEnv];
+		const canisterId = canisterPrincipal ?? canisterEnv[ENVIRONMENT as keyof typeof canisterEnv];
 
 		const actor = DfinityActor.createActor<T>(idlFactoryMapping[controller], {
 			agent: new HttpAgent({
-				host: constants.IS_LOCAL ? 'http://localhost:8000' : 'https://ic0.app',
+				host: IS_LOCAL ? 'http://localhost:8000' : 'https://ic0.app',
 				identity: authClient.getIdentity()
 			}),
 			canisterId

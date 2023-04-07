@@ -3,12 +3,14 @@ import { useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
-import { constants } from 'lib/constants';
+import { QUERY_USER_ASSETS } from 'lib/constants/query-keys.constants';
+import { SPACING } from 'lib/constants/spacing.constants';
 import { useActivities, useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
 import { renameFolderSchema } from 'lib/schemas';
 import { Activity, Asset } from 'lib/types';
-import { getExtension, replaceArrayAtIndex } from 'lib/utils';
+import { getExtension } from 'lib/utils/asset.utils';
+import { replaceArrayAtIndex } from 'lib/utils/conversion.utils';
 import { Alert } from 'ui-components/Alert';
 import { Box, Row } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -29,7 +31,7 @@ export const Rename = () => {
 	const { mutateAsync: editAssetMutate } = useMutation({
 		mutationFn: api.Assets.editAsset,
 		onSuccess: asset => {
-			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
+			queryClient.setQueriesData<Asset[]>([QUERY_USER_ASSETS], old => {
 				if (!old) {
 					return [];
 				}
@@ -153,7 +155,7 @@ export const Rename = () => {
 					>
 						<Box
 							sx={{
-								marginTop: constants.SPACING
+								marginTop: SPACING
 							}}
 						>
 							<Form<RenameAssetFormData>

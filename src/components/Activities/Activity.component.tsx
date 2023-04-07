@@ -3,7 +3,8 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { constants } from 'lib/constants';
+import { ACTIVITY_ITEM } from 'lib/constants/activitites.consants';
+import { SPACING } from 'lib/constants/spacing.constants';
 import { Activity as IActivity, ActivityType } from 'lib/types';
 import { Box, Column } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -86,13 +87,13 @@ export const Activity = ({ activity, onRemove, onClose }: ActivityProps) => {
 		<>
 			<Box
 				sx={{
-					padding: constants.SPACING,
-					paddingTop: constants.SPACING / 2,
-					paddingBottom: constants.SPACING / 2,
+					padding: SPACING,
+					paddingTop: SPACING / 2,
+					paddingBottom: SPACING / 2,
 					display: 'flex',
 					justifyContent: 'space-between',
 					alignItems: 'center',
-					minHeight: constants.ACTIVITIES.ITEM
+					minHeight: ACTIVITY_ITEM
 				}}
 			>
 				<Box
@@ -100,7 +101,7 @@ export const Activity = ({ activity, onRemove, onClose }: ActivityProps) => {
 						display: 'flex',
 						flexDirection: 'row',
 						alignItems: 'center',
-						columnGap: constants.SPACING,
+						columnGap: SPACING,
 						// Calculate the width based on the activity's state, in order to get correct ellipses
 						width: getWidth(activity)
 					}}

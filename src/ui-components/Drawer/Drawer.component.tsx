@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 
 import { Upload } from 'components/Upload';
 import { UsedSpace } from 'components/UsedSpace';
-import { constants } from 'lib/constants';
+import { DRAWER_WIDTH } from 'lib/constants/sizes.constants';
 import { useUserAssets } from 'lib/hooks';
 import { getUrlBreadcrumbs } from 'lib/url';
 import { Icon } from 'ui-components/Icon';
@@ -49,13 +49,13 @@ export const Drawer = () => {
 	return (
 		<MuiDrawer
 			sx={{
-				width: constants.DRAWER_WIDTH,
+				width: DRAWER_WIDTH,
 				flexShrink: 0,
 				'& > div': {
 					backgroundColor: theme => (theme.palette.mode === 'dark' ? '#010101' : '#f1f1f1')
 				},
 				'& .MuiDrawer-paper': {
-					width: constants.DRAWER_WIDTH,
+					width: DRAWER_WIDTH,
 					boxSizing: 'border-box'
 				}
 			}}
@@ -138,7 +138,7 @@ export const Drawer = () => {
 											size='small'
 											label='Soon'
 											sx={{
-												marginLeft: constants.SPACING
+												marginLeft: SPACING
 											}}
 											color='secondary'
 										/>
@@ -156,7 +156,7 @@ export const Drawer = () => {
 											size='small'
 											label='Soon'
 											sx={{
-												marginLeft: constants.SPACING
+												marginLeft: SPACING
 											}}
 											color='secondary'
 										/>
@@ -174,7 +174,7 @@ export const Drawer = () => {
 											size='small'
 											label='Soon'
 											sx={{
-												marginLeft: constants.SPACING
+												marginLeft: SPACING
 											}}
 											color='secondary'
 										/>

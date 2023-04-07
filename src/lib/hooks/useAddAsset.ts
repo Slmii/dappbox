@@ -3,14 +3,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { api } from 'api';
 import { PostAsset } from 'declarations/assets/assets.did';
-import { constants } from 'lib/constants';
+import { QUERY_USER_ASSETS } from 'lib/constants/query-keys.constants';
 import { Asset } from 'lib/types/Asset.types';
+import { findExistingAsset } from 'lib/utils/asset.utils';
 
 export const useAddAsset = () => {
 	const queryClient = useQueryClient();
 
 	const updateCache = (assetId: number, updater: (asset: Asset) => Partial<Asset>) => {
-		queryClient.setQueryData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
+		queryClient.setQueryData<Asset[]>([QUERY_USER_ASSETS], old => {
 			if (!old) {
 				return [];
 			}
@@ -30,28 +31,23 @@ export const useAddAsset = () => {
 	};
 
 	const addPlaceholder = (asset: PostAsset & { placeholderId: number }) => {
-		queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
+		queryClient.setQueriesData<Asset[]>([QUERY_USER_ASSETS], old => {
 			if (!old) {
 				return [];
 			}
 
-			// If the asset already exists, mark the asset as a placeholder
-			const existingAsset = old.find(
-				oldAsset =>
-					oldAsset.name === asset.name &&
-					oldAsset.parentId === asset.parent_id[0] &&
-					oldAsset.type === ('File' in asset.asset_type ? 'file' : 'folder')
-			);
-			// TODO: update chunks in BE for existing assets
+			// TODO: update chunks in BE for existing assets. Make this a function
+
+			const existingAsset = findExistingAsset(old, asset);
+
+			// If the asset already exists, mark the eixsting asset as a placeholder
 			if (!!existingAsset) {
 				return old.map(oldAsset => {
 					if (oldAsset.id === existingAsset.id) {
 						return {
 							...existingAsset,
 							id: asset.placeholderId,
-							placeholder: true,
-							createdAt: new Date(),
-							updatedAt: new Date()
+							placeholder: true
 						};
 					}
 

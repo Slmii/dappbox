@@ -5,12 +5,15 @@ import { useLocation } from 'react-router-dom';
 
 import { api } from 'api';
 import { Chunk, PostAsset } from 'declarations/assets/assets.did';
-import { constants } from 'lib/constants';
+import { QUERY_USED_SPACE } from 'lib/constants/query-keys.constants';
+import { SPACING } from 'lib/constants/spacing.constants';
+import { MAX_UPLOAD_LIMIT } from 'lib/constants/upload.constants';
 import { AuthContext } from 'lib/context';
 import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
 import { FileWithActivity } from 'lib/types';
 import { getAssetId, getUrlBreadcrumbs } from 'lib/url';
-import { formatBytes, getExtension, getImage, validateUploadSize } from 'lib/utils';
+import { findExistingAsset, getExtension, getImage, validateUploadSize } from 'lib/utils/asset.utils';
+import { formatBytes } from 'lib/utils/conversion.utils';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 import { Menu } from 'ui-components/Menu';
@@ -56,7 +59,7 @@ export const Upload = () => {
 
 		const isValid = validateUploadSize(files);
 		if (!isValid) {
-			setUploadError(`Max upload size is ${formatBytes(constants.MAX_UPLOAD_LIMIT)}`);
+			setUploadError(`Max upload size is ${formatBytes(MAX_UPLOAD_LIMIT)}`);
 			return;
 		}
 
@@ -80,6 +83,7 @@ export const Upload = () => {
 		// Create PostAsset data
 		const postData: PostAsset & { placeholderId: number } = {
 			placeholderId,
+			id: [],
 			asset_type: {
 				Folder: null
 			},
@@ -127,7 +131,7 @@ export const Upload = () => {
 
 		const isValid = validateUploadSize(files);
 		if (!isValid) {
-			setUploadError(`Max upload size is ${formatBytes(constants.MAX_UPLOAD_LIMIT)}`);
+			setUploadError(`Max upload size is ${formatBytes(MAX_UPLOAD_LIMIT)}`);
 			return;
 		}
 
@@ -181,6 +185,7 @@ export const Upload = () => {
 			// Create PostAsset data
 			const postData: PostAsset & { placeholderId: number } = {
 				placeholderId,
+				id: [],
 				asset_type: {
 					File: null
 				},
@@ -198,6 +203,11 @@ export const Upload = () => {
 					url: []
 				}
 			};
+
+			// Find existing asset
+			const existingAsset = findExistingAsset(assets ?? [], postData);
+			// Set existing asset id
+			postData.id = existingAsset?.id ? [existingAsset.id] : [];
 
 			// Add placeholder
 			addPlaceholder(postData);
@@ -244,7 +254,7 @@ export const Upload = () => {
 			});
 		}
 
-		await queryClient.invalidateQueries([constants.QUERY_KEYS.USED_SPACE]);
+		await queryClient.invalidateQueries([QUERY_USED_SPACE]);
 	};
 
 	const addActivities = (files: FileList) => {
@@ -269,7 +279,7 @@ export const Upload = () => {
 
 	return (
 		<>
-			<Box sx={{ padding: constants.SPACING }}>
+			<Box sx={{ padding: SPACING }}>
 				<Menu
 					fullWidth
 					label={

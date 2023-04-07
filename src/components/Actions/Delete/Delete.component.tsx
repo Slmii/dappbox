@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { api } from 'api';
-import { constants } from 'lib/constants';
+import { QUERY_USED_SPACE, QUERY_USER_ASSETS } from 'lib/constants/query-keys.constants';
 import { AuthContext } from 'lib/context';
 import { useActivities, useUserAssets } from 'lib/hooks';
 import { tableStateAtom } from 'lib/recoil';
@@ -23,7 +23,7 @@ export const Delete = () => {
 	const { mutateAsync: deleteAssetsMutate } = useMutation({
 		mutationFn: api.Assets.deleteAssets,
 		onSuccess: async deletedAssets => {
-			queryClient.setQueriesData<Asset[]>([constants.QUERY_KEYS.USER_ASSETS], old => {
+			queryClient.setQueriesData<Asset[]>([QUERY_USER_ASSETS], old => {
 				if (!old) {
 					return [];
 				}
@@ -31,7 +31,7 @@ export const Delete = () => {
 				return old.filter(asset => !deletedAssets.includes(asset.id));
 			});
 
-			await queryClient.invalidateQueries([constants.QUERY_KEYS.USED_SPACE]);
+			await queryClient.invalidateQueries([QUERY_USED_SPACE]);
 		}
 	});
 	const { mutateAsync: deleteChunksMutate } = useMutation({

@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { api } from 'api';
 import { Asset } from 'lib/types';
-import { saveAs } from 'lib/utils';
+import { saveAs } from 'lib/utils/asset.utils';
 import { useActivities } from './useActivities';
 import { useUserAssets } from './useUserAssets';
 

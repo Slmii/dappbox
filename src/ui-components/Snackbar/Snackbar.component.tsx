@@ -1,7 +1,7 @@
 import Slide, { SlideProps } from '@mui/material/Slide';
 import MuiSnackbar from '@mui/material/Snackbar';
 
-import { constants } from 'lib/constants';
+import { SPACING } from 'lib/constants/spacing.constants';
 import { Button } from 'ui-components/Button';
 import { IconButton } from 'ui-components/IconButton';
 import { CircularProgress } from 'ui-components/Progress';
@@ -63,7 +63,7 @@ export const Snackbar = ({
 					{loader ? (
 						<CircularProgress
 							sx={{
-								marginRight: constants.SPACING
+								marginRight: SPACING
 							}}
 						/>
 					) : null}

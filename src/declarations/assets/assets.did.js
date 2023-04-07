@@ -16,6 +16,7 @@ export const idlFactory = ({ IDL }) => {
     'index' : IDL.Nat32,
   });
   const PostAsset = IDL.Record({
+    'id' : IDL.Opt(IDL.Nat32),
     'asset_type' : AssetType,
     'name' : IDL.Text,
     'size' : IDL.Nat32,

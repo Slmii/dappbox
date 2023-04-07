@@ -2,7 +2,7 @@ import { LinearProgress } from '@mui/material';
 import { useMemo } from 'react';
 
 import { useUserAssets } from 'lib/hooks';
-import { formatBytes } from 'lib/utils';
+import { formatBytes } from 'lib/utils/conversion.utils';
 import { Box, Column } from 'ui-components/Box';
 import { Content } from 'ui-components/Container';
 import { Icon } from 'ui-components/Icon';

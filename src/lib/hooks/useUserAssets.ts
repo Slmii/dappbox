@@ -2,14 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 
 import { api } from 'api';
-import { constants } from 'lib/constants';
+import { QUERY_USER_ASSETS } from 'lib/constants/query-keys.constants';
 import { AuthContext } from 'lib/context';
 import { Asset } from 'lib/types';
 
 export const useUserAssets = () => {
 	const { isAuthenticated } = useContext(AuthContext);
 
-	const data = useQuery([constants.QUERY_KEYS.USER_ASSETS], {
+	const data = useQuery([QUERY_USER_ASSETS], {
 		queryFn: api.Assets.getUserAssets,
 		enabled: isAuthenticated
 	});

@@ -1,7 +1,7 @@
 import { Principal } from '@dfinity/principal';
 
 import { _SERVICE, PostChunk } from 'declarations/chunks/chunks.did';
-import { resolve, unwrap } from 'lib/utils';
+import { resolve, unwrap } from 'lib/utils/unwrap.utils';
 import { Actor } from './actor';
 
 export abstract class Chunks {

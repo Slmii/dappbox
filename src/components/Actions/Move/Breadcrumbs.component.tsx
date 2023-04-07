@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { constants } from 'lib/constants';
+import { SPACING } from 'lib/constants/spacing.constants';
 import { useUserAssets } from 'lib/hooks';
 import { getUrlPathToAsset } from 'lib/url';
 import { Box } from 'ui-components/Box';
@@ -31,7 +31,7 @@ export const MoveFolderBreadcrumbs = ({
 			sx={{
 				display: 'flex',
 				flexWrap: 'wrap',
-				marginTop: constants.SPACING,
+				marginTop: SPACING,
 				'& > *:not(:last-child) > span': {
 					color: 'text.secondary',
 					'&:hover': {

@@ -9,7 +9,7 @@ import { api } from 'api/index';
 import { mapToUserInterface } from 'api/users';
 import { _SERVICE } from 'declarations/users/users.did';
 import { User } from 'lib/types';
-import { unwrap } from 'lib/utils';
+import { unwrap } from 'lib/utils/unwrap.utils';
 import { Snackbar } from 'ui-components/Snackbar';
 
 interface ValidateSession {

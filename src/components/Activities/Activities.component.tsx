@@ -2,7 +2,8 @@ import Paper from '@mui/material/Paper';
 import { useState } from 'react';
 
 import { Resizeable } from 'components/Resizable';
-import { constants } from 'lib/constants';
+import { ACTIVITY_HEIGHT, ACTIVITY_HEIGHT_COLLAPSED, ACTIVITY_WIDTH } from 'lib/constants/activitites.consants';
+import { SPACING } from 'lib/constants/spacing.constants';
 import { useActivities } from 'lib/hooks';
 import { Box, Column } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -11,7 +12,7 @@ import { SubTitle } from 'ui-components/Typography';
 import { Activity } from './Activity.component';
 
 export const Activities = () => {
-	const [height, setHeight] = useState(constants.ACTIVITIES.HEIGHT);
+	const [height, setHeight] = useState(ACTIVITY_HEIGHT);
 	const [isFullScreen, setIsFullScreen] = useState(false);
 	const {
 		open,
@@ -34,8 +35,8 @@ export const Activities = () => {
 			}}
 		>
 			<Resizeable
-				width={constants.ACTIVITIES.WIDTH}
-				height={open ? height : constants.ACTIVITIES.HEIGHT_COLLAPSED}
+				width={ACTIVITY_WIDTH}
+				height={open ? height : ACTIVITY_HEIGHT_COLLAPSED}
 				isDraggable={open && !isFullScreen}
 				fullScreen={isFullScreen}
 				onResize={height => setHeight(height)}
@@ -44,9 +45,9 @@ export const Activities = () => {
 					sx={{
 						display: 'flex',
 						alignItems: 'center',
-						minHeight: constants.ACTIVITIES.HEIGHT_COLLAPSED,
-						paddingLeft: constants.SPACING,
-						paddingRight: constants.SPACING,
+						minHeight: ACTIVITY_HEIGHT_COLLAPSED,
+						paddingLeft: SPACING,
+						paddingRight: SPACING,
 						borderTopLeftRadius: !isFullScreen ? theme => theme.shape.borderRadius : undefined,
 						backgroundColor: theme => theme.palette.secondary.main
 					}}
@@ -105,9 +106,9 @@ export const Activities = () => {
 					sx={{
 						maxHeight: isFullScreen
 							? // Fullscreen height
-							  window.innerHeight - constants.ACTIVITIES.HEIGHT_COLLAPSED
+							  window.innerHeight - ACTIVITY_HEIGHT_COLLAPSED
 							: // Current height of the resizable component
-							  height - constants.ACTIVITIES.HEIGHT_COLLAPSED,
+							  height - ACTIVITY_HEIGHT_COLLAPSED,
 						height: open ? '100%' : 0,
 						overflowY: 'auto',
 						border: 0,

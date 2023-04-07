@@ -60,6 +60,7 @@ export type InviteStatus = { 'Accepted' : null } |
 export interface MoveAsset { 'id' : number, 'parent_id' : [] | [number] }
 export interface Nft { 'principal' : Principal, 'index' : number }
 export interface PostAsset {
+  'id' : [] | [number],
   'asset_type' : AssetType,
   'name' : string,
   'size' : number,

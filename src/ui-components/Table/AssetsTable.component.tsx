@@ -12,7 +12,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Asset } from 'lib/types/Asset.types';
-import { formatBytes } from 'lib/utils';
+import { formatBytes } from 'lib/utils/conversion.utils';
 import { Icon } from 'ui-components/Icon';
 import { IconButton } from 'ui-components/IconButton';
 import { Column, TableCellProps, TableHeadProps, TableProps } from './Table.types';
@@ -275,7 +275,7 @@ export const AssetsTable = ({
 								selected={isItemSelected}
 								sx={{
 									'& > *': {
-										color: theme => (asset.placeholder ? theme.palette.grey[800] : undefined)
+										color: asset.placeholder ? 'text.disabled' : 'text.primary'
 									}
 								}}
 							>

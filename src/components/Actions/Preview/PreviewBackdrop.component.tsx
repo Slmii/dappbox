@@ -1,7 +1,7 @@
 import Paper from '@mui/material/Paper';
 import { useMemo, useState } from 'react';
 
-import { constants } from 'lib/constants';
+import { SPACING } from 'lib/constants/spacing.constants';
 import { useDownload, useKeyPress } from 'lib/hooks';
 import { Asset, Doc } from 'lib/types';
 import { Backdrop } from 'ui-components/Backdrop';
@@ -113,7 +113,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 					left: 0,
 					width: '100%',
 					background: 'linear-gradient(to top, transparent 0%, black 100%)',
-					padding: theme => theme.spacing(constants.SPACING)
+					padding: theme => theme.spacing(SPACING)
 				}}
 			>
 				<Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -167,7 +167,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 						icon='previous'
 						label='Previous'
 						onClick={handleOnPrevious}
-						sx={{ marginRight: theme => theme.spacing(constants.SPACING) }}
+						sx={{ marginRight: theme => theme.spacing(SPACING) }}
 						color='inherit'
 					/>
 				) : null}
@@ -177,7 +177,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 						display: 'flex',
 						alignItems: 'center',
 						justifyContent: 'center',
-						padding: theme => theme.spacing(constants.SPACING),
+						padding: theme => theme.spacing(SPACING),
 						borderRadius: theme => theme.shape.borderRadius,
 						width: '100%',
 						height: '100%',
@@ -220,7 +220,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 						icon='next'
 						label='Next'
 						onClick={handleOnNext}
-						sx={{ marginLeft: theme => theme.spacing(constants.SPACING) }}
+						sx={{ marginLeft: theme => theme.spacing(SPACING) }}
 						color='inherit'
 					/>
 				) : null}

@@ -7,7 +7,7 @@ import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import React, { PropsWithChildren } from 'react';
 
-import { constants } from 'lib/constants';
+import { SPACING } from 'lib/constants/spacing.constants';
 import { Button } from 'ui-components/Button';
 import { DialogProps } from './Dialog.types';
 
@@ -54,7 +54,7 @@ export const Dialog = ({
 				{text && (
 					<DialogContentText
 						sx={{
-							paddingTop: constants.SPACING
+							paddingTop: SPACING
 						}}
 					>
 						{text}

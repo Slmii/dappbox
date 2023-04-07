@@ -1,7 +1,7 @@
 import MuiBox, { BoxProps } from '@mui/material/Box';
 import { PropsWithChildren } from 'react';
 
-import { constants } from 'lib/constants';
+import { SPACING } from 'lib/constants/spacing.constants';
 
 export const Box = ({ children, ...props }: PropsWithChildren<BoxProps>) => {
 	return <MuiBox {...props}>{children}</MuiBox>;
@@ -13,7 +13,7 @@ export const Row = ({ children, spacing }: PropsWithChildren<{ spacing?: number 
 			sx={{
 				display: 'flex',
 				flexDirection: 'column',
-				rowGap: spacing ?? constants.SPACING
+				rowGap: spacing ?? SPACING
 			}}
 		>
 			{children}
@@ -28,7 +28,7 @@ export const Column = ({ children, spacing }: PropsWithChildren<{ spacing?: numb
 				display: 'flex',
 				flexDirection: 'row',
 				alignItems: 'center',
-				columnGap: spacing ?? constants.SPACING
+				columnGap: spacing ?? SPACING
 			}}
 		>
 			{children}

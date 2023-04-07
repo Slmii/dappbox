@@ -11,9 +11,9 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { read, WorkBook } from 'xlsx';
 
-import { constants } from 'lib/constants';
+import { SPACING } from 'lib/constants/spacing.constants';
 import { Asset } from 'lib/types';
-import { getRowsCols, Row } from 'lib/utils';
+import { getRowsCols, Row } from 'lib/utils/preview.utils';
 import { Box, Column } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
 
@@ -92,7 +92,7 @@ const CustomPagination = ({
 				justifyContent: 'space-between',
 				alignItems: 'center',
 				width: '100%',
-				padding: constants.SPACING
+				padding: SPACING
 			}}
 		>
 			<Column>

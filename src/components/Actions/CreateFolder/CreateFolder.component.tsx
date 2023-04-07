@@ -2,7 +2,7 @@ import { useContext, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { PostAsset } from 'declarations/assets/assets.did';
-import { constants } from 'lib/constants';
+import { SPACING } from 'lib/constants/spacing.constants';
 import { AuthContext } from 'lib/context';
 import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
 import { createFolderSchema } from 'lib/schemas';
@@ -50,6 +50,7 @@ export const CreateFolder = () => {
 			const parentId = getAssetId(pathname);
 			const postData: PostAsset & { placeholderId: number } = {
 				placeholderId,
+				id: [],
 				asset_type: {
 					Folder: null
 				},
@@ -110,7 +111,7 @@ export const CreateFolder = () => {
 			>
 				<Box
 					sx={{
-						marginTop: constants.SPACING
+						marginTop: SPACING
 					}}
 				>
 					<Form<CreateFolderFormData>
