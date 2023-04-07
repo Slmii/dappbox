@@ -34,7 +34,13 @@ export const Upload = () => {
 	const [uploadError, setUploadError] = useState<string | null>(null);
 
 	const { data: assets } = useUserAssets();
-	const { mutateAsync: addAssetMutate, reset: addAssetReset, updateCache, addPlaceholder } = useAddAsset();
+	const {
+		mutateAsync: addAssetMutate,
+		reset: addAssetReset,
+		updateCache,
+		addPlaceholder,
+		removePlaceholder
+	} = useAddAsset();
 	const { mutateAsync: addChunkMutate } = useMutation({
 		mutationFn: api.Chunks.addChunk
 	});
@@ -212,27 +218,44 @@ export const Upload = () => {
 			// Add placeholder
 			addPlaceholder(postData);
 
+			let skipUpload = false;
+
 			// Upload each blob seperatly
 			const chunks: Chunk[] = [];
-			for (const [index, blob] of blobs.entries()) {
-				const counter = index + 1;
-				console.log(`Uploading chunk ${counter}/${blobsLength}`);
+			try {
+				for (const [index, blob] of blobs.entries()) {
+					const counter = index + 1;
+					console.log(`Uploading chunk ${counter}/${blobsLength}`);
 
-				// Update activity with current chunk
-				updateActivity(activityId, {
-					currentChunk: counter
-				});
+					// Update activity with current chunk
+					updateActivity(activityId, {
+						currentChunk: counter
+					});
 
-				const chunk = await addChunkMutate({
-					chunk: {
-						blob,
-						index
-					},
-					canisterPrincipal: user.canisters[0]
-				});
-				chunks.push(chunk);
+					const chunk = await addChunkMutate({
+						chunk: {
+							blob,
+							index
+						},
+						canisterPrincipal: user.canisters[0]
+					});
+					chunks.push(chunk);
 
-				console.log(`Chunk ${counter} uploaded`, chunk);
+					console.log(`Chunk ${counter} uploaded`, chunk);
+				}
+			} catch (error) {
+				// Update activity with error
+				updateActivity(activityId, { inProgress: false, error: (error as Error).message });
+
+				// Remove placeholder
+				removePlaceholder(placeholderId);
+
+				skipUpload = true;
+			}
+
+			// Skip upload if there was an error
+			if (skipUpload) {
+				continue;
 			}
 
 			// Add asset

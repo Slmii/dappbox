@@ -30,6 +30,17 @@ export const useAddAsset = () => {
 		});
 	};
 
+	const removePlaceholder = (placeholderId: number) => {
+		queryClient.setQueryData<Asset[]>([QUERY_USER_ASSETS], old => {
+			if (!old) {
+				return [];
+			}
+
+			// Remove the placeholder
+			return old.filter(asset => asset.id !== placeholderId);
+		});
+	};
+
 	const addPlaceholder = (asset: PostAsset & { placeholderId: number }) => {
 		queryClient.setQueriesData<Asset[]>([QUERY_USER_ASSETS], old => {
 			if (!old) {
@@ -83,5 +94,5 @@ export const useAddAsset = () => {
 		mutationFn: api.Assets.addAsset
 	});
 
-	return { ...data, updateCache, addPlaceholder };
+	return { ...data, updateCache, addPlaceholder, removePlaceholder };
 };
