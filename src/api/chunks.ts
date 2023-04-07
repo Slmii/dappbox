@@ -14,9 +14,8 @@ export abstract class Chunks {
 		});
 	}
 
-	// static async deleteChunks({ chunkIds, canisterPrincipal }: { chunkIds: number[]; canisterPrincipal: Principal }) {
-	static async deleteChunks(chunkIds: number[]) {
-		const actor = await Actor.getActor<_SERVICE>('chunks');
+	static async deleteChunks({ chunkIds, canisterPrincipal }: { chunkIds: number[]; canisterPrincipal: Principal }) {
+		const actor = await Actor.getActor<_SERVICE>('chunks', canisterPrincipal);
 
 		return resolve(async () => {
 			const response = await actor.delete_chunks(Uint32Array.from(chunkIds));

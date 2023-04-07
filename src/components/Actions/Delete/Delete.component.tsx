@@ -52,8 +52,11 @@ export const Delete = () => {
 
 		const assetsToDelete = selectedAssets.map(asset => [asset, ...getNestedChildAssets(asset.id)]).flat();
 		try {
+			await deleteChunksMutate({
+				chunkIds: assetsToDelete.map(asset => asset.chunks.map(chunk => chunk.id)).flat(),
+				canisterPrincipal: user.canisters[0]
+			});
 			await deleteAssetsMutate(assetsToDelete.map(asset => asset.id));
-			await deleteChunksMutate(assetsToDelete.map(asset => asset.chunks.map(chunk => chunk.id)).flat());
 
 			// Mark all as finished
 			activityIds.forEach(activityId => updateActivity(activityId, { inProgress: false, isFinished: true }));
