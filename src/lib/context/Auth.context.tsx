@@ -3,11 +3,13 @@ import { Principal } from '@dfinity/principal';
 import { useQueryClient } from '@tanstack/react-query';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
 
 import { Actor } from 'api/actor';
 import { api } from 'api/index';
 import { mapToUserInterface } from 'api/users';
 import { _SERVICE } from 'declarations/users/users.did';
+import { activitiesAtom } from 'lib/recoil';
 import { User } from 'lib/types';
 import { unwrap } from 'lib/utils/unwrap.utils';
 import { Snackbar } from 'ui-components/Snackbar';
@@ -60,6 +62,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
 	const { state } = useLocation();
+	const setActivities = useSetRecoilState(activitiesAtom);
 
 	const [errorSnackbarOpen, setErrorSnackarOpen] = useState(false);
 	const [principal, setPrincipal] = useState<Principal | undefined>(undefined);
@@ -177,6 +180,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 		setIsLoading(false);
 		setUser(undefined);
 		setIsAuthenticated(false);
+		setActivities({
+			open: false,
+			id: 0,
+			activities: []
+		});
 
 		const authClient = await api.Actor.getAuthClient();
 		await authClient.logout();

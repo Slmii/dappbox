@@ -47,7 +47,9 @@ export const useAddAsset = () => {
 						return {
 							...existingAsset,
 							id: asset.placeholderId,
-							placeholder: true
+							placeholder: true,
+							size: asset.size,
+							updatedAt: new Date()
 						};
 					}
 
