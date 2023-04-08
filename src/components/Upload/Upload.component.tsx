@@ -97,8 +97,8 @@ export const Upload = () => {
 			isFinished: false
 		});
 
-		// TODO: cleanup this mess and split it up into smaller functions. Basically does the same as uploadFiles
 		await addNestedFileActivities(nestedFiles, {
+			// TODO: cleanup this mess and split it up into smaller functions. Basically does the same as uploadFiles
 			onFile: async file => {
 				const { blobs } = await getImage(file);
 				if (!blobs.length) {
