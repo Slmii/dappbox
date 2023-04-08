@@ -213,11 +213,10 @@ export const Upload = () => {
 		});
 
 		// Update folder activity
-		// updateActivity(activityId, {
-		// 	inProgress: false,
-		// 	isFinished: true
-		// 	// href: getUrlBreadcrumbs(asset.id, [asset, ...(assets ?? [])])
-		// });
+		updateActivity(activityId, {
+			inProgress: false,
+			isFinished: true
+		});
 	};
 
 	const handleOnFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
