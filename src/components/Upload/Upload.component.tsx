@@ -108,6 +108,13 @@ export const Upload = () => {
 			}
 		};
 
+		// Find existing asset
+		const existingAsset = findExistingAsset(assets ?? [], postData);
+		if (!!existingAsset) {
+			// Set existing asset id. id is used to recognize an existing asset and replace it with the new one
+			postData.id = [existingAsset.id];
+		}
+
 		// Add placeholder
 		addPlaceholder(postData);
 
@@ -213,7 +220,7 @@ export const Upload = () => {
 			// Find existing asset
 			const existingAsset = findExistingAsset(assets ?? [], postData);
 			if (!!existingAsset) {
-				// Set existing asset id
+				// Set existing asset id. id is used to recognize an existing asset and replace it with the new one
 				postData.id = [existingAsset.id];
 			}
 

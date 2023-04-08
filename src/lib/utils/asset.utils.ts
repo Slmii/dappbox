@@ -74,13 +74,13 @@ export const descendingComparator = <T>(a: T, b: T, orderBy: keyof T) => {
  * @returns - Existing asset or undefined
  */
 export const findExistingAsset = (assets: Asset[], asset: PostAsset) => {
-	return assets.find(
-		a =>
-			a.name === asset.name &&
-			a.parentId === asset.parent_id[0] &&
-			a.type === ('File' in asset.asset_type ? 'file' : 'folder') &&
-			a.mimeType === asset.mime_type
-	);
+	return assets.find(a => {
+		if ('Folder' in asset.asset_type) {
+			return a.name === asset.name && a.parentId === asset.parent_id[0];
+		}
+
+		return a.name === asset.name && a.parentId === asset.parent_id[0] && a.mimeType === asset.mime_type;
+	});
 };
 
 /**
