@@ -214,7 +214,7 @@ export const Upload = () => {
 			const existingAsset = findExistingAsset(assets ?? [], postData);
 			if (!!existingAsset) {
 				// Set existing asset id
-				postData.id = existingAsset?.id ? [existingAsset.id] : [];
+				postData.id = [existingAsset.id];
 			}
 
 			// Add placeholder

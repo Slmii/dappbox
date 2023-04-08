@@ -45,6 +45,11 @@ export const idlFactory = ({ IDL }) => {
   return IDL.Service({
     'add_chunk' : IDL.Func([PostChunk], [Result], []),
     'delete_chunks' : IDL.Func([IDL.Vec(IDL.Nat32)], [Result_1], []),
+    'delete_chunks_intercanister_call' : IDL.Func(
+        [IDL.Principal, IDL.Vec(IDL.Nat32)],
+        [Result_1],
+        [],
+      ),
     'get_all_chunks' : IDL.Func([], [Result_2], ['query']),
     'get_chunks_by_chunk_id' : IDL.Func([IDL.Nat32], [Result_3], ['query']),
     'get_state' : IDL.Func([], [Result_4], ['query']),

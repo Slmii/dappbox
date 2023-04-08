@@ -42,6 +42,10 @@ export type Result_4 = { 'Ok' : ChunkStoreState } |
 export interface _SERVICE {
   'add_chunk' : ActorMethod<[PostChunk], Result>,
   'delete_chunks' : ActorMethod<[Uint32Array | number[]], Result_1>,
+  'delete_chunks_intercanister_call' : ActorMethod<
+    [Principal, Uint32Array | number[]],
+    Result_1
+  >,
   'get_all_chunks' : ActorMethod<[], Result_2>,
   'get_chunks_by_chunk_id' : ActorMethod<[number], Result_3>,
   'get_state' : ActorMethod<[], Result_4>,
