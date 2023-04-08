@@ -10,9 +10,18 @@ import { SPACING } from 'lib/constants/spacing.constants';
 import { MAX_UPLOAD_LIMIT } from 'lib/constants/upload.constants';
 import { AuthContext } from 'lib/context';
 import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
-import { FileWithActivity } from 'lib/types';
+import { ActivityType, FileWithActivity, NestedFileObject } from 'lib/types';
 import { getAssetId, getUrlBreadcrumbs } from 'lib/url';
-import { findExistingAsset, getExtension, getImage, validateUploadSize } from 'lib/utils/asset.utils';
+import {
+	addNestedFileActivities,
+	buildNestedFiles,
+	countFilesAndFolders,
+	findExistingAsset,
+	getExtension,
+	getImage,
+	setPostAsset,
+	validateUploadSize
+} from 'lib/utils/asset.utils';
 import { formatBytes } from 'lib/utils/conversion.utils';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
@@ -55,11 +64,9 @@ export const Upload = () => {
 	}, [folderRef]);
 
 	const handleOnFolderUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-		// TODO: upload nested folder
-
 		const files = e.target.files;
 
-		if (!files || !files.length || !user) {
+		if (!files || !files.length || !user || !assets) {
 			return;
 		}
 
@@ -69,10 +76,20 @@ export const Upload = () => {
 			return;
 		}
 
-		const [folderName] = files[0].webkitRelativePath.split('/');
-		const parentId = getAssetId(pathname);
+		// Build nested files and folders
+		const nestedFiles = buildNestedFiles(files);
 
-		// Add folder activity
+		// Count files and folders
+		const { files: filesCount, folders: foldersCount } = countFilesAndFolders(nestedFiles);
+		const totalCount = filesCount + foldersCount;
+		let counter = 0;
+
+		// Get folder name of the first file, aka root folder
+		const folderName = Object.keys(nestedFiles)[0];
+
+		// Get parentId from url
+		let parentId = getAssetId(pathname);
+
 		const activityId = addActivity({
 			name: folderName,
 			type: 'folder',
@@ -80,59 +97,127 @@ export const Upload = () => {
 			isFinished: false
 		});
 
-		// Add activities for all files within the uploaded folder
-		const filesWithActivityId = addActivities(files);
+		await addNestedFileActivities(nestedFiles, {
+			onFile: async file => {
+				const { blobs } = await getImage(file);
+				if (!blobs.length) {
+					return;
+				}
 
-		// Create placeholderId
-		const placeholderId = Date.now();
+				counter += 1;
+				updateActivity(activityId, {
+					name: `${folderName} (${counter}/${totalCount})`
+				});
 
-		// Create PostAsset data
-		const postData: PostAsset & { placeholderId: number } = {
-			placeholderId,
-			id: [],
-			asset_type: {
-				Folder: null
+				// Create placeholderId
+				const placeholderId = Date.now();
+
+				// Create PostAsset data
+				const postData = setPostAsset({
+					placeholderId,
+					name: file.name,
+					parentId: parentId ? Number(parentId) : undefined,
+					userId: user.id,
+					assetType: 'file',
+					extension: getExtension(file.name),
+					mimeType: file.type,
+					size: file.size
+				});
+
+				// Find existing asset
+				const existingAsset = findExistingAsset(assets, postData);
+				if (!!existingAsset) {
+					// Set existing asset id. id is used to recognize an existing asset and replace it with the new one
+					postData.id = [existingAsset.id];
+				}
+
+				// Add placeholder
+				addPlaceholder(postData);
+
+				let skipUpload = false;
+
+				// Upload each blob seperatly
+				const chunks: Chunk[] = [];
+				try {
+					for (const [index, blob] of blobs.entries()) {
+						const chunk = await addChunkMutate({
+							chunk: {
+								blob,
+								index
+							},
+							canisterPrincipal: user.canisters[0]
+						});
+						chunks.push(chunk);
+					}
+				} catch (error) {
+					// Update activity with error
+					updateActivity(activityId, { inProgress: false, error: (error as Error).message });
+
+					// Remove placeholder
+					removePlaceholder(placeholderId);
+
+					skipUpload = true;
+				}
+
+				// Skip upload if there was an error
+				if (skipUpload) {
+					return;
+				}
+
+				// Add asset
+				postData.chunks = chunks;
+				const asset = await addAssetMutate(postData);
+
+				// Update cache with asset
+				updateCache(placeholderId, () => ({ ...asset, chunks, placeholder: false }));
 			},
-			chunks: [],
-			extension: '',
-			mime_type: '',
-			name: folderName,
-			parent_id: parentId ? [Number(parentId)] : [],
-			size: 0,
-			user_id: user.id,
-			settings: {
-				privacy: {
-					Public: null
-				},
-				url: []
+			onFolder: async name => {
+				counter += 1;
+				updateActivity(activityId, {
+					name: `${folderName} (${counter}/${totalCount})`
+				});
+
+				// Create placeholderId
+				const placeholderId = Date.now();
+
+				// Create PostAsset data
+				const postData = setPostAsset({
+					placeholderId,
+					name,
+					parentId: parentId ? Number(parentId) : undefined,
+					userId: user.id,
+					assetType: 'folder',
+					extension: '',
+					mimeType: '',
+					size: 0
+				});
+
+				// Find existing asset
+				const existingAsset = findExistingAsset(assets, postData);
+				if (!!existingAsset) {
+					// Set existing asset id. id is used to recognize an existing asset and replace it with the new one
+					postData.id = [existingAsset.id];
+				}
+
+				// Add placeholder
+				addPlaceholder(postData);
+
+				// Upload folder
+				const asset = await addAssetMutate(postData);
+				// Set parentId to the newly created folder
+				parentId = asset.id.toString();
+
+				// Update cache to remove placeholder
+				updateCache(placeholderId, () => ({ ...asset, placeholder: false }));
 			}
-		};
-
-		// Find existing asset
-		const existingAsset = findExistingAsset(assets ?? [], postData);
-		if (!!existingAsset) {
-			// Set existing asset id. id is used to recognize an existing asset and replace it with the new one
-			postData.id = [existingAsset.id];
-		}
-
-		// Add placeholder
-		addPlaceholder(postData);
-
-		// Upload selected folder as asset
-		const asset = await addAssetMutate(postData);
-
-		// Update cache with folder asset
-		updateCache(placeholderId, () => ({ ...asset, placeholder: false }));
-
-		// Update folder activity
-		updateActivity(activityId, {
-			inProgress: false,
-			isFinished: true,
-			href: getUrlBreadcrumbs(asset.id, [asset, ...(assets ?? [])])
 		});
 
-		// Upload files inside the selected folder
-		await uploadFiles(filesWithActivityId, asset.id);
+		// Update folder activity
+		// updateActivity(activityId, {
+		// 	inProgress: false,
+		// 	isFinished: true
+		// 	// href: getUrlBreadcrumbs(asset.id, [asset, ...(assets ?? [])])
+		// });
 	};
 
 	const handleOnFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,7 +234,7 @@ export const Upload = () => {
 		}
 
 		// Add activities for selected files
-		const filesWithActivityId = addActivities(files);
+		const filesWithActivityId = addFileActivities(files);
 
 		// Upload selected files
 		const parentId = getAssetId(pathname);
@@ -289,7 +374,7 @@ export const Upload = () => {
 		await queryClient.invalidateQueries([QUERY_USED_SPACE]);
 	};
 
-	const addActivities = (files: FileList) => {
+	const addFileActivities = (files: FileList) => {
 		// Add activities for all files within the uploaded folder
 		const filesWithActivityId: FileWithActivity[] = Array.from(files).map(file => {
 			// Insert a new activity

@@ -45,10 +45,13 @@ export const Delete = () => {
 
 		setDeleteOpenDialog(false);
 
-		// Add activities for all selected assets to be deleted
-		const activityIds = selectedAssets.map(asset =>
-			addActivity({ inProgress: true, isFinished: false, name: asset.name, type: 'delete' })
-		);
+		// Add activity for all selected assets to be deleted
+		const activityId = addActivity({
+			inProgress: true,
+			isFinished: false,
+			name: selectedAssets.map(asset => asset.name).join(', '),
+			type: 'delete'
+		});
 
 		const assetsToDelete = selectedAssets.map(asset => [asset, ...getNestedChildAssets(asset.id)]).flat();
 		try {
@@ -58,8 +61,8 @@ export const Delete = () => {
 			});
 			await deleteAssetsMutate(assetsToDelete.map(asset => asset.id));
 
-			// Mark all as finished
-			activityIds.forEach(activityId => updateActivity(activityId, { inProgress: false, isFinished: true }));
+			// Mark as finished
+			updateActivity(activityId, { inProgress: false, isFinished: true });
 
 			// Reset selected rows
 			setTableState(prevState => ({
@@ -67,10 +70,8 @@ export const Delete = () => {
 				selectedAssets: []
 			}));
 		} catch (error) {
-			// Mark all as error
-			activityIds.forEach(activityId =>
-				updateActivity(activityId, { inProgress: false, error: (error as Error).message })
-			);
+			// Mark as error
+			updateActivity(activityId, { inProgress: false, error: (error as Error).message });
 		}
 	};
 

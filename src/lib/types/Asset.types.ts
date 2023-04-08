@@ -19,3 +19,12 @@ export interface Asset {
 }
 
 export type AssetType = 'folder' | 'file';
+
+export interface NestedFileObject {
+	[key: string]: NestedFileObject | File;
+}
+
+export interface FileCount {
+	files: number;
+	folders: number;
+}

@@ -1,6 +1,8 @@
+import { Principal } from '@dfinity/principal';
+
 import { PostAsset } from 'declarations/assets/assets.did';
 import { MAX_UPLOAD_LIMIT } from 'lib/constants/upload.constants';
-import { Asset } from 'lib/types';
+import { Asset, AssetType, FileCount, NestedFileObject } from 'lib/types';
 import { Order } from 'ui-components/Table';
 
 /**
@@ -154,4 +156,147 @@ export const getImage = async (file: File) => {
 		preview,
 		blobs: arrayBuffers.map(chunk => new Uint8Array(chunk))
 	};
+};
+
+/**
+ * Build a nested object from a FileList
+ *
+ * @param files - FileList to build the nested object from
+ */
+export const buildNestedFiles = (files: FileList): NestedFileObject => {
+	const result: NestedFileObject = {};
+
+	for (let i = 0; i < files.length; i++) {
+		const file = files[i];
+		const pathParts = file.webkitRelativePath.split('/');
+		let currentObject = result;
+
+		for (let j = 0; j < pathParts.length; j++) {
+			const pathPart = pathParts[j];
+
+			if (j === pathParts.length - 1) {
+				currentObject[pathPart] = file;
+			} else {
+				if (!currentObject[pathPart]) {
+					currentObject[pathPart] = {};
+				}
+				currentObject = currentObject[pathPart] as NestedFileObject;
+			}
+		}
+	}
+
+	return result;
+};
+
+/**
+ * This function is recursive and will call the onFile and onFolder functions for each file and folder.
+ *
+ * @param obj - Nested object to add activities to
+ * @param fns - Functions to call for each file and folder
+ * @returns - Promise that resolves when all activities are added
+ */
+export const addNestedFileActivities = async <T>(
+	obj: NestedFileObject,
+	fns: { onFile: (file: File) => Promise<T> | T; onFolder: (name: string) => Promise<T> | T }
+) => {
+	for (const key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			const value = obj[key];
+
+			// If the value is a file, call the onFile function
+			if (value instanceof File) {
+				await fns.onFile(value);
+			} else if (typeof value === 'object') {
+				// If the value is an object, call the onFolder function
+				await fns.onFolder(key);
+
+				// Recursively call this function
+				await addNestedFileActivities(value as NestedFileObject, fns);
+			}
+		}
+	}
+};
+
+/**
+ * Set the post asset data
+ *
+ * @param name - Name of the asset
+ * @param assetType - Type of the asset
+ * @param placeholderId - Placeholder ID
+ * @param extension - Extension of the asset
+ * @param mimeType - Mime type of the asset
+ * @param userId - User ID
+ * @param size - Size of the asset
+ * @param parentId - Parent ID
+ * @returns - Post asset data
+ */
+export const setPostAsset = ({
+	name,
+	assetType,
+	placeholderId,
+	extension,
+	mimeType,
+	userId,
+	size,
+	parentId
+}: {
+	placeholderId: number;
+	assetType: AssetType;
+	name: string;
+	extension: string;
+	mimeType: string;
+	size: number;
+	userId: Principal;
+	parentId?: number;
+}) => {
+	// Create PostAsset data
+	const postData: PostAsset & { placeholderId: number } = {
+		placeholderId,
+		id: [],
+		asset_type:
+			assetType === 'folder'
+				? {
+						Folder: null
+				  }
+				: { File: null },
+		chunks: [],
+		extension,
+		mime_type: mimeType,
+		name,
+		parent_id: parentId ? [parentId] : [],
+		size,
+		user_id: userId,
+		settings: {
+			privacy: {
+				Public: null
+			},
+			url: []
+		}
+	};
+
+	return postData;
+};
+
+/**
+ * Count the number of files and folders in a nested object
+ *
+ * @param obj - Nested object to count files and folders in
+ * @param count - Object to store the count in
+ * @returns - Object with the count
+ */
+export const countFilesAndFolders = (obj: NestedFileObject, count: FileCount = { files: 0, folders: 0 }): FileCount => {
+	for (const key in obj) {
+		if (obj.hasOwnProperty(key)) {
+			const value = obj[key];
+
+			if (value instanceof File) {
+				count.files++;
+			} else if (typeof value === 'object') {
+				count.folders++;
+				count = countFilesAndFolders(value as NestedFileObject, count);
+			}
+		}
+	}
+
+	return count;
 };
