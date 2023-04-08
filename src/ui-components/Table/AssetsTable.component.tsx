@@ -11,10 +11,12 @@ import { visuallyHidden } from '@mui/utils';
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+import { SPACING } from 'lib/constants/spacing.constants';
 import { Asset } from 'lib/types/Asset.types';
 import { formatBytes } from 'lib/utils/conversion.utils';
 import { Icon } from 'ui-components/Icon';
 import { IconButton } from 'ui-components/IconButton';
+import { CircularProgress } from 'ui-components/Progress';
 import { Column, TableCellProps, TableHeadProps, TableProps } from './Table.types';
 
 const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle, onNavigate }: TableCellProps) => {
@@ -93,11 +95,17 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle, onNavig
 				}}
 			>
 				{columnId === 'name' ? (
-					<Icon
-						icon={row.type === 'folder' ? 'folder' : 'download'}
-						color={row.placeholder ? 'disabled' : 'info'}
-						spacingRight
-					/>
+					<>
+						{row.placeholder ? (
+							<CircularProgress sx={{ mr: SPACING }} />
+						) : (
+							<Icon
+								icon={row.type === 'folder' ? 'folder' : 'download'}
+								color={row.placeholder ? 'disabled' : 'info'}
+								spacingRight
+							/>
+						)}
+					</>
 				) : null}
 				{renderValue()}
 			</Box>
