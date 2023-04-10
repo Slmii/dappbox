@@ -1,14 +1,14 @@
 {
-  "assets": {
-    "local": "rwlgt-iiaaa-aaaaa-aaaaa-cai",
-    "ic": "u7afm-2yaaa-aaaao-ab53a-cai"
-  },
-  "chunks": {
-    "local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
-    "ic": "zukw5-kqaaa-aaaao-acaxa-cai"
-  },
-  "users": {
-    "local": "ryjl3-tyaaa-aaaaa-aaaba-cai",
-    "ic": "fqd3w-cqaaa-aaaao-aaxyq-cai"
-  }
+	"assets": {
+		"local": "rwlgt-iiaaa-aaaaa-aaaaa-cai",
+		"ic": "u7afm-2yaaa-aaaao-ab53a-cai"
+	},
+	"chunks": {
+		"local": "rrkah-fqaaa-aaaaa-aaaaq-cai",
+		"ic": "zukw5-kqaaa-aaaao-acaxa-cai"
+	},
+	"users": {
+		"local": "ryjl3-tyaaa-aaaaa-aaaba-cai",
+		"ic": "fqd3w-cqaaa-aaaao-aaxyq-cai"
+	}
 }
