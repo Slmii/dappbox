@@ -5,4 +5,5 @@ export interface User {
 	username?: string;
 	createdAt: Date;
 	canisters: Principal[];
+	aliasUserIds: Principal[];
 }

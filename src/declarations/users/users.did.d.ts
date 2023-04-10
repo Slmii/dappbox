@@ -29,6 +29,7 @@ export interface User {
   'created_at' : bigint,
   'user_id' : Principal,
   'canisters' : Array<Principal>,
+  'alias_user_ids' : [] | [Array<Principal>],
 }
 export interface _SERVICE {
   'create_user' : ActorMethod<[[] | [string]], Result>,

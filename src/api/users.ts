@@ -22,6 +22,7 @@ export const mapToUserInterface = (user: ControllerUser): IUser => {
 		id: user.user_id,
 		username: user.username.length ? user.username[0] : undefined,
 		createdAt: dateFromBigInt(user.created_at),
-		canisters: user.canisters
+		canisters: user.canisters,
+		aliasUserIds: user.alias_user_ids.length ? user.alias_user_ids[0] : []
 	};
 };

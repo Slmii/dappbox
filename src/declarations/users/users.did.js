@@ -4,6 +4,7 @@ export const idlFactory = ({ IDL }) => {
     'created_at' : IDL.Nat64,
     'user_id' : IDL.Principal,
     'canisters' : IDL.Vec(IDL.Principal),
+    'alias_user_ids' : IDL.Opt(IDL.Vec(IDL.Principal)),
   });
   const RejectionCode = IDL.Variant({
     'NoError' : IDL.Null,
