@@ -1,8 +1,43 @@
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
-import inject from '@rollup/plugin-inject';
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
 import { defineConfig } from 'vite';
+
+let localCanisters, prodCanisters, canisters;
+
+let localEnv = true;
+let dfxNetwork = 'local';
+
+function initCanisterIds() {
+	try {
+		localCanisters = require(path.resolve('.dfx', 'local', 'canister_ids.json'));
+	} catch (error) {
+		console.log('No local canister_ids.json found. Continuing production');
+	}
+
+	try {
+		prodCanisters = require(path.resolve('canister_ids.json'));
+		localEnv = false;
+	} catch (error) {
+		console.log('No production canister_ids.json found. Continuing with local');
+	}
+
+	dfxNetwork = 'ic'; // process.env.NODE_ENV === 'production' && !localEnv ? 'ic' : 'local';
+
+	canisters = dfxNetwork === 'local' || localEnv ? localCanisters : prodCanisters;
+}
+
+const isDevelopment = process.env.NODE_ENV !== 'production' || localEnv;
+
+initCanisterIds();
+
+// Generate canister ids, required by the generated canister code in .dfx/local/canisters/*
+const canisterDefinitions = Object.entries(canisters).reduce(
+	(acc, [key, val]) => ({
+		...acc,
+		[`process.env.${key.toUpperCase()}_CANISTER_ID`]: JSON.stringify((val as any).ic)
+	}),
+	{}
+);
 
 /** @type {import('vite').UserConfig} */
 export default defineConfig({
@@ -13,16 +48,14 @@ export default defineConfig({
 			declarations: path.resolve('./src/declarations'),
 			pages: path.resolve('./src/pages'),
 			api: path.resolve('./src/api'),
-			lib: path.resolve('./src/lib')
+			lib: path.resolve('./src/lib'),
+			stream: 'stream-browserify',
+			zlib: 'browserify-zlib',
+			util: 'util/',
+			buffer: 'buffer/'
 		}
 	},
-	plugins: [
-		react(),
-		NodeGlobalsPolyfillPlugin({
-			buffer: true,
-			process: true
-		})
-	],
+	plugins: [react()],
 	optimizeDeps: {
 		esbuildOptions: {
 			// Node.js global to browser globalThis
@@ -32,17 +65,9 @@ export default defineConfig({
 		}
 	},
 	define: {
-		'process.env': {}
-	},
-	build: {
-		minify: true,
-		rollupOptions: {
-			plugins: [
-				inject({
-					modules: { Buffer: ['buffer', 'Buffer'] }
-				})
-			]
-		}
+		...canisterDefinitions,
+		'process.env.DFX_NETWORK': dfxNetwork,
+		'process.env.NODE_ENV': isDevelopment
 	},
 	server: {
 		port: 3000

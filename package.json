@@ -19,12 +19,14 @@
 		"@tanstack/react-query": "^4.18.0",
 		"date-fns": "^2.29.3",
 		"jszip": "^3.10.1",
+		"mammoth": "^1.5.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-dropzone": "^14.2.3",
 		"react-error-boundary": "^3.1.4",
 		"react-helmet-async": "^1.3.0",
 		"react-hook-form": "^7.39.5",
+		"react-query": "^3.39.3",
 		"react-router-dom": "^6.4.3",
 		"recoil": "^0.7.6",
 		"vite": "^4.2.1",
@@ -58,7 +60,6 @@
 		]
 	},
 	"devDependencies": {
-		"@esbuild-plugins/node-globals-polyfill": "^0.2.3",
 		"@rollup/plugin-inject": "^5.0.3",
 		"@testing-library/jest-dom": "^5.16.5",
 		"@testing-library/react": "^13.4.0",
@@ -68,9 +69,14 @@
 		"@types/node": "^18.11.9",
 		"@types/react": "^18.0.25",
 		"@types/react-dom": "^18.0.9",
-		"@types/react-dropzone": "^5.1.0",
 		"@vitejs/plugin-react-swc": "^3.2.0",
+		"buffer": "^6.0.3",
 		"terser-webpack-plugin": "^5.3.6",
 		"typescript": "^4.9.3"
+	},
+	"resolutions": {
+		"@esbuild/darwin-x64": "npm:@esbuild/darwin-arm64",
+		"@esbuild/linux-x64": "npm:@esbuild/darwin-arm64",
+		"@esbuild/windows-x64": "npm:@esbuild/darwin-arm64"
 	}
 }
