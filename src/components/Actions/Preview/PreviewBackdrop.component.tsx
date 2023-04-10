@@ -30,28 +30,28 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 		return typeof docs[previewIndex] !== 'undefined' ? docs[previewIndex] : null;
 	}, [docs, previewIndex]);
 
-	const isNotAnyMimeType = useMemo(() => {
+	const isPreviewSupported = useMemo(() => {
 		if (!docToUse || !docToUse.asset.mimeType) {
-			return false;
+			return true;
 		}
 
 		if (docToUse.asset.mimeType.includes('image')) {
-			return false;
+			return true;
 		}
 
 		if (docToUse.asset.mimeType.includes('audio')) {
-			return false;
+			return true;
 		}
 
 		if (docToUse.asset.mimeType.includes('video')) {
-			return false;
+			return true;
 		}
 
-		if ([...excelMimeTypes, ...wordMimeTypes].includes(docToUse.asset.mimeType)) {
-			return false;
+		if (excelMimeTypes.includes(docToUse.asset.mimeType)) {
+			return true;
 		}
 
-		return true;
+		return false;
 	}, [docToUse]);
 
 	const nonFullScreenPreview = useMemo(() => {
@@ -198,21 +198,11 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 					{docToUse.asset.mimeType && excelMimeTypes.includes(docToUse.asset.mimeType) ? (
 						<ExcelPreview url={docToUse.url} asset={docToUse.asset} />
 					) : null}
-					{docToUse.asset.mimeType && wordMimeTypes.includes(docToUse.asset.mimeType) ? (
-						<WordPreview url={docToUse.url} asset={docToUse.asset} />
-					) : null}
-					{isNotAnyMimeType ? (
-						<iframe
-							src={docToUse.url}
-							style={{
-								width: '100%',
-								height: '100%',
-								border: 'none',
-								borderRadius: 8
-							}}
-							referrerPolicy='strict-origin'
-							title={docToUse.asset.name}
-						/>
+					{!isPreviewSupported ? (
+						<Box sx={{ textAlign: 'center' }}>
+							<Paragraph>Preview not supported.</Paragraph>
+							<Paragraph>You can download the file and open it in your computer.</Paragraph>
+						</Box>
 					) : null}
 				</Paper>
 				{docs.length > 1 ? (

@@ -48,11 +48,7 @@ export default defineConfig({
 			declarations: path.resolve('./src/declarations'),
 			pages: path.resolve('./src/pages'),
 			api: path.resolve('./src/api'),
-			lib: path.resolve('./src/lib'),
-			stream: 'stream-browserify',
-			zlib: 'browserify-zlib',
-			util: 'util/',
-			buffer: 'buffer/'
+			lib: path.resolve('./src/lib')
 		}
 	},
 	plugins: [react()],
