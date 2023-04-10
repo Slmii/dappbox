@@ -86,8 +86,6 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle, onNavig
 		}
 	};
 
-	console.log(row);
-
 	return (
 		<MuiTableCell key={`${columnId}${row.id}`} align={column.alignment}>
 			<Box
