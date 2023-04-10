@@ -30,7 +30,7 @@ export const PreviewBackdrop = ({ open, docs, onClick }: { open: boolean; docs: 
 	}, [docs, previewIndex]);
 
 	const isPreviewSupported = useMemo(() => {
-		if (!docToUse || !docToUse.asset.mimeType) {
+		if (!docToUse || typeof docToUse.asset.mimeType === 'undefined') {
 			return true;
 		}
 
