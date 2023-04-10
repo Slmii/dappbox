@@ -1,1 +1,1 @@
-export const MAX_UPLOAD_LIMIT = 2_097_152;
+export const MAX_UPLOAD_LIMIT = 5_000_000;

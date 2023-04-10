@@ -91,12 +91,9 @@ export const findExistingAsset = (assets: Asset[], asset: PostAsset) => {
  * @param files - Files to validate
  * @returns - True if valid, false if not
  */
-export const validateUploadSize = (files: FileList) => {
-	// Convert FilesList to array
-	const filesAsArray = Array.from(files);
-
+export const validateUploadSize = (files: File[]) => {
 	// Max size validation
-	if (filesAsArray.some(file => file.size > MAX_UPLOAD_LIMIT)) {
+	if (files.some(file => file.size > MAX_UPLOAD_LIMIT)) {
 		return false;
 	}
 
@@ -163,7 +160,7 @@ export const getImage = async (file: File) => {
  *
  * @param files - FileList to build the nested object from
  */
-export const buildNestedFiles = (files: FileList): NestedFileObject => {
+export const buildNestedFiles = (files: File[]): NestedFileObject => {
 	const result: NestedFileObject = {};
 
 	for (let i = 0; i < files.length; i++) {

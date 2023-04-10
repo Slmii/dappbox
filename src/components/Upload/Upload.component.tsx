@@ -7,11 +7,10 @@ import { api } from 'api';
 import { Chunk, PostAsset } from 'declarations/assets/assets.did';
 import { QUERY_USED_SPACE } from 'lib/constants/query-keys.constants';
 import { SPACING } from 'lib/constants/spacing.constants';
-import { MAX_UPLOAD_LIMIT } from 'lib/constants/upload.constants';
 import { AuthContext } from 'lib/context';
 import { useActivities, useAddAsset, useUserAssets } from 'lib/hooks';
-import { ActivityType, FileWithActivity, NestedFileObject } from 'lib/types';
-import { getAssetId, getUrlBreadcrumbs } from 'lib/url';
+import { FileWithActivity } from 'lib/types';
+import { getAssetId } from 'lib/url';
 import {
 	addNestedFileActivities,
 	buildNestedFiles,
@@ -22,11 +21,10 @@ import {
 	setPostAsset,
 	validateUploadSize
 } from 'lib/utils/asset.utils';
-import { formatBytes } from 'lib/utils/conversion.utils';
 import { Box } from 'ui-components/Box';
 import { Button } from 'ui-components/Button';
+import { Dialog } from 'ui-components/Dialog';
 import { Menu } from 'ui-components/Menu';
-import { Snackbar } from 'ui-components/Snackbar';
 
 const Input = styled('input')({
 	display: 'none'
@@ -38,10 +36,12 @@ export const Upload = () => {
 	const queryClient = useQueryClient();
 	const fileRef = useRef<HTMLInputElement | null>(null);
 	const folderRef = useRef<HTMLInputElement | null>(null);
+
+	const [isLargeFile, setIsLargeFile] = useState(false);
+	const [largeFiles, setLargeFiles] = useState<File[]>([]);
+	const [fileOrFolder, setFileOrFolder] = useState<'file' | 'folder' | undefined>(undefined);
+
 	const { addActivity, updateActivity } = useActivities();
-
-	const [uploadError, setUploadError] = useState<string | null>(null);
-
 	const { data: assets } = useUserAssets();
 	const {
 		mutateAsync: addAssetMutate,
@@ -63,16 +63,16 @@ export const Upload = () => {
 		}
 	}, [folderRef]);
 
-	const handleOnFolderUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-		const files = e.target.files;
-
-		if (!files || !files.length || !user || !assets) {
+	const handleOnFolderUpload = async (files: File[], skipValidation = false) => {
+		if (!Array.from(files).length || !user || !assets) {
 			return;
 		}
 
 		const isValid = validateUploadSize(files);
-		if (!isValid) {
-			setUploadError(`Max upload size is ${formatBytes(MAX_UPLOAD_LIMIT)}`);
+		if (!skipValidation && !isValid) {
+			setIsLargeFile(true);
+			setLargeFiles(Array.from(files));
+			setFileOrFolder('folder');
 			return;
 		}
 
@@ -220,16 +220,16 @@ export const Upload = () => {
 		});
 	};
 
-	const handleOnFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-		const files = e.target.files;
-
-		if (!files || !files.length) {
+	const handleOnFileUpload = async (files: File[], skipValidation = false) => {
+		if (!files.length) {
 			return;
 		}
 
 		const isValid = validateUploadSize(files);
-		if (!isValid) {
-			setUploadError(`Max upload size is ${formatBytes(MAX_UPLOAD_LIMIT)}`);
+		if (!skipValidation && !isValid) {
+			setIsLargeFile(true);
+			setLargeFiles(Array.from(files));
+			setFileOrFolder('file');
 			return;
 		}
 
@@ -374,9 +374,9 @@ export const Upload = () => {
 		await queryClient.invalidateQueries([QUERY_USED_SPACE]);
 	};
 
-	const addFileActivities = (files: FileList) => {
+	const addFileActivities = (files: File[]) => {
 		// Add activities for all files within the uploaded folder
-		const filesWithActivityId: FileWithActivity[] = Array.from(files).map(file => {
+		const filesWithActivityId: FileWithActivity[] = files.map(file => {
 			// Insert a new activity
 			const activityId = addActivity({
 				name: file.name,
@@ -431,7 +431,10 @@ export const Upload = () => {
 					multiple
 					type='file'
 					onChange={async e => {
-						await handleOnFileUpload(e);
+						if (e.target.files) {
+							await handleOnFileUpload(Array.from(e.target.files));
+						}
+
 						e.target.value = '';
 					}}
 					ref={fileRef}
@@ -440,19 +443,38 @@ export const Upload = () => {
 					id='upload-folder'
 					type='file'
 					onChange={async e => {
-						await handleOnFolderUpload(e);
+						if (e.target.files) {
+							await handleOnFolderUpload(Array.from(e.target.files));
+						}
 						e.target.value = '';
 					}}
 					ref={folderRef}
 				/>
 			</Box>
-			<Snackbar
-				open={!!uploadError}
-				message={uploadError ?? ''}
-				onClose={() => {
-					setUploadError(null);
-					addAssetReset();
+			<Dialog
+				onClose={() => setIsLargeFile(false)}
+				onConfirm={async () => {
+					// Close dialog
+					setIsLargeFile(false);
+
+					if (typeof largeFiles === 'undefined' || typeof fileOrFolder === 'undefined') {
+						return;
+					}
+
+					// Upload files
+					if (fileOrFolder === 'file') {
+						await handleOnFileUpload(largeFiles, true);
+					} else {
+						await handleOnFolderUpload(largeFiles, true);
+					}
+
+					setLargeFiles([]);
+					setFileOrFolder(undefined);
 				}}
+				open={isLargeFile}
+				title='File too large'
+				onConfirmText='Yes'
+				text='The file you are trying to upload is large and may take a while to process. Do you want to continue?'
 			/>
 		</>
 	);
