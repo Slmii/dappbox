@@ -27,6 +27,7 @@ export const Preview = () => {
 					startIcon='view'
 					variant='outlined'
 					color='inherit'
+					tooltip='Previewing large files may take a while'
 					loading={isLoading}
 				/>
 			) : null}

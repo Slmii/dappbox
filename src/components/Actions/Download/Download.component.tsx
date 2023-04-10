@@ -16,6 +16,7 @@ export const Download = () => {
 					startIcon='download'
 					variant='outlined'
 					color='inherit'
+					tooltip='Downloading large files may take a while'
 					onClick={async () => {
 						await download(selectedAssets);
 					}}

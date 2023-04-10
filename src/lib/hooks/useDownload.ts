@@ -67,7 +67,7 @@ export const useDownload = () => {
 	const download = async (assets: Asset[]) => {
 		setIsLoading(true);
 
-		// If there is more than 1 file selected or one of the selected assets includes a 'folde' type
+		// If there is more than 1 file selected or one of the selected assets includes a 'folder' type
 		// then we need to zip the selected assets
 		if (assets.length > 1 || assets.some(asset => asset.type === 'folder')) {
 			// Add activity for zip download
