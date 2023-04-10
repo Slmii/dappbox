@@ -150,8 +150,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 			return true;
 		} catch (error) {
 			try {
-				const response = await actor.create_user([]);
+				await actor.create_user([]);
+
+				const response = await actor.get_user();
 				const user = await unwrap(response);
+
 				setUser(mapToUserInterface(user));
 
 				return true;
