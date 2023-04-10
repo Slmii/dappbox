@@ -86,12 +86,15 @@ const TableCell = React.memo(({ columnId, column, row, onFavoriteToggle, onNavig
 		}
 	};
 
+	console.log(row);
+
 	return (
 		<MuiTableCell key={`${columnId}${row.id}`} align={column.alignment}>
 			<Box
 				sx={{
 					display: 'flex',
-					alignItems: 'center'
+					alignItems: 'center',
+					color: row.placeholder ? 'text.disabled' : 'text.primary'
 				}}
 			>
 				{columnId === 'name' ? (
@@ -281,11 +284,6 @@ export const AssetsTable = ({
 								tabIndex={-1}
 								key={asset.id}
 								selected={isItemSelected}
-								sx={{
-									'& > *': {
-										color: asset.placeholder ? 'text.disabled' : 'text.primary'
-									}
-								}}
 							>
 								<MuiTableCell padding='checkbox'>
 									<Checkbox
