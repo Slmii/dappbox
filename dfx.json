@@ -3,10 +3,10 @@
 		"frontend": {
 			"dependencies": [],
 			"frontend": {
-				"entrypoint": "build/index.html"
+				"entrypoint": "dist/index.html"
 			},
 			"source": [
-				"build"
+				"dist"
 			],
 			"type": "assets"
 		}
