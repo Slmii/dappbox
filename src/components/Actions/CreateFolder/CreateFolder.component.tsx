@@ -22,6 +22,7 @@ export const CreateFolder = () => {
 	const createFolderFormRef = useRef<null | HTMLFormElement>(null);
 	const [createFolderOpenDialog, setCreateFolderOpenDialog] = useState(false);
 	const [handleOnConfirmCreateFolderDialog, setHandleOnConfirmCreateFolderDialog] = useState<() => void>(() => null);
+	const [folderExists, setFolderExists] = useState(false);
 
 	const { data: assets } = useUserAssets();
 	const { mutateAsync: addAssetMutate, updateCache, addPlaceholder } = useAddAsset();
@@ -31,6 +32,19 @@ export const CreateFolder = () => {
 		setHandleOnConfirmCreateFolderDialog(() => async (data: CreateFolderFormData) => {
 			if (!user) {
 				return;
+			}
+
+			// Reset folderExists
+			setFolderExists(false);
+
+			let parentId = getAssetId(pathname);
+			parentId = parentId?.length ? parentId : undefined;
+
+			// Find existing asset
+			const existingAsset = assets?.find(asset => asset.name === data.folderName && asset.parentId === parentId);
+			if (!!existingAsset) {
+				// Set folderExists to true
+				return setFolderExists(true);
 			}
 
 			setCreateFolderOpenDialog(false);
@@ -47,7 +61,6 @@ export const CreateFolder = () => {
 			const placeholderId = Date.now();
 
 			// Create PostAsset data
-			const parentId = getAssetId(pathname);
 			const postData: PostAsset & { placeholderId: number } = {
 				placeholderId,
 				id: [],
@@ -130,6 +143,9 @@ export const CreateFolder = () => {
 									{assets?.find(asset => asset.id === Number(getAssetId(pathname)))?.name ?? 'Home'}
 								</b>
 							</Alert>
+							{folderExists ? (
+								<Alert severity='error'>A folder with this name already exists</Alert>
+							) : null}
 							<Field name='folderName' label='Folder name' autoFocus />
 						</Row>
 					</Form>
