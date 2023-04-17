@@ -23,18 +23,15 @@ export const Authenticate = () => {
 				textAlign: 'center'
 			}}
 		>
-			<Row>
-				<img src='/assets/dappbox.png' alt='DappBox' />
-				<Button
-					label='Login with Internet Identity'
-					color='primary'
-					variant='contained'
-					loading={isLoading}
-					onClick={loginII}
-					startImage='/assets/dfn.svg'
-					size='large'
-				/>
-			</Row>
+			<Button
+				label='Login with Internet Identity'
+				color='primary'
+				variant='contained'
+				loading={isLoading}
+				onClick={loginII}
+				startImage='/assets/dfn.svg'
+				size='large'
+			/>
 		</Box>
 	);
 };

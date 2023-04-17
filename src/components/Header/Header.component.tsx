@@ -2,6 +2,7 @@ import { useTheme } from '@mui/material/styles';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { SPACING } from 'lib/constants/spacing.constants';
 import { AuthContext, ColorModeContext } from 'lib/context';
 import { Appbar } from 'ui-components/AppBar';
 import { Box, Column } from 'ui-components/Box';
@@ -40,7 +41,14 @@ export const Header = () => {
 
 	return (
 		<Appbar>
-			<Box sx={{ flexGrow: 1 }}>{isAuthenticated ? <Link href='/'>DappBox</Link> : 'DappBox'}</Box>
+			<Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+				<Link href='/'>
+					<Box sx={{ display: 'flex', alignItems: 'center' }}>
+						<img src='/assets/dappbox.png' alt='DappBox' height={40} width={40} />
+						<Box sx={{ ml: SPACING / 2 }}>DappBox</Box>
+					</Box>
+				</Link>
+			</Box>
 			<Column>
 				{isAuthenticated ? (
 					<Button
